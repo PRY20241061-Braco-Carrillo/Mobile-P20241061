@@ -41,7 +41,7 @@ class ARSessionManager {
   Future<Matrix4?> getCameraPose() async {
     try {
       final List? serializedCameraPose =
-          await _channel.invokeMethod<List<dynamic>>("getCameraPose", <, >{});
+          await _channel.invokeMethod<List<dynamic>>("getCameraPose", {});
       return const MatrixConverter().fromJson(serializedCameraPose!);
     } catch (e) {
       print("Error caught: $e");
@@ -55,8 +55,8 @@ class ARSessionManager {
       if (anchor.name.isEmpty) {
         throw Exception("Anchor can not be resolved. Anchor name is empty.");
       }
-      final List? serializedCameraPose =
-          await _channel.invokeMethod<List<dynamic>>("getAnchorPose", <String, String>{
+      final List? serializedCameraPose = await _channel
+          .invokeMethod<List<dynamic>>("getAnchorPose", <String, String>{
         "anchorId": anchor.name,
       });
       return const MatrixConverter().fromJson(serializedCameraPose!);
@@ -111,18 +111,20 @@ class ARSessionManager {
         case "onError":
           onError(call.arguments[0]);
           print(call.arguments);
-                  break;
+          break;
         case "onPlaneOrPointTap":
           final List rawHitTestResults = call.arguments as List<dynamic>;
-          final List<Map<String, dynamic>> serializedHitTestResults = rawHitTestResults
-              .map(
-                  (hitTestResult) => Map<String, dynamic>.from(hitTestResult))
-              .toList();
-          final List<ARHitTestResult> hitTestResults = serializedHitTestResults.map((Map<String, dynamic> e) {
+          final List<Map<String, dynamic>> serializedHitTestResults =
+              rawHitTestResults
+                  .map((hitTestResult) =>
+                      Map<String, dynamic>.from(hitTestResult))
+                  .toList();
+          final List<ARHitTestResult> hitTestResults =
+              serializedHitTestResults.map((Map<String, dynamic> e) {
             return ARHitTestResult.fromJson(e);
           }).toList();
           onPlaneOrPointTap(hitTestResults);
-                  break;
+          break;
         case "dispose":
           _channel.invokeMethod<void>("dispose");
           break;
@@ -185,7 +187,8 @@ class ARSessionManager {
 
   /// Returns a future ImageProvider that contains a screenshot of the current AR Scene
   Future<ImageProvider> snapshot() async {
-    final Uint8List? result = await _channel.invokeMethod<Uint8List>("snapshot");
+    final Uint8List? result =
+        await _channel.invokeMethod<Uint8List>("snapshot");
     return MemoryImage(result!);
   }
 }

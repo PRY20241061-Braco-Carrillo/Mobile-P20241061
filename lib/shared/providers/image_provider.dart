@@ -1,4 +1,5 @@
-import "package:file/src/interface/file.dart";
+import "dart:io";
+
 import "package:flutter/material.dart";
 import "package:flutter_cache_manager/flutter_cache_manager.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
@@ -23,14 +24,16 @@ class ImageConfig {
   });
 }
 
-final FutureProviderFamily<ImageProvider<Object>, ImageConfig> imageProviderCache =
-    FutureProvider.family<ImageProvider, ImageConfig>((FutureProviderRef<ImageProvider<Object>> ref, ImageConfig config) async {
+final FutureProviderFamily<ImageProvider<Object>, ImageConfig>
+    imageProviderCache = FutureProvider.family<ImageProvider, ImageConfig>(
+        (FutureProviderRef<ImageProvider<Object>> ref,
+            ImageConfig config) async {
   final DefaultCacheManager cacheManager = DefaultCacheManager();
   try {
     final File file = await cacheManager.getSingleFile(config.imageUrl,
         headers: config.headers);
     return FileImage(file);
-  } catch (e) {
+  } on Exception catch (e) {
     debugPrint("Error fetching image from cache: $e");
     rethrow;
   }

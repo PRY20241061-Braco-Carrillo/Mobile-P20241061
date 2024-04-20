@@ -90,7 +90,7 @@ class MenuCardPrimaryImage {
   final MenuCardSizeLabel? sizeLabel;
 
   List<MenuCardDiscount>? get discountLabel =>
-      _convertDiscountLabels(discountLabelDynamic ?? []);
+      _convertDiscountLabels(discountLabelDynamic ?? <List<dynamic>>[]);
 
   MenuCardPrimaryImage(
       {required this.url, this.discountLabelDynamic, this.sizeLabel});
@@ -102,7 +102,9 @@ class MenuCardPrimaryImage {
 }
 
 List<MenuCardDiscount> _convertDiscountLabels(List<dynamic> discountJson) {
+  // ignore: always_specify_types
   return discountJson.map<MenuCardDiscount>((item) {
+    // ignore: always_specify_types, avoid_dynamic_calls
     final type = item["type"];
     switch (type) {
       case "percent":

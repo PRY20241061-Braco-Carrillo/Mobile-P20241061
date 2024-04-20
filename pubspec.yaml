@@ -1,16 +1,17 @@
 name: ar_project
 description: A new Flutter project.
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
-  sdk: '>=2.19.6 <3.0.0'
+  sdk: ">=2.19.6 <3.0.0"
 
 dependencies:
   ar_flutter_plugin: ^0.7.3
-  
+
   cached_network_image: ^3.3.1
   easy_localization: ^3.0.5
+  #file: any
   flutter:
     sdk: flutter
   flutter_archive: ^6.0.3
@@ -34,12 +35,12 @@ dependencies:
   smooth_page_indicator: ^1.1.0
 
   vector_math: any
-  file: any
+  
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
   build_runner: ^2.4.9
   custom_lint: ^0.6.4
+  flutter_test:
+    sdk: flutter
   riverpod_generator: ^2.4.0
   riverpod_lint: ^2.3.10
 

@@ -157,8 +157,7 @@ class ARView extends StatefulWidget {
       showPlatformType: showPlatformType,
       permissionPromptDescription: permissionPromptDescription,
       permissionPromptButtonText: permissionPromptButtonText,
-      permissionPromptParentalRestriction:
-          permissionPromptParentalRestriction);
+      permissionPromptParentalRestriction: permissionPromptParentalRestriction);
 }
 
 class _ARViewState extends State<ARView> {
@@ -225,7 +224,7 @@ class _ARViewState extends State<ARView> {
               Text(permissionPromptDescription),
               ElevatedButton(
                   child: Text(permissionPromptButtonText),
-                  onPressed: () async => <>{await requestCameraPermission()})
+                  onPressed: () async => {await requestCameraPermission()})
             ],
           ));
         }
@@ -239,7 +238,7 @@ class _ARViewState extends State<ARView> {
               ElevatedButton(
                   child: Text(permissionPromptButtonText),
                   onPressed: () async =>
-                      <>{await requestCameraPermissionFromSettings()})
+                      {await requestCameraPermissionFromSettings()})
             ],
           ));
         }

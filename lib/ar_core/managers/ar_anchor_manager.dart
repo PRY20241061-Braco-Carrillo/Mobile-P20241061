@@ -33,7 +33,7 @@ class ARAnchorManager {
 
   /// Activates collaborative AR mode (using Google Cloud Anchors)
   initGoogleCloudAnchorMode() async {
-    _channel.invokeMethod<bool>("initGoogleCloudAnchorMode", <, >{});
+    _channel.invokeMethod<bool>("initGoogleCloudAnchorMode", {});
   }
 
   Future<dynamic> _platformCallHandler(MethodCall call) async {
@@ -50,8 +50,9 @@ class ARAnchorManager {
           final cloudanchorid = call.arguments["cloudanchorid"];
           print(
               "${"UPLOADED ANCHOR WITH ID: " + cloudanchorid}, NAME: " + name);
-          final ARAnchor currentAnchor =
-              pendingAnchors.where((ARAnchor element) => element.name == name).first;
+          final ARAnchor currentAnchor = pendingAnchors
+              .where((ARAnchor element) => element.name == name)
+              .first;
           // Update anchor with cloud anchor ID
           (currentAnchor as ARPlaneAnchor).cloudanchorid = cloudanchorid;
           // Remove anchor from list of pending anchors
@@ -92,7 +93,8 @@ class ARAnchorManager {
 
   /// Remove given anchor and all its children from the AR Scene
   removeAnchor(ARAnchor anchor) {
-    _channel.invokeMethod<String>("removeAnchor", <String, String>{"name": anchor.name});
+    _channel.invokeMethod<String>(
+        "removeAnchor", <String, String>{"name": anchor.name});
   }
 
   /// Upload given anchor from the underlying AR scene to the Google Cloud Anchor API
@@ -110,8 +112,8 @@ class ARAnchorManager {
   /// Try to download anchor with the given ID from the Google Cloud Anchor API and add it to the scene
   Future<bool?> downloadAnchor(String cloudanchorid) async {
     print("TRYING TO DOWNLOAD ANCHOR WITH ID $cloudanchorid");
-    _channel
-        .invokeMethod<bool>("downloadAnchor", <String, String>{"cloudanchorid": cloudanchorid});
+    _channel.invokeMethod<bool>(
+        "downloadAnchor", <String, String>{"cloudanchorid": cloudanchorid});
     return null;
   }
 }

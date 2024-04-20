@@ -1,4 +1,3 @@
-
 import "../models/ar_anchor.dart";
 import "../models/ar_node.dart";
 import "../utils/json_converters.dart";
@@ -72,8 +71,8 @@ class ARObjectManager {
         case "onPanEnd":
           if (onPanEnd != null) {
             final String tappedNodeName = call.arguments["name"] as String;
-            final Matrix4 transform =
-                const MatrixConverter().fromJson(call.arguments["transform"] as List);
+            final Matrix4 transform = const MatrixConverter()
+                .fromJson(call.arguments["transform"] as List);
 
             // Notify callback
             onPanEnd!(tappedNodeName, transform);
@@ -94,8 +93,8 @@ class ARObjectManager {
         case "onRotationEnd":
           if (onRotationEnd != null) {
             final String tappedNodeName = call.arguments["name"] as String;
-            final Matrix4 transform =
-                const MatrixConverter().fromJson(call.arguments["transform"] as List);
+            final Matrix4 transform = const MatrixConverter()
+                .fromJson(call.arguments["transform"] as List);
 
             // Notify callback
             onRotationEnd!(tappedNodeName, transform);
@@ -114,7 +113,7 @@ class ARObjectManager {
 
   /// Sets up the AR Object Manager
   onInitialize() {
-    _channel.invokeMethod<void>("init", <, >{});
+    _channel.invokeMethod<void>("init", {});
   }
 
   /// Add given node to the given anchor of the underlying AR scene (or to its top-level if no anchor is given) and listen to any changes made to its transformation
@@ -123,14 +122,17 @@ class ARObjectManager {
       node.transformNotifier.addListener(() {
         _channel.invokeMethod<void>("transformationChanged", <String, Object>{
           "name": node.name,
-          "transformation":
-              const MatrixValueNotifierConverter().toJson(node.transformNotifier)
+          "transformation": const MatrixValueNotifierConverter()
+              .toJson(node.transformNotifier)
         });
       });
       if (planeAnchor != null) {
         planeAnchor.childNodes.add(node.name);
-        return await _channel.invokeMethod<bool>("addNodeToPlaneAnchor",
-            <String, Map<String, dynamic>>{"node": node.toMap(), "anchor": planeAnchor.toJson()});
+        return await _channel.invokeMethod<bool>(
+            "addNodeToPlaneAnchor", <String, Map<String, dynamic>>{
+          "node": node.toMap(),
+          "anchor": planeAnchor.toJson()
+        });
       } else {
         return await _channel.invokeMethod<bool>("addNode", node.toMap());
       }
@@ -141,6 +143,7 @@ class ARObjectManager {
 
   /// Remove given node from the AR Scene
   removeNode(ARNode node) {
-    _channel.invokeMethod<String>("removeNode", <String, String>{"name": node.name});
+    _channel.invokeMethod<String>(
+        "removeNode", <String, String>{"name": node.name});
   }
 }
