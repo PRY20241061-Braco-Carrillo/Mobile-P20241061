@@ -124,9 +124,7 @@ class LogInScreen extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(30)),
                   ),
                   onPressed: () {
-                    if (formKey.currentState!.validate()) {
-                      // Handle valid form
-                    }
+                    if (formKey.currentState!.validate()) {}
                   },
                   child: Text(labelLoginKey.tr().toUpperCase(),
                       style: const TextStyle(
