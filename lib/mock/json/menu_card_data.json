@@ -1,0 +1,106 @@
+[
+
+  {
+    "id": "1",
+    "header": {
+      "timeRange": {
+        "min": 10,
+        "max": 20,
+        "scale": "min"
+      },
+      "price": {
+        "price": "25.00",
+        "currency": "usd"
+      }
+    },
+    "primaryImage": {
+      "url": "https://via.placeholder.com/150",
+      "discountLabel": [
+        {
+          "type": "percent",
+          "quantity": "10"
+        },
+        {
+          "type": "currency",
+          "quantity": "10",
+          "currency": "usd"
+        },
+        {
+          "type": "especial_card",
+          "card": "visa",
+          "quantity": "10"
+        }
+      ],
+      "sizeLabel": {
+        "size": "Large"
+      }
+    },
+    "title": {
+      "title": "Hamburguesa a la lorem ipsum a "
+    },
+    "classification": {
+      "max": 5,
+      "min": 1,
+      "current": 4
+    }
+  },
+  {
+    "header": {
+      "timeRange": {
+        "min": 10,
+        "max": 20,
+        "scale": "min"
+      },
+      "price": {
+        "price": "1500.00",
+        "currency": "pen"
+      }
+    },
+    "primaryImage": {
+      "url": "https://via.placeholder.com/400",
+      "discountLabel": [
+        {
+          "type": "percent",
+          "quantity": "10"
+        }
+        
+      ]
+    },
+    "title": {
+      "title": "Delicious Burger"
+    },
+    "classification": {
+      "max": 5,
+      "min": 1,
+      "current": 4
+    }
+  },
+  {
+    "header": {
+      "timeRange": {
+        "min": 10,
+        "max": 20,
+        "scale": "min"
+      },
+      "price": {
+        "price": "29.90",
+        "currency": "usd"
+      }
+    },
+    "primaryImage": {
+      "url": "https://via.placeholder.com/150",
+      "discountLabel": [],
+      "sizeLabel": {
+        "size": "Large"
+      }
+    },
+    "title": {
+      "title": "Delicious Burger"
+    },
+    "classification": {
+      "max": 5,
+      "min": 1,
+      "current": 4
+    }
+  }
+]

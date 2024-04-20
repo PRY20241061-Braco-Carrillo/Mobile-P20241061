@@ -1,0 +1,141 @@
+{
+    "OnBoarding": {
+        "buttons": {
+            "SKIP": {
+                "label": "Saltar"
+            },
+            "NEXT": {
+                "label": "Siguiente"
+            },
+            "START": {
+                "label": "Empezar"
+            },
+            "ERROR": {
+                "label": "Ha ocurrido un error, intenta nuevamente"
+            },
+            "LOG_IN": {
+                "label": "Iniciar Sesión"
+            },
+            "SIGN_UP": {
+                "label": "Registrarse"
+            },
+            "START_GUESS": {
+                "label": "Iniciar como invitado"
+            }
+        }
+    },
+    "Auth": {
+        "buttons": {
+            "LOGIN": {
+                "label": "Iniciar Sesión"
+            },
+            "SIGNUP": {
+                "label": "Registrarse"
+            },
+            "LOGOUT": {
+                "label": "Cerrar Sesión"
+            },
+            "CONFIRM": {
+                "label": "Confirmar"
+            },
+            "CANCEL": {
+                "label": "Cancelar"
+            },
+            "ALREADY_HAVE_ACCOUNT": {
+                "label": "¿Ya tienes una cuenta? Inicia sesión"
+            },
+            "DONT_HAVE_ACCOUNT": {
+                "label": "¿No tienes una cuenta? Regístrate"
+            }
+        },
+        "labels": {
+            "EMAIL": {
+                "label": "Correo Electrónico",
+                "validator": "Por favor ingrese un correo electrónico válido"
+            },
+            "PASSWORD": {
+                "label": "Contraseña",
+                "validator": "La contraseña debe tener al menos 6 carácteres, incluir número, mayúscula y minúscula",
+                "uppercase": "Mayúscula",
+                "lowercase": "Minúscula",
+                "number": "Número",
+                "length": "Min. 6 carácteres",
+                "not_email": "No puede ser igual al correo electrónico"
+
+            },
+            "CONFIRM_PASSWORD": {
+                "label": "Confirmar Contraseña",
+                "validator": "Las contraseñas no coinciden"
+            },
+            "NAME": {
+                "label": "Nombre",
+                "validator": "Por favor ingrese su nombre"
+            },
+            "LAST_NAME": {
+                "label": "Apellido",
+                "validator": "Por favor ingrese su apellido"
+            },
+            "PHONE": {
+                "label": "Teléfono",
+                "validator": "Por favor ingrese un número de teléfono válido"
+            },
+            "PHONE_CODE":{
+                "label": "Código de país",
+                "validator": "Por favor ingrese un código de país válido"
+            }
+        }
+    },
+    "Category": {
+        "label": "Categoría",
+        "categories": {
+            "SNACK": {
+                "label": "Snacks"
+            },
+            "DRINK": {
+                "label": "Bebidas"
+            },
+            "DESSERT": {
+                "label": "Postres"
+            },
+            "ENTRY": {
+                "label": "Entradas"
+            },
+            "KIDS": {
+                "label": "Niños"
+            },
+            "OFFER": {
+                "label": "Ofertas",
+                "ariaLabel": "Categoria de ofertas"
+            },
+            "TREND": {
+                "label": "Tendencia",
+                "ariaLabel": "Categoria de tendencia"
+            },
+            "PRINCIPAL": {
+                "label": "Platos de fondo",
+                "ariaLabel": "Categoria de platos de fondo"
+            }
+        }
+    },
+    "MenuCard": {
+        "buttons": {
+            "ADD": {
+                "label": "Agregar"
+            },
+            "VIEW": {
+                "label": "Ver"
+            },
+            "AR": {
+                "label": "Realidad Aumentada"
+            },
+            "PROMOTION_DETAIL": {
+                "label": "Detalle de promoción"
+            }
+        },
+        "labelDiscount": {
+            "percent": "% DSCTO",
+            "currency": "DSCTO",
+            "specialCard": "% DSCTO con tarjeta especial"
+        }
+    }
+}

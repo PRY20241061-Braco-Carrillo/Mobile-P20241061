@@ -1,0 +1,22 @@
+
+    [
+        {
+            "title": "Restaurant lorem ipsum lorem ",
+            "logo": "https://via.placeholder.com/150",
+            "bgImage": "https://via.placeholder.com/150",
+            "path": "http://localhost:3000"
+        },
+        {
+            "title": "Restaurant lorem ipsum lorem ",
+            "logo": "https://via.placeholder.com/150",
+            "bgImage": "https://via.placeholder.com/150",
+            "path": "http://localhost:3000"
+        },
+        {
+            "title": "Restaurant lorem ipsum lorem ",
+            "logo": "https://via.placeholder.com/150",
+            "bgImage": "https://via.placeholder.com/150",
+            "path": "http://localhost:3000"
+        }
+
+    ]

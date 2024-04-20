@@ -1,0 +1,137 @@
+{
+    "OnBoarding": {
+        "buttons": {
+            "SKIP": {
+                "label": "Skip"
+            },
+            "NEXT": {
+                "label": "Next"
+            },
+            "START": {
+                "label": "Get Started"
+            },
+            "ERROR": {
+                "label": "An error occurred, please try again"
+            },
+            "START_GUESS": {
+                "label": "Log as a Guest"
+            },
+            "LOG_IN": {
+                "label": "Log In"
+            },
+            "SIGN_UP": {
+                "label": "Sign Up"
+            }
+        }
+    },
+    "Auth": {
+        "buttons": {
+            "LOGIN": {
+                "label": "Log In"
+            },
+            "SIGNUP": {
+                "label": "Sign Up"
+            },
+            "LOGOUT": {
+                "label": "Log Out"
+            },
+            "CONFIRM": {
+                "label": "Confirm"
+            },
+            "CANCEL": {
+                "label": "Cancel"
+            },
+            "ALREADY_HAVE_ACCOUNT": {
+                "label": "Already have an account?"
+            },
+            "DONT_HAVE_ACCOUNT": {
+                "label": "Don't have an account?"
+            }
+        },
+        "labels": {
+            "EMAIL": {
+                "label": "Email",
+                "validator": "Please enter a valid email"
+            },
+            "PASSWORD": {
+                "label": "Password",
+                "validator": "Password must be 6+ chars, include a number, uppercase, and lowercase",
+                "uppercase": "Uppercase",
+                "lowercase": "Lowercase",
+                "number": "Digit",
+                "length": "6+ chars",
+                "not_email": "Not email"
+            },
+            "CONFIRM_PASSWORD": {
+                "label": "Confirm Password",
+                "validator": "Passwords do not match"
+            },
+            "NAME": {
+                "label": "Name",
+                "validator": "Please enter a valid name"
+            },
+            "LAST_NAME": {
+                "label": "Last Name",
+                "validator": "Please enter a valid last name"
+            },
+            "PHONE": {
+                "label": "Phone",
+                "validator": "Please enter a valid phone number"
+            },
+            "PHONE_CODE": {
+                "label": "Country Code",
+                "validator": "Please enter a valid country code"
+            }
+        }
+    },
+    "Category": {
+        "label": "Category",
+        "categories": {
+            "SNACK": {
+                "label": "Snacks"
+            },
+            "DRINK": {
+                "label": "Drinks"
+            },
+            "DESSERT": {
+                "label": "Desserts"
+            },
+            "ENTRY": {
+                "label": "Entry"
+            },
+            "KIDS": {
+                "label": "Kids"
+            },
+            "OFFER": {
+                "label": "Offers"
+            },
+            "TREND": {
+                "label": "Trend"
+            },
+            "PRINCIPAL": {
+                "label": "Principal"
+            }
+        }
+    },
+    "MenuCard": {
+        "buttons": {
+            "ADD": {
+                "label": "Add"
+            },
+            "VIEW": {
+                "label": "View"
+            },
+            "AR": {
+                "label": "AR"
+            },
+            "PROMOTION_DETAIL": {
+                "label": "Promotion Details"
+            }
+        },
+        "labelDiscount": {
+            "percent": "% OFF",
+            "currency": "OFF",
+            "specialCard": "% OFF with Especial Card"
+        }
+    }
+}

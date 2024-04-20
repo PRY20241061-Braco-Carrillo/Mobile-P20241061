@@ -1,0 +1,35 @@
+{
+    "isAvailable": true,
+    "isClosed": false,
+    "id": "1",
+    "name": "Restaurante Ejemplo",
+    "address": {
+        "street": "Calle Principal 123",
+        "city": "Ciudad Ejemplo",
+        "zipCode": "54321",
+        "country": "País Ejemplo"
+    },
+    "serviceType": {
+        "services": [
+            "delivery",
+            "takeAway"
+        ]
+    },
+    "socialMedia": {
+        "facebook": "https://www.facebook.com/restauranteejemplo",
+        "instagram": "https://www.instagram.com/restauranteejemplo",
+        "twitter": "https://www.twitter.com/restauranteejemplo",
+        "youtube": null,
+        "whatsapp": "123456789"
+    },
+    "contact": {
+        "phone": "987654321",
+        "mobile": "987654321",
+        "whatsapp": "123456789",
+        "email": "info@example.com",
+        "website": "https://www.example.com",
+        "mobileCountryCode": "+1",
+        "whatsappCountryCode": "+1",
+        "phoneCountryCode": "+1"
+    }
+}
