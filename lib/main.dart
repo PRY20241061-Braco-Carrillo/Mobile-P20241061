@@ -1,5 +1,6 @@
 import "config/routes/app_router.dart";
-import "config/theme/app_theme.dart";
+
+import "config/theme/theme_manager.dart";
 import "core/shared_preferences/services/shared_preferences.service.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
@@ -7,12 +8,9 @@ import "package:flutter_secure_storage/flutter_secure_storage.dart";
 import "package:go_router/go_router.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 
-final StateProvider<ThemeData> themeProvider = StateProvider<ThemeData>((StateProviderRef<ThemeData> ref) {
-  return ThemeData.from(colorScheme: lightColorScheme);
-});
-
 final Provider<FlutterSecureStorage> secureStorageProvider =
-    Provider<FlutterSecureStorage>((ProviderRef<FlutterSecureStorage> ref) => const FlutterSecureStorage());
+    Provider<FlutterSecureStorage>((ProviderRef<FlutterSecureStorage> ref) =>
+        const FlutterSecureStorage());
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,7 +23,10 @@ void main() async {
   runApp(
     ProviderScope(
       child: EasyLocalization(
-        supportedLocales: const <Locale>[Locale("en", "US"), Locale("es", "ES")],
+        supportedLocales: const <Locale>[
+          Locale("en", "US"),
+          Locale("es", "ES")
+        ],
         path: "assets/translations",
         fallbackLocale: const Locale("en", "US"),
         child: MyApp(onboardingComplete: onboardingComplete),
