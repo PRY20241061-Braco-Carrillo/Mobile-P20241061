@@ -1,4 +1,13 @@
+import "package:go_router/go_router.dart";
+import "package:quickalert/models/quickalert_type.dart";
+import "package:quickalert/widgets/quickalert_dialog.dart";
+
+import "../../../config/routes/routes.dart";
+import "../../../core/models/auth/sign_up/sign_up.request.types.dart";
+import "../../../core/notifiers/auth/sign_up.notifier.dart";
 import "../../../layout/scrollable_layout.dart";
+import "../../../shared/utils/constants/constants.dart";
+import "../../../shared/widgets/global/button.dart";
 import "../../../shared/widgets/global/header/header.types.dart";
 import "../../../shared/widgets/global/header/icon_header.dart";
 import "package:easy_localization/easy_localization.dart";
@@ -37,6 +46,10 @@ final AutoDisposeStateProvider<List<bool>> passwordValidationProvider =
         (AutoDisposeStateProviderRef<List<bool>> ref) =>
             <bool>[false, false, false, false, false]);
 final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+final AutoDisposeStateProvider<bool> isLoadingProvider =
+    StateProvider.autoDispose<bool>(
+        (AutoDisposeStateProviderRef<bool> ref) => false);
 
 String? validateField(
     String? value, bool Function(String value) isValid, String message) {
@@ -85,7 +98,8 @@ void updatePasswordValidations(WidgetRef ref, String password, String email) {
 
 bool isPasswordConfirmed(WidgetRef ref) {
   final String password = ref.read(passwordProvider.notifier).state;
-  final String confirmPassword = ref.read(confirmPasswordProvider.notifier).state;
+  final String confirmPassword =
+      ref.read(confirmPasswordProvider.notifier).state;
   return password.isNotEmpty && password == confirmPassword;
 }
 
@@ -104,7 +118,8 @@ bool isValidPhone(String phone) {
 }
 
 bool isFormValid(WidgetRef ref) {
-  final List<bool> validations = ref.read(passwordValidationProvider.notifier).state;
+  final List<bool> validations =
+      ref.read(passwordValidationProvider.notifier).state;
   return validations.every((bool element) => element) &&
       isValidEmail(ref.read(emailProvider.notifier).state) &&
       isPasswordConfirmed(ref) &&
@@ -144,8 +159,7 @@ class CustomInputDecoration {
           TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.error),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8.0),
-        borderSide:
-            BorderSide(color: Theme.of(context).colorScheme.error),
+        borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8.0),
@@ -156,11 +170,42 @@ class CustomInputDecoration {
   }
 }
 
+SignUpRequest buildSignUpRequest(WidgetRef ref) {
+  return SignUpRequest(
+      email: ref.read(emailProvider),
+      password: ref.read(passwordProvider),
+      names: ref.read(nameProvider),
+      lastNames: ref.read(lastNameProvider),
+      role: Roles.client);
+}
+
 class SignUpScreen extends ConsumerWidget {
   const SignUpScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final bool isLoading = ref.watch(isLoadingProvider);
+    const String labelSignUpKey = "Auth.buttons.SIGNUP.label";
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
+      body: ScrollableLayout(
+        header: CBaseIconHeader(
+          height: 200,
+          data: HeaderIconData(
+            title: labelSignUpKey.tr(),
+            isAsset: true,
+          ),
+          onButtonPressed: (BuildContext context) {
+            context.go(AppRoutes.accessOptions);
+          },
+        ),
+        body: _buildSignUpForm(context, ref),
+        isLoading: isLoading,
+      ),
+    );
+  }
+
+  Widget _buildSignUpForm(BuildContext context, WidgetRef ref) {
     final String email = ref.watch(emailProvider);
     final String password = ref.watch(passwordProvider);
     final List<bool> validations = ref.watch(passwordValidationProvider);
@@ -188,241 +233,253 @@ class SignUpScreen extends ConsumerWidget {
         "Auth.buttons.ALREADY_HAVE_ACCOUNT.label";
     const String labelPhoneCodeKey = "Auth.labels.PHONE_CODE.label";
 
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
-      body: ScrollableLayout(
-        header: CBaseIconHeader(
-            height: 200,
-            data: HeaderIconData(title: labelSignUpKey.tr(), isAsset: true)),
-        body: Form(
-          key: formKey,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            alignment: Alignment.center,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+    const String labelSignUpDialogSuccess =
+        "Auth.dialogs.SUCCESS_REGISTER.label";
+    const String labelSignUpDialogError = "Auth.dialogs.ERROR.label";
+    const String labelSignUpDialogValidation = "Auth.dialogs.VALIDATION.label";
+
+    return Form(
+      key: formKey,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        alignment: Alignment.center,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const SizedBox(height: 40),
+            TextFormField(
+              initialValue: ref.read(nameProvider),
+              onChanged: (String value) =>
+                  ref.read(nameProvider.notifier).state = value,
+              decoration: CustomInputDecoration.getTextFieldDecoration(
+                label: labelNameKey,
+                context: context,
+              ),
+              validator: (String? value) =>
+                  validateField(value, isValidName, validatorNameKey),
+            ),
+            const SizedBox(height: 10),
+            TextFormField(
+              initialValue: ref.read(lastNameProvider),
+              onChanged: (String value) =>
+                  ref.read(lastNameProvider.notifier).state = value,
+              decoration: CustomInputDecoration.getTextFieldDecoration(
+                label: labelLastNameKey,
+                context: context,
+              ),
+              validator: (String? value) =>
+                  validateField(value, isValidLastName, validatorLastNameKey),
+            ),
+            const SizedBox(height: 10),
+            TextFormField(
+              initialValue: email,
+              onChanged: (String value) =>
+                  ref.read(emailProvider.notifier).state = value,
+              decoration: CustomInputDecoration.getTextFieldDecoration(
+                label: labelEmailKey,
+                context: context,
+              ),
+              keyboardType: TextInputType.emailAddress,
+              validator: (String? value) =>
+                  validateField(value, isValidEmail, validatorEmailKey),
+            ),
+            const SizedBox(height: 10),
+            Row(
               children: <Widget>[
-                const SizedBox(height: 40),
-                TextFormField(
-                  initialValue: ref.read(nameProvider),
-                  onChanged: (String value) =>
-                      ref.read(nameProvider.notifier).state = value,
-                  decoration: CustomInputDecoration.getTextFieldDecoration(
-                    label: labelNameKey,
-                    context: context,
-                  ),
-                  validator: (String? value) =>
-                      validateField(value, isValidName, validatorNameKey),
-                ),
-                const SizedBox(height: 10),
-                TextFormField(
-                  initialValue: ref.read(lastNameProvider),
-                  onChanged: (String value) =>
-                      ref.read(lastNameProvider.notifier).state = value,
-                  decoration: CustomInputDecoration.getTextFieldDecoration(
-                    label: labelLastNameKey,
-                    context: context,
-                  ),
-                  validator: (String? value) => validateField(
-                      value, isValidLastName, validatorLastNameKey),
-                ),
-                const SizedBox(height: 10),
-                TextFormField(
-                  initialValue: email,
-                  onChanged: (String value) =>
-                      ref.read(emailProvider.notifier).state = value,
-                  decoration: CustomInputDecoration.getTextFieldDecoration(
-                    label: labelEmailKey,
-                    context: context,
-                  ),
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (String? value) =>
-                      validateField(value, isValidEmail, validatorEmailKey),
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: TextFormField(
-                        initialValue: ref.read(countryCodeProvider),
-                        onChanged: (String value) => ref
-                            .read(countryCodeProvider.notifier)
-                            .state = value,
-                        decoration:
-                            CustomInputDecoration.getTextFieldDecoration(
-                          label: labelPhoneCodeKey,
-                          context: context,
-                        ),
-                        keyboardType: TextInputType.number,
-                      ),
+                Expanded(
+                  child: TextFormField(
+                    initialValue: ref.read(countryCodeProvider),
+                    onChanged: (String value) =>
+                        ref.read(countryCodeProvider.notifier).state = value,
+                    decoration: CustomInputDecoration.getTextFieldDecoration(
+                      label: labelPhoneCodeKey,
+                      context: context,
                     ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      flex: 3,
-                      child: TextFormField(
-                        initialValue: ref.read(phoneProvider),
-                        onChanged: (String value) =>
-                            ref.read(phoneProvider.notifier).state = value,
-                        decoration:
-                            CustomInputDecoration.getTextFieldDecoration(
-                          label: labelPhoneKey,
-                          context: context,
-                        ),
-                        keyboardType: TextInputType.phone,
-                        validator: (String? value) => validateField(
-                            value, isValidPhone, validatorPhoneKey),
-                      ),
+                    keyboardType: TextInputType.number,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  flex: 3,
+                  child: TextFormField(
+                    initialValue: ref.read(phoneProvider),
+                    onChanged: (String value) =>
+                        ref.read(phoneProvider.notifier).state = value,
+                    decoration: CustomInputDecoration.getTextFieldDecoration(
+                      label: labelPhoneKey,
+                      context: context,
                     ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                TextFormField(
-                  initialValue: password,
-                  onChanged: (String value) {
-                    ref.read(passwordProvider.notifier).state = value;
-                    updatePasswordValidations(ref, value, email);
-                  },
-                  decoration: CustomInputDecoration.getTextFieldDecoration(
-                    label: labelPasswordKey,
-                    context: context,
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        ref.watch(passwordVisibilityProvider)
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      onPressed: () => ref
-                          .read(passwordVisibilityProvider.notifier)
-                          .state = !ref.read(passwordVisibilityProvider),
-                    ),
+                    keyboardType: TextInputType.phone,
+                    validator: (String? value) =>
+                        validateField(value, isValidPhone, validatorPhoneKey),
                   ),
-                  obscureText: !ref.watch(passwordVisibilityProvider),
-                  keyboardType: TextInputType.visiblePassword,
-                  validator: (String? value) => validateField(
-                      value,
-                      (String value) => isValidPassword(value, email),
-                      validatorPasswordKey),
                 ),
-                Wrap(
-                  spacing: 8.0,
-                  runSpacing: 4.0,
-                  children: validations.asMap().entries.map((MapEntry<int, bool> entry) {
-                    String text;
-                    switch (entry.key) {
-                      case 0:
-                        text = validatorUpperKey.tr();
-                        break;
-                      case 1:
-                        text = validatorLowerKey.tr();
-                        break;
-                      case 2:
-                        text = validatorDigitKey.tr();
-                        break;
-                      case 3:
-                        text = validatorLengthKey.tr();
-                        break;
-                      case 4:
-                        text = validatorNotEmailKey.tr();
-                        break;
-                      default:
-                        text = "";
-                    }
-                    return Container(
-                      margin: const EdgeInsets.only(top: 2.0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Icon(
-                            entry.value
-                                ? Icons.check_box
-                                : Icons.check_box_outline_blank,
-                            size: 16.0,
-                            color: entry.value
-                                ? Theme.of(context).primaryColor
-                                : Colors.grey,
-                          ),
-                          const SizedBox(width: 4.0),
-                          Text(
-                            text,
-                            style: const TextStyle(fontSize: 12.0),
-                          ),
-                        ],
-                      ),
-                    );
-                  }).toList(),
-                ),
-                const SizedBox(height: 10),
-                TextFormField(
-                  initialValue: ref.read(confirmPasswordProvider),
-                  onChanged: (String value) =>
-                      ref.read(confirmPasswordProvider.notifier).state = value,
-                  decoration: CustomInputDecoration.getTextFieldDecoration(
-                    label: labelConfirmPasswordKey,
-                    context: context,
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        ref.watch(confirmPasswordVisibilityProvider)
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      onPressed: () => ref
-                              .read(confirmPasswordVisibilityProvider.notifier)
-                              .state =
-                          !ref.watch(confirmPasswordVisibilityProvider),
-                    ),
-                  ),
-                  obscureText: !ref.watch(confirmPasswordVisibilityProvider),
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return null;
-                    }
-                    final String password = ref.read(passwordProvider.notifier).state;
-                    return password == value
-                        ? null
-                        : validatorConfirmPasswordKey;
-                  },
-                ),
-                const SizedBox(height: 40),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30)),
-                  ),
-                  onPressed: isFormValid(ref)
-                      ? () {
-                          if (formKey.currentState!.validate()) {
-                            // Handle valid form
-                          }
-                        }
-                      : null,
-                  child: Text(labelSignUpKey.tr().toUpperCase(),
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 20)),
-                ),
-                const SizedBox(height: 70),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: <Widget>[
-                      Text(labelAlreadyHaveAccountKey.tr(),
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, color: Colors.grey)),
-                      Text(labelLoginKey.tr(),
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 17,
-                              color: Colors.black)),
-                    ],
-                  ),
-                )
               ],
             ),
-          ),
+            const SizedBox(height: 10),
+            TextFormField(
+              initialValue: password,
+              onChanged: (String value) {
+                ref.read(passwordProvider.notifier).state = value;
+                updatePasswordValidations(ref, value, email);
+              },
+              decoration: CustomInputDecoration.getTextFieldDecoration(
+                label: labelPasswordKey,
+                context: context,
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    ref.watch(passwordVisibilityProvider)
+                        ? Icons.visibility
+                        : Icons.visibility_off,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  onPressed: () => ref
+                      .read(passwordVisibilityProvider.notifier)
+                      .state = !ref.read(passwordVisibilityProvider),
+                ),
+              ),
+              obscureText: !ref.watch(passwordVisibilityProvider),
+              keyboardType: TextInputType.visiblePassword,
+              validator: (String? value) => validateField(
+                  value,
+                  (String value) => isValidPassword(value, email),
+                  validatorPasswordKey),
+            ),
+            Wrap(
+              spacing: 8.0,
+              runSpacing: 4.0,
+              children:
+                  validations.asMap().entries.map((MapEntry<int, bool> entry) {
+                String text;
+                switch (entry.key) {
+                  case 0:
+                    text = validatorUpperKey.tr();
+                    break;
+                  case 1:
+                    text = validatorLowerKey.tr();
+                    break;
+                  case 2:
+                    text = validatorDigitKey.tr();
+                    break;
+                  case 3:
+                    text = validatorLengthKey.tr();
+                    break;
+                  case 4:
+                    text = validatorNotEmailKey.tr();
+                    break;
+                  default:
+                    text = "";
+                }
+                return Container(
+                  margin: const EdgeInsets.only(top: 2.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Icon(
+                        entry.value
+                            ? Icons.check_box
+                            : Icons.check_box_outline_blank,
+                        size: 16.0,
+                        color: entry.value
+                            ? Theme.of(context).primaryColor
+                            : Colors.grey,
+                      ),
+                      const SizedBox(width: 4.0),
+                      Text(
+                        text,
+                        style: const TextStyle(fontSize: 12.0),
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 10),
+            TextFormField(
+              initialValue: ref.read(confirmPasswordProvider),
+              onChanged: (String value) =>
+                  ref.read(confirmPasswordProvider.notifier).state = value,
+              decoration: CustomInputDecoration.getTextFieldDecoration(
+                label: labelConfirmPasswordKey,
+                context: context,
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    ref.watch(confirmPasswordVisibilityProvider)
+                        ? Icons.visibility
+                        : Icons.visibility_off,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  onPressed: () => ref
+                      .read(confirmPasswordVisibilityProvider.notifier)
+                      .state = !ref.watch(confirmPasswordVisibilityProvider),
+                ),
+              ),
+              obscureText: !ref.watch(confirmPasswordVisibilityProvider),
+              validator: (String? value) {
+                if (value == null || value.isEmpty) {
+                  return null;
+                }
+                final String password =
+                    ref.read(passwordProvider.notifier).state;
+                return password == value
+                    ? null
+                    : validatorConfirmPasswordKey.tr();
+              },
+            ),
+            const SizedBox(height: 20),
+            BaseButton(
+              label: labelSignUpKey.tr(),
+              onPressed: () {
+                if (formKey.currentState!.validate() && isFormValid(ref)) {
+                  final SignUpRequest requestData = buildSignUpRequest(ref);
+                  ref
+                      .read(signUpNotifierProvider.notifier)
+                      .performAction(requestData, () {
+                    ref.read(isLoadingProvider.notifier).state = true;
+                  }, (String successMessage) {
+                    ref.read(isLoadingProvider.notifier).state = false;
+                    QuickAlert.show(
+                        context: context,
+                        type: QuickAlertType.success,
+                        text: labelSignUpDialogSuccess.tr());
+                  }, (String errorMessage) {
+                    ref.read(isLoadingProvider.notifier).state = false;
+                    QuickAlert.show(
+                      context: context,
+                      type: QuickAlertType.error,
+                      text: labelSignUpDialogError.tr(),
+                    );
+                  });
+                } else {
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.error,
+                    text: labelSignUpDialogValidation.tr(),
+                  );
+                }
+              },
+            ),
+            const SizedBox(height: 30),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: <Widget>[
+                  Text(labelAlreadyHaveAccountKey.tr(),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.grey)),
+                  Text(labelLoginKey.tr(),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 17,
+                          color: Colors.black)),
+                ],
+              ),
+            ),
+            const SizedBox(height: 30)
+          ],
         ),
       ),
     );

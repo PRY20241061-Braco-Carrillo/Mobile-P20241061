@@ -1,36 +1,35 @@
 import "dart:convert";
 
-import "../../../shared/widgets/features/restaurant-card/restaurant_card.types.dart";
-import "package:flutter/services.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 
-class MockRestaurantCardService {
-  Future<List<RestaurantCardData>> cargarDatosDeTarjeta() async {
+import "../../../core/models/auth/login/login_request.types.dart";
+import "../../../core/models/auth/login/login_response.types.dart";
+import "../../../core/models/base_response.dart";
+
+final Provider<MockLoginService> mockLogInServiceProvider =
+    Provider<MockLoginService>((ProviderRef<MockLoginService> ref) {
+  return MockLoginService();
+});
+
+class MockLoginService {
+  Future<BaseResponse<LoginResponse>> logInUser(LoginRequest logInData) async {
     // ignore: always_specify_types
     await Future.delayed(const Duration(seconds: 3));
 
-    final String jsonString =
-        await rootBundle.loadString("lib/mock/json/restaurant_card_data.json");
-    final List<dynamic> jsonDataList = jsonDecode(jsonString);
+    const String responseJson = '''
+    {
+      "code": "SUCCESS",
+        "data": {
+        "userId": "6d68f94d-41d0-46e9-8130-983fa6ab1f14",
+        "roles": "ROLE_WAITER",
+        "cancelReservation": 0,
+        "acceptReservation": 0,
+        "token": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJhbW15bHV6QGhvdG1haWwuY29tIiwicm9sZXMiOlt7ImF1dGhvcml0eSI6IlJPTEVfV0FJVEVSIn1dLCJpYXQiOjE3MTMzMTY3NDIsImV4cCI6MTc5OTcxNjc0Mn0.4rJFTgi_PjBvUCP3a95IpOrodqAE1BgVS0A5VYaPMEK2o3D52quyx7-Gg4y3VwWJ"
+    }
+    }''';
 
-    return jsonDataList
-        // ignore: always_specify_types
-        .map((jsonData) => RestaurantCardData.fromJson(jsonData))
-        .toList();
+    final Map<String, dynamic> responseData = jsonDecode(responseJson);
+    return BaseResponse<LoginResponse>.fromJson(
+        responseData, LoginResponse.fromJson);
   }
 }
-
-final Provider<MockRestaurantCardService> mockRestaurantCardServiceProvider =
-    Provider<MockRestaurantCardService>(
-        (ProviderRef<MockRestaurantCardService> ref) {
-  return MockRestaurantCardService();
-});
-
-final AutoDisposeFutureProvider<List<RestaurantCardData>>
-    restaurantCardProvider =
-    FutureProvider.autoDispose<List<RestaurantCardData>>(
-        (AutoDisposeFutureProviderRef<List<RestaurantCardData>> ref) async {
-  final MockRestaurantCardService service =
-      ref.watch(mockRestaurantCardServiceProvider);
-  return service.cargarDatosDeTarjeta();
-});

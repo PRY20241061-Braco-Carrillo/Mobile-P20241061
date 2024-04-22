@@ -83,6 +83,23 @@
                 "label": "Código de país",
                 "validator": "Por favor ingrese un código de país válido"
             }
+        },
+        "dialogs": {
+            "ERROR": {
+                "label": "Ha ocurrido un error, intenta nuevamente"
+            },
+            "VALIDATION": {
+                "label": "Por favor complete los campos requeridos"
+            },
+            "SUCCESS_REGISTER": {
+                "label": "Registro exitoso"
+            },
+            "ERROR_LOGIN": {
+                "label": "Correo electrónico o contraseña incorrectos"
+            },
+            "SUCCESS_LOGIN": {
+                "label": "Inicio de sesión exitoso"
+            }
         }
     },
     "Category": {

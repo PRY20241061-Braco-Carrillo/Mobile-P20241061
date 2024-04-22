@@ -8,8 +8,15 @@ class CBaseIconHeader extends StatelessWidget {
   final double? height;
   final bool showSkeleton;
   final String? error;
+  final void Function(BuildContext)? onButtonPressed;
+  final bool? returnButton;
 
-  const CBaseIconHeader({super.key, required this.data, this.height})
+  const CBaseIconHeader(
+      {super.key,
+      required this.data,
+      this.height,
+      this.onButtonPressed,
+      this.returnButton = true})
       : showSkeleton = false,
         error = null;
 
@@ -17,12 +24,16 @@ class CBaseIconHeader extends StatelessWidget {
       : data = null,
         error = null,
         showSkeleton = true,
-        height = 200;
+        height = 200,
+        onButtonPressed = null,
+        returnButton = false;
 
   const CBaseIconHeader.error({super.key, required this.error})
       : data = null,
         showSkeleton = false,
-        height = 200;
+        height = 200,
+        onButtonPressed = null,
+        returnButton = false;
 
   @override
   Widget build(BuildContext context) {
@@ -98,16 +109,18 @@ class CBaseIconHeader extends StatelessWidget {
                     ),
             ],
           ),
-          Positioned(
-            top: padding.top,
-            left: padding.left,
-            child: IconButton(
-              icon: const Icon(Icons.arrow_circle_left_rounded),
-              color: Theme.of(context).colorScheme.onSecondaryContainer,
-              iconSize: 35,
-              onPressed: () {},
-            ),
-          ),
+          returnButton == true
+              ? Positioned(
+                  top: padding.top,
+                  left: padding.left,
+                  child: IconButton(
+                    icon: const Icon(Icons.arrow_circle_left_rounded),
+                    color: Theme.of(context).colorScheme.onSecondaryContainer,
+                    iconSize: 35,
+                    onPressed: () => onButtonPressed?.call(context),
+                  ),
+                )
+              : const SizedBox()
         ],
       ),
     );

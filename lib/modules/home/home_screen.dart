@@ -1,29 +1,35 @@
+import "package:flutter/material.dart";
+import "package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart";
+import "package:go_router/go_router.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart";
+
+import "../../config/routes/routes.dart";
+import "../../core/managers/secure_storage_manager.dart";
 import "../../layout/main_layout.dart";
 import "../../layout/scrollable_layout.dart";
 import "../../mock/menu/mock_header/mock_header.dart";
 import "../../mock/menu/mock_restaurant_card/mock_restaurant_card.dart";
 import "../../shared/widgets/features/restaurant-card/restaurant_card.dart";
+import "../../shared/widgets/features/restaurant-card/restaurant_card.types.dart";
+import "../../shared/widgets/global/header/header.types.dart";
 import "../../shared/widgets/global/header/icon_header.dart";
 import "../../shared/widgets/global/theme_switcher/theme_switcher.dart";
-import "package:flutter/material.dart";
-import "package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart";
-import "package:hooks_riverpod/hooks_riverpod.dart";
-import "package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart";
-
-import "../../shared/widgets/features/restaurant-card/restaurant_card.types.dart";
-
-import "../../shared/widgets/global/header/header.types.dart";
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AsyncValue<List<RestaurantCardData>> categoryCard = ref.watch(restaurantCardProvider);
-    final AsyncValue<HeaderIconData> headerIconData = ref.watch(headerProviderIcon);
+    final SecureStorageManager storageManager =
+        ref.watch(secureStorageProvider);
 
-    final PersistentTabController controller =
-        PersistentTabController();
+    final AsyncValue<List<RestaurantCardData>> categoryCard =
+        ref.watch(restaurantCardProvider);
+    final AsyncValue<HeaderIconData> headerIconData =
+        ref.watch(headerProviderIcon);
+
+    final PersistentTabController controller = PersistentTabController();
 
     final Widget gridContent = categoryCard.when(
       data: (List<RestaurantCardData> dataList) => AlignedGridView.count(
@@ -72,15 +78,34 @@ class HomeScreen extends ConsumerWidget {
         tabController: controller,
         body: ScrollableLayout(
           header: headerIconData.when(
-            data: (HeaderIconData data) => CBaseIconHeader(data: data),
+            data: (HeaderIconData data) {
+              return FutureBuilder<bool>(
+                future: storageManager.isAuthenticated(),
+                builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    final bool isNotAuth = !snapshot.data!;
+                    return CBaseIconHeader(
+                      data: data,
+                      height: 220,
+                      returnButton: isNotAuth,
+                      onButtonPressed: (BuildContext context) {
+                        context.go(AppRoutes.accessOptions);
+                      },
+                    );
+                  } else {
+                    return const CBaseIconHeader.skeleton();
+                  }
+                },
+              );
+            },
             loading: () => const CBaseIconHeader.skeleton(),
-            error: (_, __) =>
-                const CBaseIconHeader.error(error: "Error fetching data"),
+            error: (Object error, _) =>
+                CBaseIconHeader.error(error: error.toString()),
           ),
           backgroundColor: Theme.of(context).colorScheme.secondary,
           body: Column(
             children: <Widget>[
-              const SizedBox(height: 50),
+              const SizedBox(height: 10),
               const ThemeSwitcherWidget(),
               const SizedBox(height: 10),
               gridContent,

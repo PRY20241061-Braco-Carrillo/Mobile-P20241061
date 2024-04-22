@@ -51,6 +51,7 @@ class MockHeaderCardServiceIcon {
       return HeaderIconData.fromJson(jsonResponse);
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {
+      print(e.toString());
       rethrow;
     }
   }

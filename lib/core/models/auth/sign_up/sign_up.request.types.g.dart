@@ -1,31 +1,25 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'sign_up.types.dart';
+part of 'sign_up.request.types.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-SignUpData _$SignUpDataFromJson(Map<String, dynamic> json) => SignUpData(
+SignUpRequest _$SignUpRequestFromJson(Map<String, dynamic> json) =>
+    SignUpRequest(
       email: json['email'] as String,
       password: json['password'] as String,
       names: json['names'] as String,
       lastNames: json['lastNames'] as String,
-      role: $enumDecode(_$RolesEnumMap, json['role']),
+      role: json['role'] as String,
     );
 
-Map<String, dynamic> _$SignUpDataToJson(SignUpData instance) =>
+Map<String, dynamic> _$SignUpRequestToJson(SignUpRequest instance) =>
     <String, dynamic>{
       'names': instance.names,
       'lastNames': instance.lastNames,
       'email': instance.email,
       'password': instance.password,
-      'role': _$RolesEnumMap[instance.role]!,
+      'role': instance.role,
     };
-
-const _$RolesEnumMap = {
-  Roles.admin: 'admin',
-  Roles.user: 'user',
-  Roles.waiter: 'waiter',
-  Roles.chef: 'chef',
-};

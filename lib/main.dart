@@ -1,24 +1,16 @@
-import "config/routes/app_router.dart";
-
-import "config/theme/theme_manager.dart";
-import "core/shared_preferences/services/shared_preferences.service.dart";
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
-import "package:flutter_secure_storage/flutter_secure_storage.dart";
 import "package:go_router/go_router.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 
-final Provider<FlutterSecureStorage> secureStorageProvider =
-    Provider<FlutterSecureStorage>((ProviderRef<FlutterSecureStorage> ref) =>
-        const FlutterSecureStorage());
+import "config/routes/app_router.dart";
+import "config/theme/theme_manager.dart";
+import "core/shared_preferences/services/shared_preferences.service.dart";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
   await SharedPreferencesService.instance.init();
-
-  final bool onboardingComplete =
-      SharedPreferencesService.instance.getOnboardingComplete();
 
   runApp(
     ProviderScope(
@@ -29,40 +21,29 @@ void main() async {
         ],
         path: "assets/translations",
         fallbackLocale: const Locale("en", "US"),
-        child: MyApp(onboardingComplete: onboardingComplete),
+        child: const MyApp(),
       ),
     ),
   );
 }
 
 class MyApp extends ConsumerWidget {
-  final bool onboardingComplete;
-
-  const MyApp({super.key, required this.onboardingComplete});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final ThemeData theme = ref.watch(themeProvider);
-    final Future<GoRouter> futureRouter = AppRouter.createRouter();
+    final GoRouter appRouter = ref.watch(goRouterProvider);
 
-    return FutureBuilder<GoRouter>(
-      future: futureRouter,
-      builder: (BuildContext context, AsyncSnapshot<GoRouter> snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          final GoRouter appRouter = snapshot.data!;
-          return MaterialApp.router(
-            localizationsDelegates: context.localizationDelegates,
-            supportedLocales: context.supportedLocales,
-            locale: context.locale,
-            debugShowCheckedModeBanner: false,
-            theme: theme,
-            routeInformationParser: appRouter.routeInformationParser,
-            routerDelegate: appRouter.routerDelegate,
-            routeInformationProvider: appRouter.routeInformationProvider,
-          );
-        }
-        return const CircularProgressIndicator();
-      },
+    return MaterialApp.router(
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
+      debugShowCheckedModeBanner: false,
+      theme: theme,
+      routeInformationParser: appRouter.routeInformationParser,
+      routerDelegate: appRouter.routerDelegate,
+      routeInformationProvider: appRouter.routeInformationProvider,
     );
   }
 }

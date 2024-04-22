@@ -1,5 +1,12 @@
+import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:shared_preferences/shared_preferences.dart";
 import "../constants/app_keys.dart";
+
+final Provider<SharedPreferencesService> sharedPreferencesServiceProvider =
+    Provider<SharedPreferencesService>(
+        (ProviderRef<SharedPreferencesService> ref) {
+  return SharedPreferencesService.instance;
+});
 
 class SharedPreferencesService {
   SharedPreferencesService._privateConstructor();
@@ -24,17 +31,5 @@ class SharedPreferencesService {
 
   Future<bool> removeOnboardingComplete() async {
     return await _prefs?.remove(AppKeys.onboardingComplete) ?? false;
-  }
-
-  Future<bool> setGuest(bool isGuest) async {
-    return await _prefs?.setBool(AppKeys.isGuest, isGuest) ?? false;
-  }
-
-  bool getGuest() {
-    return _prefs?.getBool(AppKeys.isGuest) ?? false;
-  }
-
-  Future<bool> removeGuest() async {
-    return await _prefs?.remove(AppKeys.isGuest) ?? false;
   }
 }

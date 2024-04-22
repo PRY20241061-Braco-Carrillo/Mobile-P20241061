@@ -13,9 +13,13 @@ class CBaseFullHeader extends ConsumerWidget {
   final bool showSkeleton;
   final String? error;
   final String idDialogProvider;
+  final void Function(BuildContext)? onButtonPressed;
 
   const CBaseFullHeader(
-      {super.key, required this.data, required this.idDialogProvider})
+      {super.key,
+      required this.data,
+      required this.idDialogProvider,
+      this.onButtonPressed})
       : showSkeleton = false,
         error = null;
 
@@ -23,12 +27,14 @@ class CBaseFullHeader extends ConsumerWidget {
       : data = null,
         error = null,
         showSkeleton = true,
-        idDialogProvider = "";
+        idDialogProvider = "",
+        onButtonPressed = null;
 
   const CBaseFullHeader.error({super.key, required this.error})
       : data = null,
         showSkeleton = false,
-        idDialogProvider = "";
+        idDialogProvider = "",
+        onButtonPressed = null;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -84,10 +90,11 @@ class CBaseFullHeader extends ConsumerWidget {
                           showBarModalBottomSheet(
                             context: context,
                             expand: true,
-                            builder: (BuildContext context) => RestaurantInfoDialog(
-                                idDialogProvider: idDialogProvider,
-                                imageUrl: data.logo,
-                                title: data.title),
+                            builder: (BuildContext context) =>
+                                RestaurantInfoDialog(
+                                    idDialogProvider: idDialogProvider,
+                                    imageUrl: data.logo,
+                                    title: data.title),
                           );
                         },
                         fontSize: 18,
@@ -121,7 +128,7 @@ class CBaseFullHeader extends ConsumerWidget {
               icon: const Icon(Icons.arrow_circle_left_rounded),
               color: Theme.of(context).colorScheme.onSecondaryContainer,
               iconSize: 35,
-              onPressed: () {},
+              onPressed: () => onButtonPressed?.call(context),
             ),
           ),
         ],
