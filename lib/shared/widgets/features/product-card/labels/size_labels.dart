@@ -3,13 +3,15 @@ import "package:flutter/material.dart";
 
 class SizeLabel extends StatelessWidget {
   final double? fontSize;
+  final double height;
+  final double width;
 
-  const SizeLabel({super.key, this.fontSize});
+  const SizeLabel({super.key, this.fontSize, this.height = 4, this.width = 8});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: EdgeInsets.symmetric(horizontal: width, vertical: height),
       decoration: BoxDecoration(
         color: Colors.black,
         borderRadius: BorderRadius.circular(6),

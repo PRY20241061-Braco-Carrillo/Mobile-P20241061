@@ -1,31 +1,32 @@
 import "package:flutter/material.dart";
 import "package:skeletonizer/skeletonizer.dart";
 
-import "../../../../../modules/product/products_list/category_navigation_data.types.dart";
-import "../../../../providers/image_provider.dart";
-import "../../../global/image_display/image_display.dart";
-import "../labels/size_labels.dart";
-import "../product_base-card/product_base.types.dart";
+import "../../../../../../modules/product/products_list/category_navigation_data.types.dart";
+import "../../../../../providers/image_provider.dart";
+import "../../../../global/image_display/image_display.dart";
+import "../../labels/size_labels.dart";
+import "../../product_base-card/product_base.types.dart";
 
-class CProductDetailCard extends StatelessWidget {
+class CDetailComplementsCard extends StatelessWidget {
+  //final ProductDetailCardData? data;
   final CategoryNavigationData? categoryNavigationData;
   final ProductBaseCardData? productBaseCardData;
 
   final bool showSkeleton;
   final String? error;
 
-  const CProductDetailCard(
+  const CDetailComplementsCard(
       {super.key, this.categoryNavigationData, this.productBaseCardData})
       : showSkeleton = false,
         error = null;
 
-  const CProductDetailCard.skeleton({super.key})
+  const CDetailComplementsCard.skeleton({super.key})
       : error = null,
         showSkeleton = true,
         categoryNavigationData = null,
         productBaseCardData = null;
 
-  const CProductDetailCard.error({super.key, required this.error})
+  const CDetailComplementsCard.error({super.key, required this.error})
       : showSkeleton = false,
         categoryNavigationData = null,
         productBaseCardData = null;
@@ -58,8 +59,8 @@ class CProductDetailCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Container(
+                  height: 150, // Altura fija para la imagen
                   width: width,
-                  height: 300,
                   margin: const EdgeInsets.only(bottom: 8),
                   child: Stack(
                     alignment: Alignment.bottomLeft,
@@ -69,16 +70,13 @@ class CProductDetailCard extends StatelessWidget {
                             topLeft: Radius.circular(10),
                             topRight: Radius.circular(10)),
                         child: ImageDisplay(
-                            config: ImageConfig(
-                                imageUrl: data.urlImage,
-                                width: width,
-                                height: 300,
-                                fit: BoxFit.fill)),
+                          config: ImageConfig(imageUrl: data.urlImage),
+                        ),
                       ),
                       if (data.hasVariant == true)
                         const Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: SizeLabel(fontSize: 15, height: 10, width: 20),
+                          child: SizeLabel(fontSize: 12),
                         ),
                     ],
                   ),

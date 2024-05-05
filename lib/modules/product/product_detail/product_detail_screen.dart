@@ -13,6 +13,7 @@ import "../../../layout/scrollable_layout.dart";
 import "../../../shared/widgets/features/header/product-header/products_categories_header.dart";
 import "../../../shared/widgets/features/product-card/product_detail-card/product_detail.dart";
 import "../../../shared/widgets/features/product-card/product_detail-card/product_detail.types.dart";
+import "../../../shared/widgets/features/product-card/product_detail-card/variants/variant_detail.dart";
 import "../../../shared/widgets/global/theme_switcher/theme_switcher.dart";
 import "../products_list/category_navigation_data.types.dart";
 import "product_detail_navigation_data.types.dart";
@@ -44,7 +45,7 @@ class ProductDetailScreen extends ConsumerWidget {
       },
     );
 
-    final Widget gridContent = categoryCard.when(
+    final Widget detailsContent = categoryCard.when(
       data: (ProductDetailCardData data) {
         return MasonryGridView.count(
           shrinkWrap: true,
@@ -53,9 +54,8 @@ class ProductDetailScreen extends ConsumerWidget {
           mainAxisSpacing: 10,
           itemCount: 1,
           itemBuilder: (BuildContext context, int index) {
-            return CProductDetailCard(
-              data: data,
-              categoryNavigationData: null,
+            return ProductVariantSelector(
+              productVariants: data.productVariants,
             );
           },
         );
@@ -82,6 +82,19 @@ class ProductDetailScreen extends ConsumerWidget {
           itemBuilder: (BuildContext context, int index) {
             return CProductDetailCard.error(error: error.toString());
           },
+        );
+      },
+    );
+
+    final Widget productContent = MasonryGridView.count(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      crossAxisCount: 1,
+      mainAxisSpacing: 10,
+      itemCount: 1,
+      itemBuilder: (BuildContext context, int index) {
+        return CProductDetailCard(
+          productBaseCardData: productDetailNavigationData.productData,
         );
       },
     );
@@ -129,7 +142,8 @@ class ProductDetailScreen extends ConsumerWidget {
               const SizedBox(height: 10),
               const ThemeSwitcherWidget(),
               const SizedBox(height: 10),
-              gridContent,
+              productContent,
+              detailsContent,
             ],
           ),
         ),

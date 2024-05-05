@@ -4,28 +4,23 @@ import "../../../providers/image_provider.dart";
 
 class ImageDisplay extends ConsumerWidget {
   final ImageConfig config;
-  final double width;
-  final double height;
-  final BoxFit fit;
 
   const ImageDisplay({
     super.key,
     required this.config,
-    this.width = 100.0,
-    this.height = 100.0,
-    this.fit = BoxFit.cover,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AsyncValue<ImageProvider<Object>> imageProvider = ref.watch(imageProviderCache(config));
+    final AsyncValue<ImageProvider<Object>> imageProvider =
+        ref.watch(imageProviderCache(config));
 
     return imageProvider.when(
       data: (ImageProvider<Object> img) => Image(
         image: img,
-        width: width,
-        height: height,
-        fit: fit,
+        width: config.width,
+        height: config.height,
+        fit: config.fit,
       ),
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (Object error, StackTrace stackTrace) {
