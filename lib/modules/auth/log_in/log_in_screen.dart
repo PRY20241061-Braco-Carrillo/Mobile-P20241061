@@ -1,19 +1,17 @@
+import "package:easy_localization/easy_localization.dart";
+import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:quickalert/models/quickalert_type.dart";
 import "package:quickalert/widgets/quickalert_dialog.dart";
 
 import "../../../config/routes/routes.dart";
 import "../../../core/models/auth/login/login_request.types.dart";
-
 import "../../../core/notifiers/auth/login_notifier.dart";
 import "../../../layout/scrollable_layout.dart";
 import "../../../shared/widgets/global/button.dart";
-import "../sign_up/sign_up_screen.dart";
-import "../../../shared/widgets/global/header/header.types.dart";
 import "../../../shared/widgets/global/header/icon_header.dart";
-import "package:easy_localization/easy_localization.dart";
-import "package:flutter/material.dart";
-import "package:hooks_riverpod/hooks_riverpod.dart";
+import "../sign_up/sign_up_screen.dart";
 
 final AutoDisposeStateProvider<String> emailProvider =
     StateProvider.autoDispose<String>(
@@ -66,13 +64,12 @@ class LogInScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final bool isLoading = ref.watch(isLoadingProvider);
-    const String labelLoginKey = "Auth.buttons.LOGIN.label";
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: ScrollableLayout(
         header: CBaseIconHeader(
           height: 200,
-          data: HeaderIconData(title: labelLoginKey.tr(), isAsset: true),
+          headerKey: "",
           onButtonPressed: (BuildContext context) {
             context.go(AppRoutes.accessOptions);
           },

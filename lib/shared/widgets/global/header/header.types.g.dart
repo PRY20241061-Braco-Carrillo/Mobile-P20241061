@@ -6,16 +6,6 @@ part of 'header.types.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-HeaderBaseData _$HeaderBaseDataFromJson(Map<String, dynamic> json) =>
-    HeaderBaseData(
-      title: json['title'] as String,
-    );
-
-Map<String, dynamic> _$HeaderBaseDataToJson(HeaderBaseData instance) =>
-    <String, dynamic>{
-      'title': instance.title,
-    };
-
 HeaderFullData _$HeaderFullDataFromJson(Map<String, dynamic> json) =>
     HeaderFullData(
       logo: json['logo'] as String,
@@ -26,10 +16,10 @@ HeaderFullData _$HeaderFullDataFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$HeaderFullDataToJson(HeaderFullData instance) =>
     <String, dynamic>{
-      'title': instance.title,
       'logo': instance.logo,
       'path': instance.path,
       'aboutInfoId': instance.aboutInfoId,
+      'title': instance.title,
     };
 
 HeaderIconData _$HeaderIconDataFromJson(Map<String, dynamic> json) =>
@@ -41,7 +31,7 @@ HeaderIconData _$HeaderIconDataFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$HeaderIconDataToJson(HeaderIconData instance) =>
     <String, dynamic>{
-      'title': instance.title,
       'icon': instance.icon,
       'isAsset': instance.isAsset,
+      'title': instance.title,
     };

@@ -149,6 +149,20 @@
             "percent": "% OFF",
             "currency": "OFF",
             "specialCard": "% OFF with Especial Card"
+        },
+        "labelSize": {
+            "variant": "Different sizes available"
+        },
+        "sincePrice":{
+            "label": "Since"
+        }
+    },
+    "Header":{
+        "home": {
+            "title": "Restaurants"
+        }, 
+        "campus": {
+            "title": "Campus"
         }
     }
 }

@@ -1,7 +1,9 @@
-enum Currency { usd, pen, eur }
-
-final Map<Currency, String> currencySymbol = <Currency, String>{
-  Currency.usd: "\$",
-  Currency.pen: "S/",
-  Currency.eur: "€",
+final Map<String, String> currencySymbol = <String, String>{
+  "USD": "\$",
+  "PEN": "S/",
+  "EUR": "€",
 };
+
+String getCurrencySymbol(String currency) {
+  return currencySymbol[currency.toUpperCase()] ?? "";
+}

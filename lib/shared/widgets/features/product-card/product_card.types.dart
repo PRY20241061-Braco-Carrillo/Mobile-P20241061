@@ -1,4 +1,4 @@
-import "package:json_annotation/json_annotation.dart";
+/*import "package:json_annotation/json_annotation.dart";
 import "../../../utils/constants/currency_types.dart";
 import "../../../utils/constants/time_range.types.dart";
 part "product_card.types.g.dart";
@@ -159,7 +159,7 @@ class MenuCardData {
   final MenuCardHeader header;
   final MenuCardPrimaryImage primaryImage;
   final MenuCardTitle title;
-  final MenuCardClassification classification;
+  final MenuCardClassification? classification;
 
   factory MenuCardData.fromJson(Map<String, dynamic> json) =>
       _$MenuCardDataFromJson(json);
@@ -169,6 +169,7 @@ class MenuCardData {
     required this.header,
     required this.primaryImage,
     required this.title,
-    required this.classification,
+    this.classification,
   });
 }
+*/

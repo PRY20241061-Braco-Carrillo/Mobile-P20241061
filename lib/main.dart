@@ -5,12 +5,16 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 
 import "config/routes/app_router.dart";
 import "config/theme/theme_manager.dart";
+import "core/hive/hive.service.dart";
+import "core/managers/header_data_manager.dart";
 import "core/shared_preferences/services/shared_preferences.service.dart";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
   await SharedPreferencesService.instance.init();
+  await HeaderDataManager().init();
+  await HiveService.instance.init();
 
   runApp(
     ProviderScope(

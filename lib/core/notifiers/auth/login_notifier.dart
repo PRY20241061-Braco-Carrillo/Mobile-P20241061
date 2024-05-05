@@ -34,19 +34,19 @@ class LogInNotifier
         onSuccess(successMessage);
       }, onError);
     } on Exception catch (e) {
-      print('Login Exception: $e');
+      print("Login Exception: $e");
       onError("Login Failed. Please try again later.");
     }
   }
 
   Future<void> storeSecureData(LoginResponse data) async {
     if (data.token.isNotEmpty) {
-      print('Attempting to store data with token: ${data.token}');
+      print("Attempting to store data with token: ${data.token}");
       await ref
           .read(secureStorageProvider)
           .storeLoginData(data.token, data.userId, data.roles);
     } else {
-      print('Data token is empty, not storing data.');
+      print("Data token is empty, not storing data.");
     }
   }
 }

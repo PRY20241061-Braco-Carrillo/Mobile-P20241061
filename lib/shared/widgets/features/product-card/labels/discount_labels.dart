@@ -1,4 +1,4 @@
-import "package:easy_localization/easy_localization.dart";
+/*import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "../../../../utils/constants/currency_types.dart";
 import "../product_card.types.dart";
@@ -63,3 +63,4 @@ class DiscountLabel extends StatelessWidget {
     }
   }
 }
+*/

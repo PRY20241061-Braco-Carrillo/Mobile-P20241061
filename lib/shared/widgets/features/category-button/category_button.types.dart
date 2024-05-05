@@ -1,33 +1,21 @@
-import "package:flutter/material.dart";
-import "package:flutter/widgets.dart";
+import "package:json_annotation/json_annotation.dart";
 
-enum ActionType {
-  submit,
-  reset,
-  navigate,
-  custom,
-}
+part "category_button.types.g.dart";
 
-abstract class ICategoryButton extends StatelessWidget {
-  final String labelKey;
-  final bool disabled;
-  final String icon;
-  final ActionType actionType;
-  final String? path;
-  final String id;
+@JsonSerializable()
+class CategoryButtonData {
+  final String campusCategoryId;
+  final String name;
+  final String urlImage;
 
-  const ICategoryButton({
-    super.key,
-    required this.labelKey,
-    this.disabled = false,
-    this.icon = "",
-    required this.actionType,
-    this.path,
-    required this.id,
+  const CategoryButtonData({
+    required this.campusCategoryId,
+    required this.name,
+    required this.urlImage,
   });
 
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
+  factory CategoryButtonData.fromJson(Map<String, dynamic> json) =>
+      _$CategoryButtonDataFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CategoryButtonDataToJson(this);
 }

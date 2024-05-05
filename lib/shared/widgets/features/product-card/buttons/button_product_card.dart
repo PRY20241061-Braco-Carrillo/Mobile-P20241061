@@ -1,4 +1,4 @@
-import "package:flutter/material.dart";
+/*import "package:flutter/material.dart";
 import "../product_card.types.dart";
 
 enum ActionType { navigate, dialog, ar, addToCart, promotionDetail }
@@ -77,3 +77,4 @@ class MenuCardFooterButton extends StatelessWidget {
     );
   }
 }
+*/

@@ -1,42 +1,105 @@
-import "package:easy_localization/easy_localization.dart";
+import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/material.dart";
-import "category_button.types.dart";
-import "package:flutter_svg/flutter_svg.dart";
+import "package:go_router/go_router.dart";
+import "package:skeletonizer/skeletonizer.dart";
 
-class CCategoryButton extends ICategoryButton {
-  const CCategoryButton({
-    super.key,
-    required super.labelKey,
-    super.disabled,
-    super.icon = "assets/icons/empty.svg", //TODO: Agregar un icono empty
-    required super.actionType,
-    super.path,
-    required super.id,
-  });
+import "../../../../config/routes/routes.dart";
+import "../campus-card/campus_card.types.dart";
+import "category_button.types.dart";
+import "../../../../modules/product/products_list/category_navigation_data.types.dart";
+
+class CCategoryButton extends StatelessWidget {
+  final CategoryButtonData? data;
+  final bool showSkeleton;
+  final CampusCardData? campusData;
+  final String? error;
+
+  const CCategoryButton(
+      {super.key, required this.data, required this.campusData})
+      : showSkeleton = false,
+        error = null;
+
+  const CCategoryButton.skeleton({super.key})
+      : data = null,
+        error = null,
+        showSkeleton = true,
+        campusData = null;
+
+  const CCategoryButton.error({super.key, required this.error})
+      : data = null,
+        showSkeleton = false,
+        campusData = null;
 
   @override
   Widget build(BuildContext context) {
+    if (showSkeleton) {
+      return _buildSkeleton(context);
+    } else if (error != null) {
+      return _buildErrorContent(error!);
+    } else {
+      return _buildCardContent(context, data!);
+    }
+  }
+
+  Widget _buildCardContent(BuildContext context, CategoryButtonData data) {
     return InkWell(
-      onTap: disabled ? null : () => _handleTap(context),
+      onTap: () {
+        context.go("${AppRoutes.products}/${data.campusCategoryId}",
+            extra: CategoryNavigationData(
+                categoryData: data, campusData: campusData!));
+      },
       child: Card(
-        margin: const EdgeInsets.all(10),
+        clipBehavior: Clip.antiAlias,
+        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SvgPicture.asset(
-                icon,
-                width: 100,
-                height: 100,
-              ),
-            ),
-            Expanded(
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(2.0),
-                  child: Text(labelKey).tr(),
-                ),
+              padding: const EdgeInsets.all(3),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Expanded(
+                    child: Stack(
+                      alignment: Alignment.bottomLeft,
+                      children: <Widget>[
+                        CachedNetworkImage(
+                          imageUrl: data.urlImage,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          height: 100,
+                          placeholder: (BuildContext context, String url) =>
+                              const CircularProgressIndicator(),
+                          errorWidget: (BuildContext context, String url,
+                                  Object error) =>
+                              const Icon(Icons.error),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        right: 10, left: 10, top: 3, bottom: 3),
+                    child: Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      data.name,
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          color:
+                              Theme.of(context).colorScheme.onPrimaryContainer,
+                          fontSize: 16),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -45,11 +108,68 @@ class CCategoryButton extends ICategoryButton {
     );
   }
 
-  void _handleTap(BuildContext context) {
-    // Acciones cuando se toca la tarjeta, por ejemplo, navegación.
+  _onTap(BuildContext context, CategoryButtonData data) {}
+
+  Widget _buildSkeleton(
+    BuildContext context,
+  ) {
+    return Skeletonizer(
+        child: Container(
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primaryContainer,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 2,
+            blurRadius: 4,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(3),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(
+                      right: 10, left: 10, top: 3, bottom: 3),
+                  child: Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    width: 100,
+                    height: 20,
+                    color: Theme.of(context).colorScheme.primaryContainer,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ));
+  }
+
+  Widget _buildErrorContent(Object error) {
+    return Center(
+      child: Text("Error: $error"),
+    );
   }
 }
 
+/*
 final List<CCategoryButton> categoryButtons = <CCategoryButton>[
   const CCategoryButton(
     labelKey: "Category.categories.SNACK.label",
@@ -101,7 +221,7 @@ final List<CCategoryButton> categoryButtons = <CCategoryButton>[
   ),
 ];
 
-
+*/
 /*
 class HomeWidget extends StatelessWidget {
   const HomeWidget({Key? key}) : super(key: key);

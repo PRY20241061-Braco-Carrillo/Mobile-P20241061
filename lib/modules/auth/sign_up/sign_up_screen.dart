@@ -1,4 +1,7 @@
+import "package:easy_localization/easy_localization.dart";
+import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:quickalert/models/quickalert_type.dart";
 import "package:quickalert/widgets/quickalert_dialog.dart";
 
@@ -8,11 +11,7 @@ import "../../../core/notifiers/auth/sign_up.notifier.dart";
 import "../../../layout/scrollable_layout.dart";
 import "../../../shared/utils/constants/constants.dart";
 import "../../../shared/widgets/global/button.dart";
-import "../../../shared/widgets/global/header/header.types.dart";
 import "../../../shared/widgets/global/header/icon_header.dart";
-import "package:easy_localization/easy_localization.dart";
-import "package:flutter/material.dart";
-import "package:hooks_riverpod/hooks_riverpod.dart";
 
 final AutoDisposeStateProvider<String> emailProvider =
     StateProvider.autoDispose<String>(
@@ -185,16 +184,12 @@ class SignUpScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final bool isLoading = ref.watch(isLoadingProvider);
-    const String labelSignUpKey = "Auth.buttons.SIGNUP.label";
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: ScrollableLayout(
         header: CBaseIconHeader(
           height: 200,
-          data: HeaderIconData(
-            title: labelSignUpKey.tr(),
-            isAsset: true,
-          ),
+          headerKey: "",
           onButtonPressed: (BuildContext context) {
             context.go(AppRoutes.accessOptions);
           },

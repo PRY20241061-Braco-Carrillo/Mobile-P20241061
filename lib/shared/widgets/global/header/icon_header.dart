@@ -1,52 +1,32 @@
+import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:flutter_svg/svg.dart";
-import "package:skeletonizer/skeletonizer.dart";
+
+import "../../../../core/managers/header_data_manager.dart";
 import "header.types.dart";
 
 class CBaseIconHeader extends StatelessWidget {
-  final HeaderIconData? data;
+  final String headerKey;
   final double? height;
-  final bool showSkeleton;
-  final String? error;
   final void Function(BuildContext)? onButtonPressed;
   final bool? returnButton;
 
   const CBaseIconHeader(
       {super.key,
-      required this.data,
+      required this.headerKey,
       this.height,
       this.onButtonPressed,
-      this.returnButton = true})
-      : showSkeleton = false,
-        error = null;
-
-  const CBaseIconHeader.skeleton({super.key})
-      : data = null,
-        error = null,
-        showSkeleton = true,
-        height = 200,
-        onButtonPressed = null,
-        returnButton = false;
-
-  const CBaseIconHeader.error({super.key, required this.error})
-      : data = null,
-        showSkeleton = false,
-        height = 200,
-        onButtonPressed = null,
-        returnButton = false;
+      this.returnButton = true});
 
   @override
   Widget build(BuildContext context) {
-    if (showSkeleton) {
-      return _buildSkeleton(context);
-    } else if (error != null) {
-      return _buildErrorContent(error!);
-    } else {
-      return _buildCardContent(context, data!);
-    }
+    final HeaderIconData? headerData =
+        HeaderDataManager().getHeader(headerKey) as HeaderIconData?;
+
+    return _buildCardContent(context, headerData);
   }
 
-  Widget _buildCardContent(BuildContext context, HeaderIconData data) {
+  Widget _buildCardContent(BuildContext context, HeaderIconData? data) {
     final EdgeInsets padding = MediaQuery.of(context).padding;
 
     return Container(
@@ -66,7 +46,7 @@ class CBaseIconHeader extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
-                        data.title,
+                        data?.title.tr() ?? "",
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
                               color: Theme.of(context)
                                   .colorScheme
@@ -82,20 +62,20 @@ class CBaseIconHeader extends StatelessWidget {
                   ),
                 ),
               ),
-              data.icon == null
+              data?.icon == null
                   ? const SizedBox(height: 10)
                   : Expanded(
                       flex: 3,
                       child: Container(
                         padding: const EdgeInsets.only(top: 20, right: 20),
-                        child: data.isAsset == true
+                        child: data?.isAsset == true
                             ? SvgPicture.asset(
-                                data.icon ?? "",
+                                data?.icon ?? "",
                                 width: 100,
                                 height: 100,
                               )
                             : SvgPicture.network(
-                                data.icon ?? "",
+                                data?.icon ?? "",
                                 width: 100,
                                 height: 100,
                                 colorFilter: ColorFilter.mode(
@@ -123,83 +103,6 @@ class CBaseIconHeader extends StatelessWidget {
               : const SizedBox()
         ],
       ),
-    );
-  }
-
-  Widget _buildSkeleton(BuildContext context) {
-    return Skeletonizer(
-      child: Container(
-        height: 200,
-        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-        padding: const EdgeInsets.only(top: 20),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.background,
-        ),
-        child: Stack(
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                Expanded(
-                  flex: 7,
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 20, top: 40, bottom: 10, right: 10),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Skeleton.shade(
-                          child: Container(
-                            width: double.infinity,
-                            height: 28,
-                            color: Colors.grey[300],
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Skeleton.shade(
-                          child: Container(
-                            width: 150,
-                            height: 22,
-                            color: Colors.grey[300],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: Container(
-                    padding: const EdgeInsets.only(top: 20, right: 20),
-                    child: Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Positioned(
-              top: 0,
-              left: 0,
-              child: IconButton(
-                icon: Icon(Icons.arrow_circle_left_rounded,
-                    size: 35, color: Colors.grey[300]),
-                onPressed: null,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildErrorContent(Object error) {
-    return Center(
-      child: Text("Error: $error"),
     );
   }
 }

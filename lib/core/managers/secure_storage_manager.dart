@@ -5,9 +5,9 @@ class SecureStorageManager {
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
   Future<void> storeLoginData(String token, String userId, String role) async {
-    print('Storing token: $token');
-    print('Storing userId: $userId');
-    print('Storing role: $role');
+    print("Storing token: $token");
+    print("Storing userId: $userId");
+    print("Storing role: $role");
     await _storage.write(key: "token", value: token);
     await _storage.write(key: "userId", value: userId);
     await _storage.write(key: "role", value: role);
@@ -18,9 +18,9 @@ class SecureStorageManager {
     final String? token = await _storage.read(key: "token");
     final String? userId = await _storage.read(key: "userId");
     final String? role = await _storage.read(key: "role");
-    print('Read token: $token');
-    print('Read userId: $userId');
-    print('Read role: $role');
+    print("Read token: $token");
+    print("Read userId: $userId");
+    print("Read role: $role");
     return <String, dynamic>{
       "token": token,
       "userId": userId,

@@ -153,6 +153,20 @@
             "percent": "% DSCTO",
             "currency": "DSCTO",
             "specialCard": "% DSCTO con tarjeta especial"
+        },
+        "labelSize": {
+            "variant": "Diferentes tamaños"
+        },
+        "sincePrice":{
+            "label": "Desde"
+        }
+    },
+    "Header":{
+        "home": {
+            "title": "Restaurantes"
+        }, 
+        "campus": {
+            "title": "Sedes"
         }
     }
 }

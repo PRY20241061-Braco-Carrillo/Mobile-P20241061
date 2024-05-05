@@ -7,6 +7,7 @@ class ScrollableLayout extends StatelessWidget {
   final double topPadding;
   final double borderRadius;
   final bool isLoading;
+  final Future<void> Function()? onRefresh;
 
   const ScrollableLayout({
     super.key,
@@ -16,45 +17,41 @@ class ScrollableLayout extends StatelessWidget {
     this.topPadding = 5.0,
     this.borderRadius = 30.0,
     this.isLoading = false,
+    this.onRefresh,
   });
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        Container(
-          color: Theme.of(context).colorScheme.background,
-          child: CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: <Widget>[
-              SliverToBoxAdapter(
-                child: header,
-              ),
-              SliverToBoxAdapter(
-                child: SizedBox(
-                  height: topPadding,
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: backgroundColor,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(borderRadius),
-                      topRight: Radius.circular(borderRadius),
+        RefreshIndicator(
+          onRefresh: onRefresh ?? () async {},
+          child: Container(
+            color: Theme.of(context).colorScheme.background,
+            child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              slivers: <Widget>[
+                SliverToBoxAdapter(child: header),
+                SliverToBoxAdapter(child: SizedBox(height: topPadding)),
+                SliverToBoxAdapter(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: backgroundColor,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(borderRadius),
+                        topRight: Radius.circular(borderRadius),
+                      ),
                     ),
+                    child: body,
                   ),
-                  child: body,
                 ),
-              ),
-              SliverFillRemaining(
-                hasScrollBody: false,
-                fillOverscroll: true,
-                child: Container(
-                  color: backgroundColor,
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  fillOverscroll: true,
+                  child: Container(color: backgroundColor),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         if (isLoading) const _LoadingOverlay(),

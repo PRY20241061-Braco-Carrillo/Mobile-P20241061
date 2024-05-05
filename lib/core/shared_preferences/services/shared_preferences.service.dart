@@ -32,4 +32,16 @@ class SharedPreferencesService {
   Future<bool> removeOnboardingComplete() async {
     return await _prefs?.remove(AppKeys.onboardingComplete) ?? false;
   }
+
+  Future<bool> setHeaders(String headersJson) async {
+    return await _prefs?.setString(AppKeys.headers, headersJson) ?? false;
+  }
+
+  String? getHeaders() {
+    return _prefs?.getString(AppKeys.headers);
+  }
+
+  Future<bool> removeHeaders() async {
+    return await _prefs?.remove(AppKeys.headers) ?? false;
+  }
 }

@@ -1,0 +1,15 @@
+{
+    "home": {
+      "type": "HeaderIconData",
+      "title": "Header.home.title",
+      "icon": "https://www.svgrepo.com/show/399602/restaurant.svg",
+      "isAsset": false
+    },
+    "campus": {
+      "type": "HeaderIconData",
+      "title": "Header.campus.title",
+      "icon": "https://www.svgrepo.com/show/399602/restaurant.svg",
+      "isAsset": false
+    }
+  }
+  

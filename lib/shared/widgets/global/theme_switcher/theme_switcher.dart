@@ -1,6 +1,5 @@
 import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
-import "../../../../main.dart";
 import "../../../../config/theme/theme_manager.dart";
 
 class ThemeSwitcherWidget extends ConsumerWidget {

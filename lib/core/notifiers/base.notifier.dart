@@ -38,8 +38,13 @@ abstract class BaseNotifier<T>
   void handleResponse(BaseResponse<T> response, Function(String) onSuccess,
       Function(String) onError) {
     if (response.code == "SUCCESS") {
+      state = AsyncValue<BaseResponse<T>>.data(response);
       onSuccess("Operation Successful: ${response.data}");
     } else {
+      state = AsyncValue<BaseResponse<T>>.error(
+          Exception("Error: ${ResponseCodes.getMessage(response.code)}"),
+          StackTrace.current);
+
       onError("Error: ${ResponseCodes.getMessage(response.code)}");
     }
   }

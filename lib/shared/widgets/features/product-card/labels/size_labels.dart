@@ -1,10 +1,10 @@
+import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 
 class SizeLabel extends StatelessWidget {
-  final String size;
-  final double fontSize;
+  final double? fontSize;
 
-  const SizeLabel({super.key, required this.size, required this.fontSize});
+  const SizeLabel({super.key, this.fontSize});
 
   @override
   Widget build(BuildContext context) {
@@ -15,8 +15,8 @@ class SizeLabel extends StatelessWidget {
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
-        size,
-        style: TextStyle(color: Colors.white, fontSize: fontSize),
+        "MenuCard.labelSize.variant".tr(),
+        style: TextStyle(color: Colors.white, fontSize: fontSize ?? 12),
       ),
     );
   }
