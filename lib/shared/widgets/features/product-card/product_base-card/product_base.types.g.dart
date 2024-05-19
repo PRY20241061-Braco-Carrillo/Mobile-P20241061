@@ -14,7 +14,7 @@ ProductBaseCardData _$ProductBaseCardDataFromJson(Map<String, dynamic> json) =>
       maxCookingTime: json['maxCookingTime'] as int,
       unitOfTimeCookingTime: json['unitOfTimeCookingTime'] as String,
       urlImage: json['urlImage'] as String,
-      price: json['price'] as int,
+      amountPrice: (json['amountPrice'] as num).toDouble(),
       hasVariant: json['hasVariant'] as bool,
       currencyPrice: json['currencyPrice'] as String,
     );
@@ -28,7 +28,7 @@ Map<String, dynamic> _$ProductBaseCardDataToJson(
       'maxCookingTime': instance.maxCookingTime,
       'unitOfTimeCookingTime': instance.unitOfTimeCookingTime,
       'urlImage': instance.urlImage,
-      'price': instance.price,
+      'amountPrice': instance.amountPrice,
       'hasVariant': instance.hasVariant,
       'currencyPrice': instance.currencyPrice,
     };

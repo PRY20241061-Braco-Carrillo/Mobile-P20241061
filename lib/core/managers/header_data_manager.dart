@@ -19,18 +19,21 @@ class HeaderDataManager {
   Future<void> init() async {
     final SharedPreferencesService prefsService =
         SharedPreferencesService.instance;
-    final String? headersJson = prefsService.getHeaders();
+    final String? storedVersion = prefsService.getHeadersVersion();
+    final String jsonString =
+        await rootBundle.loadString("assets/data/headers.json");
+    final Map<String, dynamic> jsonResponse =
+        json.decode(jsonString) as Map<String, dynamic>;
 
-    if (headersJson == null) {
-      await loadHeaders();
+    if (storedVersion == null || storedVersion != jsonResponse["version"]) {
+      final String jsonHeaders = json.encode(jsonResponse["data"]);
+      await prefsService.setHeaders(jsonHeaders);
+      await prefsService.setHeadersVersion(jsonResponse["version"]);
+      _headers = jsonResponse["data"];
     } else {
-      try {
+      final String? headersJson = prefsService.getHeaders();
+      if (headersJson != null) {
         _headers = json.decode(headersJson) as Map<String, dynamic>;
-      } on FormatException catch (e) {
-        if (kDebugMode) {
-          print("Error decoding headers: $e, attempting to load from JSON");
-        }
-        await loadHeaders();
       }
     }
   }

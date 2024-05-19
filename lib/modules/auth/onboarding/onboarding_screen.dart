@@ -111,7 +111,7 @@ class _OnboardingViewState extends State<OnboardingScreen> {
                     .setOnboardingComplete(true);
                 if (!mounted) return;
                 if (success) {
-                  context.go(AppRoutes.accessOptions);
+                  await GoRouter.of(context).push(AppRoutes.accessOptions);
                 } else {
                   ScaffoldMessenger.of(context)
                       .showSnackBar(SnackBar(content: Text(labelErrorKey)));

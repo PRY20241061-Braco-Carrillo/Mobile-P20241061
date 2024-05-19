@@ -9,7 +9,6 @@ import "../../../config/routes/routes.dart";
 import "../../../core/models/auth/sign_up/sign_up.request.types.dart";
 import "../../../core/notifiers/auth/sign_up.notifier.dart";
 import "../../../layout/scrollable_layout.dart";
-import "../../../shared/utils/constants/constants.dart";
 import "../../../shared/widgets/global/button.dart";
 import "../../../shared/widgets/global/header/icon_header.dart";
 
@@ -31,15 +30,15 @@ final AutoDisposeStateProvider<String> nameProvider =
 final AutoDisposeStateProvider<String> lastNameProvider =
     StateProvider.autoDispose<String>(
         (AutoDisposeStateProviderRef<String> ref) => "");
-final AutoDisposeStateProvider<String> phoneProvider =
-    StateProvider.autoDispose<String>(
-        (AutoDisposeStateProviderRef<String> ref) => "");
+//final AutoDisposeStateProvider<String> phoneProvider =
+//    StateProvider.autoDispose<String>(
+//        (AutoDisposeStateProviderRef<String> ref) => "");
 final AutoDisposeStateProvider<bool> confirmPasswordVisibilityProvider =
     StateProvider.autoDispose<bool>(
         (AutoDisposeStateProviderRef<bool> ref) => false);
-final AutoDisposeStateProvider<String> countryCodeProvider =
-    StateProvider.autoDispose<String>(
-        (AutoDisposeStateProviderRef<String> ref) => "+51");
+//final AutoDisposeStateProvider<String> countryCodeProvider =
+//    StateProvider.autoDispose<String>(
+//        (AutoDisposeStateProviderRef<String> ref) => "+51");
 final AutoDisposeStateProvider<List<bool>> passwordValidationProvider =
     StateProvider.autoDispose<List<bool>>(
         (AutoDisposeStateProviderRef<List<bool>> ref) =>
@@ -117,14 +116,20 @@ bool isValidPhone(String phone) {
 }
 
 bool isFormValid(WidgetRef ref) {
-  final List<bool> validations =
-      ref.read(passwordValidationProvider.notifier).state;
-  return validations.every((bool element) => element) &&
-      isValidEmail(ref.read(emailProvider.notifier).state) &&
-      isPasswordConfirmed(ref) &&
-      isValidName(ref.read(nameProvider.notifier).state) &&
-      isValidLastName(ref.read(lastNameProvider.notifier).state) &&
-      isValidPhone(ref.read(phoneProvider.notifier).state);
+  final List<bool> validations = ref.read(passwordValidationProvider);
+  final bool allPasswordValidations =
+      validations.every((bool element) => element);
+  final bool emailValid = isValidEmail(ref.read(emailProvider));
+  final bool passwordConfirmed = isPasswordConfirmed(ref);
+  final bool nameValid = isValidName(ref.read(nameProvider));
+  final bool lastNameValid = isValidLastName(ref.read(lastNameProvider));
+  //final bool phoneValid = isValidPhone(ref.read(phoneProvider));
+
+  return allPasswordValidations &&
+      emailValid &&
+      passwordConfirmed &&
+      nameValid &&
+      lastNameValid;
 }
 
 class CustomInputDecoration {
@@ -175,7 +180,7 @@ SignUpRequest buildSignUpRequest(WidgetRef ref) {
       password: ref.read(passwordProvider),
       names: ref.read(nameProvider),
       lastNames: ref.read(lastNameProvider),
-      role: Roles.client);
+      role: "CLIENT");
 }
 
 class SignUpScreen extends ConsumerWidget {
@@ -189,9 +194,9 @@ class SignUpScreen extends ConsumerWidget {
       body: ScrollableLayout(
         header: CBaseIconHeader(
           height: 200,
-          headerKey: "",
+          headerKey: "sign_up",
           onButtonPressed: (BuildContext context) {
-            context.go(AppRoutes.accessOptions);
+            GoRouter.of(context).push(AppRoutes.accessOptions);
           },
         ),
         body: _buildSignUpForm(context, ref),
@@ -211,8 +216,8 @@ class SignUpScreen extends ConsumerWidget {
     const String validatorLastNameKey = "Auth.labels.LASTNAME.validator";
     const String labelEmailKey = "Auth.labels.EMAIL.label";
     const String validatorEmailKey = "Auth.labels.EMAIL.validator";
-    const String labelPhoneKey = "Auth.labels.PHONE.label";
-    const String validatorPhoneKey = "Auth.labels.PHONE.validator";
+    //const String labelPhoneKey = "Auth.labels.PHONE.label";
+    //const String validatorPhoneKey = "Auth.labels.PHONE.validator";
     const String labelPasswordKey = "Auth.labels.PASSWORD.label";
     const String validatorPasswordKey = "Auth.labels.PASSWORD.validator";
     const String validatorUpperKey = "Auth.labels.PASSWORD.uppercase";
@@ -226,7 +231,7 @@ class SignUpScreen extends ConsumerWidget {
     const String labelLoginKey = "Auth.buttons.LOGIN.label";
     const String labelAlreadyHaveAccountKey =
         "Auth.buttons.ALREADY_HAVE_ACCOUNT.label";
-    const String labelPhoneCodeKey = "Auth.labels.PHONE_CODE.label";
+    //const String labelPhoneCodeKey = "Auth.labels.PHONE_CODE.label";
 
     const String labelSignUpDialogSuccess =
         "Auth.dialogs.SUCCESS_REGISTER.label";
@@ -244,7 +249,7 @@ class SignUpScreen extends ConsumerWidget {
           children: <Widget>[
             const SizedBox(height: 40),
             TextFormField(
-              initialValue: ref.read(nameProvider),
+              initialValue: ref.watch(nameProvider),
               onChanged: (String value) =>
                   ref.read(nameProvider.notifier).state = value,
               decoration: CustomInputDecoration.getTextFieldDecoration(
@@ -256,7 +261,7 @@ class SignUpScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 10),
             TextFormField(
-              initialValue: ref.read(lastNameProvider),
+              initialValue: ref.watch(lastNameProvider),
               onChanged: (String value) =>
                   ref.read(lastNameProvider.notifier).state = value,
               decoration: CustomInputDecoration.getTextFieldDecoration(
@@ -268,7 +273,7 @@ class SignUpScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 10),
             TextFormField(
-              initialValue: email,
+              initialValue: ref.watch(emailProvider),
               onChanged: (String value) =>
                   ref.read(emailProvider.notifier).state = value,
               decoration: CustomInputDecoration.getTextFieldDecoration(
@@ -280,11 +285,11 @@ class SignUpScreen extends ConsumerWidget {
                   validateField(value, isValidEmail, validatorEmailKey),
             ),
             const SizedBox(height: 10),
-            Row(
+            /*Row(
               children: <Widget>[
                 Expanded(
                   child: TextFormField(
-                    initialValue: ref.read(countryCodeProvider),
+                    initialValue: ref.watch(countryCodeProvider),
                     onChanged: (String value) =>
                         ref.read(countryCodeProvider.notifier).state = value,
                     decoration: CustomInputDecoration.getTextFieldDecoration(
@@ -298,7 +303,7 @@ class SignUpScreen extends ConsumerWidget {
                 Expanded(
                   flex: 3,
                   child: TextFormField(
-                    initialValue: ref.read(phoneProvider),
+                    initialValue: ref.watch(phoneProvider),
                     onChanged: (String value) =>
                         ref.read(phoneProvider.notifier).state = value,
                     decoration: CustomInputDecoration.getTextFieldDecoration(
@@ -312,7 +317,7 @@ class SignUpScreen extends ConsumerWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 10),*/
             TextFormField(
               initialValue: password,
               onChanged: (String value) {
@@ -337,9 +342,10 @@ class SignUpScreen extends ConsumerWidget {
               obscureText: !ref.watch(passwordVisibilityProvider),
               keyboardType: TextInputType.visiblePassword,
               validator: (String? value) => validateField(
-                  value,
-                  (String value) => isValidPassword(value, email),
-                  validatorPasswordKey),
+                value,
+                (String value) => isValidPassword(value, email),
+                validatorPasswordKey,
+              ),
             ),
             Wrap(
               spacing: 8.0,
@@ -392,7 +398,7 @@ class SignUpScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 10),
             TextFormField(
-              initialValue: ref.read(confirmPasswordProvider),
+              initialValue: ref.watch(confirmPasswordProvider),
               onChanged: (String value) =>
                   ref.read(confirmPasswordProvider.notifier).state = value,
               decoration: CustomInputDecoration.getTextFieldDecoration(

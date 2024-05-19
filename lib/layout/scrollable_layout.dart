@@ -24,39 +24,49 @@ class ScrollableLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        RefreshIndicator(
-          onRefresh: onRefresh ?? () async {},
-          child: Container(
-            color: Theme.of(context).colorScheme.background,
-            child: CustomScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              slivers: <Widget>[
-                SliverToBoxAdapter(child: header),
-                SliverToBoxAdapter(child: SizedBox(height: topPadding)),
-                SliverToBoxAdapter(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: backgroundColor,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(borderRadius),
-                        topRight: Radius.circular(borderRadius),
-                      ),
-                    ),
-                    child: body,
-                  ),
-                ),
-                SliverFillRemaining(
-                  hasScrollBody: false,
-                  fillOverscroll: true,
-                  child: Container(color: backgroundColor),
-                ),
-              ],
-            ),
-          ),
-        ),
+        _buildContent(context),
         if (isLoading) const _LoadingOverlay(),
       ],
     );
+  }
+
+  Widget _buildContent(BuildContext context) {
+    final Container content = Container(
+      color: Theme.of(context).colorScheme.background,
+      child: CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: <Widget>[
+          SliverToBoxAdapter(child: header),
+          SliverToBoxAdapter(child: SizedBox(height: topPadding)),
+          SliverToBoxAdapter(
+            child: Container(
+              decoration: BoxDecoration(
+                color: backgroundColor,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(borderRadius),
+                  topRight: Radius.circular(borderRadius),
+                ),
+              ),
+              child: body,
+            ),
+          ),
+          SliverFillRemaining(
+            hasScrollBody: false,
+            fillOverscroll: true,
+            child: Container(color: backgroundColor),
+          ),
+        ],
+      ),
+    );
+
+    if (onRefresh != null) {
+      return RefreshIndicator(
+        onRefresh: onRefresh!,
+        child: content,
+      );
+    } else {
+      return content;
+    }
   }
 }
 

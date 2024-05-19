@@ -16,7 +16,7 @@ class ProductByCategoryOfCampusResponse {
 
   final String urlImage;
 
-  final int price;
+  final double amountPrice;
 
   final bool hasVariant;
 
@@ -29,7 +29,7 @@ class ProductByCategoryOfCampusResponse {
     required this.maxCookingTime,
     required this.unitOfTimeCookingTime,
     required this.urlImage,
-    required this.price,
+    required this.amountPrice,
     required this.hasVariant,
     required this.currencyPrice,
   });

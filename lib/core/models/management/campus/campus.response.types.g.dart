@@ -15,10 +15,11 @@ CampusResponse _$CampusResponseFromJson(Map<String, dynamic> json) =>
       openHour: OpenHour.fromJson(json['openHour'] as Map<String, dynamic>),
       toTakeHome: json['toTakeHome'] as bool,
       toDelivery: json['toDelivery'] as bool,
-      restaurantId: json['restaurantId'] as String,
+      restaurant:
+          Restaurant.fromJson(json['restaurant'] as Map<String, dynamic>),
+      regexTableCode: json['regexTableCode'] as String,
+      urlImage: json['urlImage'] as String,
       isAvailable: json['isAvailable'] as bool,
-      imageUrl: json['imageUrl'] as String,
-      logoUrl: json['logoUrl'] as String,
     );
 
 Map<String, dynamic> _$CampusResponseToJson(CampusResponse instance) =>
@@ -30,10 +31,10 @@ Map<String, dynamic> _$CampusResponseToJson(CampusResponse instance) =>
       'openHour': instance.openHour,
       'toTakeHome': instance.toTakeHome,
       'toDelivery': instance.toDelivery,
-      'restaurantId': instance.restaurantId,
+      'restaurant': instance.restaurant,
+      'regexTableCode': instance.regexTableCode,
+      'urlImage': instance.urlImage,
       'isAvailable': instance.isAvailable,
-      'imageUrl': instance.imageUrl,
-      'logoUrl': instance.logoUrl,
     };
 
 ListCampusResponse _$ListCampusResponseFromJson(Map<String, dynamic> json) =>

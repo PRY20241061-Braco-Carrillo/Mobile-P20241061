@@ -1,12 +1,13 @@
-import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 import "package:skeletonizer/skeletonizer.dart";
 
 import "../../../../../config/routes/routes.dart";
 import "../../../../../modules/product/product_detail/product_detail_navigation_data.types.dart";
-import "../../../../utils/constants/currency_types.dart";
 import "../../../../../modules/product/products_list/category_navigation_data.types.dart";
+import "../../../../providers/image_provider.dart";
+import "../../../../utils/constants/currency_types.dart";
+import "../../../global/image_display/image_display.dart";
 import "../labels/size_labels.dart";
 import "product_base.types.dart";
 
@@ -48,7 +49,7 @@ class CProductBaseCard extends StatelessWidget {
     final double width = MediaQuery.of(context).size.width / 2 - 20;
     return InkWell(
       onTap: () {
-        context.go(
+        GoRouter.of(context).push(
             "${AppRoutes.products}/${categoryNavigationData?.categoryData.campusCategoryId}/${data.productId}",
             extra: ProductDetailNavigationData(
                 categoryData: categoryNavigationData!.categoryData,
@@ -76,16 +77,16 @@ class CProductBaseCard extends StatelessWidget {
                         borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(10),
                             topRight: Radius.circular(10)),
-                        child: CachedNetworkImage(
-                          imageUrl: data.urlImage,
-                          fit: BoxFit.cover,
-                          width: width,
-                          height: 150,
-                          placeholder: (BuildContext context, String url) =>
-                              const CircularProgressIndicator(),
-                          errorWidget: (BuildContext context, String url,
-                                  Object error) =>
-                              const Icon(Icons.error),
+                        child: ImageDisplay(
+                          config: ImageConfig(
+                              imageUrl: data.urlImage,
+                              height: 150,
+                              width: width,
+                              onErrorHeight: 50,
+                              onErrorWidth: 50,
+                              onErrorFit: BoxFit.contain,
+                              onErrorPadding:
+                                  const EdgeInsets.only(bottom: 70, top: 30)),
                         ),
                       ),
                       if (data.hasVariant == true)
@@ -102,7 +103,7 @@ class CProductBaseCard extends StatelessWidget {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     getCurrencySymbol(data.currencyPrice) +
-                        data.price.toString(),
+                        data.amountPrice.toString(),
                     style: const TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.w400,

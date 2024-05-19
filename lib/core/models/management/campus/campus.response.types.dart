@@ -1,4 +1,3 @@
-import "package:hive/hive.dart";
 import "package:json_annotation/json_annotation.dart";
 
 part "campus.response.types.g.dart";
@@ -6,26 +5,16 @@ part "campus.response.types.g.dart";
 @JsonSerializable()
 class CampusResponse {
   String campusId;
-
   String name;
-
   String address;
-
   String phoneNumber;
-
   OpenHour openHour;
-
   bool toTakeHome;
-
   bool toDelivery;
-
-  String restaurantId;
-
+  Restaurant restaurant;
+  String regexTableCode;
+  String urlImage;
   bool isAvailable;
-
-  String imageUrl;
-
-  String logoUrl;
 
   CampusResponse({
     required this.campusId,
@@ -35,10 +24,10 @@ class CampusResponse {
     required this.openHour,
     required this.toTakeHome,
     required this.toDelivery,
-    required this.restaurantId,
+    required this.restaurant,
+    required this.regexTableCode,
+    required this.urlImage,
     required this.isAvailable,
-    required this.imageUrl,
-    required this.logoUrl,
   });
 
   factory CampusResponse.fromJson(Map<String, dynamic> json) {
@@ -46,6 +35,34 @@ class CampusResponse {
   }
 
   Map<String, dynamic> toJson() => _$CampusResponseToJson(this);
+}
+
+class Restaurant {
+  String restaurantId;
+  String name;
+  String logoUrl;
+  bool isAvailable;
+
+  Restaurant({
+    required this.restaurantId,
+    required this.name,
+    required this.logoUrl,
+    required this.isAvailable,
+  });
+
+  factory Restaurant.fromJson(Map<String, dynamic> json) => Restaurant(
+        restaurantId: json["restaurantId"],
+        name: json["name"],
+        logoUrl: json["logoUrl"],
+        isAvailable: json["isAvailable"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "restaurantId": restaurantId,
+        "name": name,
+        "logoUrl": logoUrl,
+        "isAvailable": isAvailable,
+      };
 }
 
 class OpenHour {

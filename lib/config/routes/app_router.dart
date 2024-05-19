@@ -9,6 +9,7 @@ import "../../modules/auth/onboarding/access_options_screen.dart";
 import "../../modules/auth/onboarding/onboarding_screen.dart";
 import "../../modules/auth/sign_up/sign_up_screen.dart";
 import "../../modules/campus/campus_screen.dart";
+import "../../modules/cart/qr_generation/cart_screen.dart";
 import "../../modules/categories/categories_screen.dart";
 import "../../modules/home/home_screen.dart";
 import "../../modules/product/product_detail/product_detail_navigation_data.types.dart";
@@ -84,6 +85,11 @@ final Provider<GoRouter> goRouterProvider =
               state.extra as ProductDetailNavigationData;
           return ProductDetailScreen(productDetailNavigationData: data);
         },
+      ),
+      GoRoute(
+        path: AppRoutes.cart,
+        builder: (BuildContext context, GoRouterState state) =>
+            const CartScreen(),
       ),
       GoRoute(
         path: AppRoutes.logIn,

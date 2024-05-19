@@ -22,7 +22,7 @@ class ProductDetailVariantCard {
                   ? MapEntry(parts[0].trim(), parts[1].trim())
                   : null;
             })
-            .where((entry) => entry != null)
+            .where((MapEntry<String, String>? entry) => entry != null)
             .cast<MapEntry<String, String>>());
 
   static ProductDetailVariantCard fromProductVariant(ProductVariant pv) {

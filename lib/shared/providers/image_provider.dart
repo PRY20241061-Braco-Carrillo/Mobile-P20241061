@@ -1,17 +1,19 @@
-import "dart:io";
-
 import "package:flutter/material.dart";
-import "package:flutter_cache_manager/flutter_cache_manager.dart";
-import "package:hooks_riverpod/hooks_riverpod.dart";
 
 class ImageConfig {
-  final String imageUrl;
+  final String? imageUrl;
   final double width;
   final double height;
   final BoxFit fit;
   final Map<String, String>? headers;
   final int? maxWidth;
   final int? maxHeight;
+  final String errorAssetPath;
+  final double onErrorWidth;
+  final double onErrorHeight;
+  final BoxFit onErrorFit;
+  final EdgeInsets? padding;
+  final EdgeInsets? onErrorPadding;
 
   ImageConfig({
     required this.imageUrl,
@@ -21,20 +23,11 @@ class ImageConfig {
     this.headers,
     this.maxWidth,
     this.maxHeight,
+    this.errorAssetPath = "assets/images/not_found/picture_not_found.svg",
+    this.onErrorWidth = 100.0,
+    this.onErrorHeight = 100.0,
+    this.onErrorFit = BoxFit.cover,
+    this.padding,
+    this.onErrorPadding,
   });
 }
-
-final FutureProviderFamily<ImageProvider<Object>, ImageConfig>
-    imageProviderCache = FutureProvider.family<ImageProvider, ImageConfig>(
-        (FutureProviderRef<ImageProvider<Object>> ref,
-            ImageConfig config) async {
-  final DefaultCacheManager cacheManager = DefaultCacheManager();
-  try {
-    final File file = await cacheManager.getSingleFile(config.imageUrl,
-        headers: config.headers);
-    return FileImage(file);
-  } on Exception catch (e) {
-    debugPrint("Error fetching image from cache: $e");
-    rethrow;
-  }
-});

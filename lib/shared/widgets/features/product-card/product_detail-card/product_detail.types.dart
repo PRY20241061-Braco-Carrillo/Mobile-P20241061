@@ -20,9 +20,10 @@ class ProductDetailCardData {
 
   Map<String, dynamic> toJson() => {
         "product": product.toJson(),
-        "productVariants":
-            List<dynamic>.from(productVariants.map((x) => x.toJson())),
-        "complements": List<dynamic>.from(complements.map((x) => x.toJson())),
+        "productVariants": List<dynamic>.from(
+            productVariants.map((ProductVariant x) => x.toJson())),
+        "complements":
+            List<dynamic>.from(complements.map((Complement x) => x.toJson())),
       };
 }
 

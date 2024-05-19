@@ -1,5 +1,6 @@
 import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/material.dart";
+import "package:flutter_svg/flutter_svg.dart";
 import "package:go_router/go_router.dart";
 import "package:skeletonizer/skeletonizer.dart";
 
@@ -44,7 +45,8 @@ class CCategoryButton extends StatelessWidget {
   Widget _buildCardContent(BuildContext context, CategoryButtonData data) {
     return InkWell(
       onTap: () {
-        context.go("${AppRoutes.products}/${data.campusCategoryId}",
+        GoRouter.of(context).push(
+            "${AppRoutes.products}/${data.campusCategoryId}",
             extra: CategoryNavigationData(
                 categoryData: data, campusData: campusData!));
       },
@@ -64,17 +66,7 @@ class CCategoryButton extends StatelessWidget {
                     child: Stack(
                       alignment: Alignment.bottomLeft,
                       children: <Widget>[
-                        CachedNetworkImage(
-                          imageUrl: data.urlImage,
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                          height: 100,
-                          placeholder: (BuildContext context, String url) =>
-                              const CircularProgressIndicator(),
-                          errorWidget: (BuildContext context, String url,
-                                  Object error) =>
-                              const Icon(Icons.error),
-                        ),
+                        _getImageWidget(data.urlImage, double.infinity, 100),
                       ],
                     ),
                   ),
@@ -108,11 +100,40 @@ class CCategoryButton extends StatelessWidget {
     );
   }
 
-  _onTap(BuildContext context, CategoryButtonData data) {}
+  Widget _getImageWidget(String? url, double width, double height) {
+    if (url == null) {
+      return SvgPicture.asset("assets/images/not_found/picture_not_found.svg",
+          height: height);
+    } else if (url.endsWith(".svg")) {
+      return SvgPicture.network(
+        url,
+        width: width,
+        height: height,
+        placeholderBuilder: (BuildContext context) =>
+            const CircularProgressIndicator(),
+      );
+    } else {
+      return CachedNetworkImage(
+        imageUrl: url,
+        width: width,
+        height: height,
+        fit: BoxFit.cover,
+        placeholder: (BuildContext context, String url) =>
+            const CircularProgressIndicator(),
+        errorWidget: (BuildContext context, String url, Object error) =>
+            SvgPicture.asset(
+          "assets/images/not_found/picture_not_found.svg",
+          height: 20,
+          allowDrawingOutsideViewBox: true,
+          matchTextDirection: true,
+          width: 20,
+          clipBehavior: Clip.none,
+        ),
+      );
+    }
+  }
 
-  Widget _buildSkeleton(
-    BuildContext context,
-  ) {
+  Widget _buildSkeleton(BuildContext context) {
     return Skeletonizer(
         child: Container(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
@@ -168,6 +189,7 @@ class CCategoryButton extends StatelessWidget {
     );
   }
 }
+
 
 /*
 final List<CCategoryButton> categoryButtons = <CCategoryButton>[

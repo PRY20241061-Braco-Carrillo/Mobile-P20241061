@@ -10,7 +10,7 @@ RestaurantResponse _$RestaurantResponseFromJson(Map<String, dynamic> json) =>
     RestaurantResponse(
       restaurantId: json['restaurantId'] as String,
       name: json['name'] as String,
-      imageUrl: json['imageUrl'] as String,
+      imageUrl: json['imageUrl'] as String?,
       logoUrl: json['logoUrl'] as String,
       isAvailable: json['isAvailable'] as bool,
     );

@@ -10,7 +10,7 @@ class ProductBaseCardData {
   int maxCookingTime;
   String unitOfTimeCookingTime;
   String urlImage;
-  int price;
+  double amountPrice;
   bool hasVariant;
   String currencyPrice;
 
@@ -21,7 +21,7 @@ class ProductBaseCardData {
     required this.maxCookingTime,
     required this.unitOfTimeCookingTime,
     required this.urlImage,
-    required this.price,
+    required this.amountPrice,
     required this.hasVariant,
     required this.currencyPrice,
   });

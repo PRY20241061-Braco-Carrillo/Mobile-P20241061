@@ -48,7 +48,7 @@ class CProductCompactCard extends StatelessWidget {
 
     return InkWell(
       onTap: () {
-        context.go(
+        GoRouter.of(context).push(
             "${AppRoutes.products}/${categoryNavigationData?.categoryData.campusCategoryId}/${data.productId}",
             extra: ProductDetailNavigationData(
                 categoryData: categoryNavigationData!.categoryData,
@@ -95,9 +95,9 @@ class CProductCompactCard extends StatelessWidget {
               flex: 3,
               child: Text(
                 data.hasVariant
-                    ? "${labelSincePriceKey.tr()} ${getCurrencySymbol(data.currencyPrice)}${data.price}"
+                    ? "${labelSincePriceKey.tr()} ${getCurrencySymbol(data.currencyPrice)}${data.amountPrice}"
                     : getCurrencySymbol(data.currencyPrice) +
-                        data.price.toString(),
+                        data.amountPrice.toString(),
                 style: const TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.w400,

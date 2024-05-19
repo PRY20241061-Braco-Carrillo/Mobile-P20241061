@@ -35,7 +35,7 @@ class AccessOptionsScreenState extends State<AccessOptionsScreen> {
               children: <Widget>[
                 ElevatedButton(
                   onPressed: () {
-                    context.go(AppRoutes.home);
+                    GoRouter.of(context).push(AppRoutes.home);
                   },
                   child: Text(labelGuest),
                 ),

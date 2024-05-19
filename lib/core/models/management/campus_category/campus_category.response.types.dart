@@ -1,11 +1,9 @@
-import "package:hive/hive.dart";
 import "package:json_annotation/json_annotation.dart";
 
 part "campus_category.response.types.g.dart";
 
 @JsonSerializable()
 class CampusCategoryResponse {
-  @JsonKey(name: "campus_category_id")
   final String campusCategoryId;
 
   final String name;

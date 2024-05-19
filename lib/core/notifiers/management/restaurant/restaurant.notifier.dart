@@ -1,64 +1,70 @@
-import "package:flutter/material.dart";
-import "package:hooks_riverpod/hooks_riverpod.dart";
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import "../../../../mock/management/restaurant/mock_restaurant.dart";
-import "../../../models/base_response.dart";
-import "../../../models/management/restaurant/restaurant.response.types.dart";
-import "../../base.notifier.dart";
+import '../../../models/base_response.dart';
+import '../../../models/management/restaurant/restaurant.response.types.dart';
+import '../../../repository/management_bc/restaurant/restaurants.repository.dart';
 
-final StateNotifierProvider<RestaurantNotifier,
-        AsyncValue<BaseResponse<List<RestaurantResponse>>>>
-    allRestaurantsNotifierProvider = StateNotifierProvider<RestaurantNotifier,
-        AsyncValue<BaseResponse<List<RestaurantResponse>>>>((ref) {
-  return RestaurantNotifier(ref);
-});
+class RestaurantNotifier
+    extends StateNotifier<AsyncValue<BaseResponse<List<RestaurantResponse>>>> {
+  final RestaurantRepository repository;
+  final Map<int, List<RestaurantResponse>> cachedPages = {};
+  int lastPage = 0;
+  static const int _pageSize = 3;
 
-class RestaurantNotifier extends BaseNotifier<List<RestaurantResponse>> {
-  static Map<String, List<RestaurantResponse>> cachedDataMap = {};
-  bool needsUpdate = true;
-
-  RestaurantNotifier(super.ref) {
-    loadData();
-  }
-
-  bool needToUpdate() {
-    return needsUpdate || !cachedDataMap.containsKey("global");
-  }
+  RestaurantNotifier(this.repository) : super(const AsyncLoading());
 
   Future<void> loadData() async {
-    if (cachedDataMap.containsKey("global") && !needToUpdate()) {
-      state = AsyncValue.data(
-          BaseResponse(code: "SUCCESS", data: cachedDataMap["global"]!));
+    if (cachedPages.isNotEmpty) {
+      final List<RestaurantResponse> allCachedData =
+          cachedPages.values.expand((page) => page).toList();
+      state = AsyncData(BaseResponse(code: 'SUCCESS', data: allCachedData));
       return;
     }
-    _fetchData();
-  }
-
-  void _fetchData() async {
-    state = const AsyncValue.loading();
-    await performAction(() {}, (String msg) {}, (String err) {});
-  }
-
-  @override
-  Future<void> performAction(VoidCallback onLoading, Function(String) onSuccess,
-      Function(String) onError) async {
-    onLoading();
     try {
-      final BaseResponse<List<RestaurantResponse>> response =
-          await ref.read(mockRestaurantServiceProvider).getRestaurants();
-      cachedDataMap["global"] = response.data;
-      handleResponse(response, onSuccess, onError);
-      needsUpdate = false;
-      state = AsyncValue.data(response);
-    } on Exception catch (e) {
-      state = AsyncValue.error(e, StackTrace.current);
-      needsUpdate = true;
+      await fetchData(0, _pageSize);
+    } catch (e, stack) {
+      state = AsyncError(e, stack);
     }
   }
 
-  // Método para reiniciar o actualizar los datos
+  Future<BaseResponse<List<RestaurantResponse>>> fetchData(
+      int pageNumber, int pageSize) async {
+    if (cachedPages.containsKey(pageNumber)) {
+      final BaseResponse<List<RestaurantResponse>> response = BaseResponse(
+        code: 'SUCCESS',
+        data: cachedPages[pageNumber]!,
+      );
+      state = AsyncData(response);
+      return response;
+    }
+    try {
+      final BaseResponse<List<RestaurantResponse>> response =
+          await repository.getRestaurants(
+        pageNumber: pageNumber,
+        pageSize: pageSize,
+      );
+      cachedPages[pageNumber] = response.data;
+      lastPage = pageNumber;
+      state = AsyncData(response);
+      return response;
+    } catch (e, stack) {
+      state = AsyncError(e, stack);
+      rethrow;
+    }
+  }
+
   Future<void> reloadData() async {
-    needsUpdate = true; // Forzar actualización en la próxima carga
+    cachedPages.clear();
+    lastPage = 0;
     await loadData();
   }
 }
+
+final StateNotifierProvider<RestaurantNotifier,
+        AsyncValue<BaseResponse<List<RestaurantResponse>>>>
+    restaurantNotifierProvider = StateNotifierProvider<RestaurantNotifier,
+        AsyncValue<BaseResponse<List<RestaurantResponse>>>>((ref) {
+  final RestaurantRepository repository =
+      ref.read(restaurantRepositoryProvider);
+  return RestaurantNotifier(repository);
+});

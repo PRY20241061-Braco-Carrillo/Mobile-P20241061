@@ -1,4 +1,3 @@
-import "package:hive/hive.dart";
 import "package:json_annotation/json_annotation.dart";
 
 part "restaurant.response.types.g.dart";
@@ -9,7 +8,7 @@ class RestaurantResponse {
 
   final String name;
 
-  final String imageUrl;
+  final String? imageUrl;
 
   final String logoUrl;
 
@@ -18,7 +17,7 @@ class RestaurantResponse {
   RestaurantResponse({
     required this.restaurantId,
     required this.name,
-    required this.imageUrl,
+    this.imageUrl,
     required this.logoUrl,
     required this.isAvailable,
   });

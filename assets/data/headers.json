@@ -1,4 +1,6 @@
 {
+  "version": "1.0",
+  "data": {
     "home": {
       "type": "HeaderIconData",
       "title": "Header.home.title",
@@ -10,6 +12,18 @@
       "title": "Header.campus.title",
       "icon": "https://www.svgrepo.com/show/399602/restaurant.svg",
       "isAsset": false
+    },
+    "login": {
+      "type": "HeaderIconData",
+      "title": "Header.login.title",
+      "isAsset": false,
+      "icon": null
+    },
+    "sign_up": {
+      "type": "HeaderIconData",
+      "title": "Header.sign_up.title",
+      "isAsset": false,
+      "icon": null
     }
   }
-  
+}

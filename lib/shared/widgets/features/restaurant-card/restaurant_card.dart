@@ -1,5 +1,6 @@
 import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/material.dart";
+import "package:flutter_svg/flutter_svg.dart";
 import "package:go_router/go_router.dart";
 import "package:skeletonizer/skeletonizer.dart";
 import "../../../../config/routes/routes.dart";
@@ -37,7 +38,7 @@ class CRestaurantCard extends StatelessWidget {
   Widget _buildCardContent(BuildContext context, RestaurantCardData data) {
     return InkWell(
       onTap: () {
-        context.go("${AppRoutes.campus}/${data.restaurantId}");
+        GoRouter.of(context).push("${AppRoutes.campus}/${data.restaurantId}");
       },
       child: Card(
         clipBehavior: Clip.antiAlias,
@@ -49,17 +50,7 @@ class CRestaurantCard extends StatelessWidget {
             Stack(
               alignment: Alignment.bottomLeft,
               children: <Widget>[
-                CachedNetworkImage(
-                  imageUrl: data.imageUrl,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  height: 100,
-                  placeholder: (BuildContext context, String url) =>
-                      const CircularProgressIndicator(),
-                  errorWidget:
-                      (BuildContext context, String url, Object error) =>
-                          const Icon(Icons.error),
-                ),
+                _getImageWidget(data.imageUrl, 200, 100),
               ],
             ),
             Padding(
@@ -78,16 +69,7 @@ class CRestaurantCard extends StatelessWidget {
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(25),
-                        child: CachedNetworkImage(
-                          imageUrl: data.logoUrl,
-                          width: 50,
-                          height: 50,
-                          placeholder: (BuildContext context, String url) =>
-                              const CircularProgressIndicator(),
-                          errorWidget: (BuildContext context, String url,
-                                  Object error) =>
-                              const Icon(Icons.error),
-                        ),
+                        child: _getImageWidget(data.logoUrl, 50, 50),
                       ),
                     ),
                   ),
@@ -110,9 +92,33 @@ class CRestaurantCard extends StatelessWidget {
     );
   }
 
-  Widget _buildSkeleton(
-    BuildContext context,
-  ) {
+  Widget _getImageWidget(String? url, double width, double height) {
+    if (url == null) {
+      return SvgPicture.asset("assets/images/not_found/picture_not_found.svg",
+          height: height);
+    } else if (url.endsWith(".svg")) {
+      return SvgPicture.network(
+        url,
+        width: width,
+        height: height,
+        placeholderBuilder: (BuildContext context) =>
+            const CircularProgressIndicator(),
+      );
+    } else {
+      return CachedNetworkImage(
+        imageUrl: url,
+        width: width,
+        height: height,
+        fit: BoxFit.cover,
+        placeholder: (BuildContext context, String url) =>
+            const CircularProgressIndicator(),
+        errorWidget: (BuildContext context, String url, Object error) =>
+            const Icon(Icons.error),
+      );
+    }
+  }
+
+  Widget _buildSkeleton(BuildContext context) {
     return Skeletonizer(
         child: Container(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),

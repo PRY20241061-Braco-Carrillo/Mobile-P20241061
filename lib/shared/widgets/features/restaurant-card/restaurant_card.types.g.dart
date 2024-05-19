@@ -10,7 +10,7 @@ RestaurantCardData _$RestaurantCardDataFromJson(Map<String, dynamic> json) =>
     RestaurantCardData(
       name: json['name'] as String,
       logoUrl: json['logoUrl'] as String,
-      imageUrl: json['imageUrl'] as String,
+      imageUrl: json['imageUrl'] as String?,
       isAvailable: json['isAvailable'] as bool,
       restaurantId: json['restaurantId'] as String,
     );

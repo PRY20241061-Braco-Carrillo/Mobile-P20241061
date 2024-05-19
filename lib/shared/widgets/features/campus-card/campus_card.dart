@@ -37,7 +37,8 @@ class CCampusCard extends StatelessWidget {
   Widget _buildCardContent(BuildContext context, CampusCardData data) {
     return InkWell(
       onTap: () {
-        context.go("${AppRoutes.categories}/${data.campusId}", extra: data);
+        GoRouter.of(context)
+            .push("${AppRoutes.categories}/${data.campusId}", extra: data);
       },
       child: Card(
         clipBehavior: Clip.antiAlias,

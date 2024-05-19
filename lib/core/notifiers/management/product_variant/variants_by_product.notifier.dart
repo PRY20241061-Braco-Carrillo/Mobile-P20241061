@@ -11,14 +11,14 @@ final StateNotifierProviderFamily<VariantsByProductNotifier,
     variantsByProductNotifierProvider = StateNotifierProvider.family<
         VariantsByProductNotifier,
         AsyncValue<BaseResponse<VariantsByProductResponse>>,
-        String>((ref, productId) {
+        String>((StateNotifierProviderRef<VariantsByProductNotifier, AsyncValue<BaseResponse<VariantsByProductResponse>>> ref, String productId) {
   return VariantsByProductNotifier(productId, ref);
 });
 
 class VariantsByProductNotifier
     extends BaseNotifier<VariantsByProductResponse> {
   final String campusCategoryId;
-  static Map<String, VariantsByProductResponse> cachedDataMap = {};
+  static Map<String, VariantsByProductResponse> cachedDataMap = <String, VariantsByProductResponse>{};
   bool needsUpdate = true;
 
   VariantsByProductNotifier(this.campusCategoryId, super.ref) {
@@ -38,7 +38,7 @@ class VariantsByProductNotifier
     _fetchData();
   }
 
-  void _fetchData() async {
+  Future<void> _fetchData() async {
     state = const AsyncValue.loading();
     await performAction(() {}, (String msg) {}, (String err) {});
   }

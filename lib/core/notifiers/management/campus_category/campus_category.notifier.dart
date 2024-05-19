@@ -1,10 +1,8 @@
-import "package:flutter/material.dart";
-import "package:hooks_riverpod/hooks_riverpod.dart";
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import "../../../../mock/management/campus category/mock_campus_category.dart";
-import "../../../models/base_response.dart";
-import "../../../models/management/campus_category/campus_category.response.types.dart";
-import "../../base.notifier.dart";
+import '../../../models/base_response.dart';
+import '../../../models/management/campus_category/campus_category.response.types.dart';
+import "../../../repository/management_bc/campus_category/campus_category.repository.dart";
 
 final StateNotifierProviderFamily<CampusCategoryNotifier,
         AsyncValue<BaseResponse<List<CampusCategoryResponse>>>, String>
@@ -12,58 +10,65 @@ final StateNotifierProviderFamily<CampusCategoryNotifier,
         CampusCategoryNotifier,
         AsyncValue<BaseResponse<List<CampusCategoryResponse>>>,
         String>((ref, campusId) {
-  return CampusCategoryNotifier(campusId, ref);
+  final campusCategoryRepository = ref.read(campusCategoryRepositoryProvider);
+  return CampusCategoryNotifier(campusId, campusCategoryRepository);
 });
 
-class CampusCategoryNotifier
-    extends BaseNotifier<List<CampusCategoryResponse>> {
-  final String restaurantId;
-  static Map<String, List<CampusCategoryResponse>> cachedDataMap =
-      <String, List<CampusCategoryResponse>>{};
-  bool needsUpdate = true;
+class CampusCategoryNotifier extends StateNotifier<
+    AsyncValue<BaseResponse<List<CampusCategoryResponse>>>> {
+  final String campusId;
+  final CampusCategoryRepository campusCategoryRepository;
+  final Map<int, List<CampusCategoryResponse>> cachedPages = {};
+  int lastPage = 0;
+  static const int _pageSize = 5;
 
-  CampusCategoryNotifier(this.restaurantId, super.ref) {
-    loadData();
-  }
-
-  bool needToUpdate() {
-    return needsUpdate || !cachedDataMap.containsKey(restaurantId);
-  }
+  CampusCategoryNotifier(this.campusId, this.campusCategoryRepository)
+      : super(const AsyncLoading());
 
   Future<void> loadData() async {
-    if (cachedDataMap.containsKey(restaurantId) && !needToUpdate()) {
-      state = AsyncValue.data(
-          BaseResponse(code: "SUCCESS", data: cachedDataMap[restaurantId]!));
+    if (cachedPages.isNotEmpty) {
+      final List<CampusCategoryResponse> allCachedData =
+          cachedPages.values.expand((page) => page).toList();
+      state = AsyncData(BaseResponse(code: 'SUCCESS', data: allCachedData));
       return;
     }
-    _fetchData();
-  }
-
-  void _fetchData() async {
-    state = const AsyncValue.loading();
-    await performAction(() {}, (String msg) {}, (String err) {});
-  }
-
-  @override
-  Future<void> performAction(VoidCallback onLoading, Function(String) onSuccess,
-      Function(String) onError) async {
-    onLoading();
     try {
-      final BaseResponse<List<CampusCategoryResponse>> response =
-          await ref.read(mockCampusCategoryServiceProvider).getCampusCategory();
-      cachedDataMap[restaurantId] = response.data;
-      handleResponse(response, onSuccess, onError);
-      needsUpdate = false;
-      state = AsyncValue.data(response);
-    } on Exception catch (e) {
-      state = AsyncValue.error(e, StackTrace.current);
-      needsUpdate = true;
+      await fetchData(0, _pageSize);
+    } catch (e, stack) {
+      state = AsyncError(e, stack);
     }
   }
 
-  // Método para reiniciar o actualizar los datos
+  Future<BaseResponse<List<CampusCategoryResponse>>> fetchData(
+      int pageNumber, int pageSize) async {
+    if (cachedPages.containsKey(pageNumber)) {
+      final BaseResponse<List<CampusCategoryResponse>> response = BaseResponse(
+        code: 'SUCCESS',
+        data: cachedPages[pageNumber]!,
+      );
+      state = AsyncData(response);
+      return response;
+    }
+    try {
+      final BaseResponse<List<CampusCategoryResponse>> response =
+          await campusCategoryRepository.getCategoriesByCampus(
+        campusId: campusId,
+        pageNumber: pageNumber,
+        pageSize: pageSize,
+      );
+      cachedPages[pageNumber] = response.data;
+      lastPage = pageNumber;
+      state = AsyncData(response);
+      return response;
+    } catch (e, stack) {
+      state = AsyncError(e, stack);
+      rethrow;
+    }
+  }
+
   Future<void> reloadData() async {
-    needsUpdate = true; // Forzar actualización en la próxima carga
+    cachedPages.clear();
+    lastPage = 0;
     await loadData();
   }
 }

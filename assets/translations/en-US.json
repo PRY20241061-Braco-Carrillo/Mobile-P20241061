@@ -128,6 +128,22 @@
             "PRINCIPAL": {
                 "label": "Principal"
             }
+        },
+        "infoDialog": {
+            "name": "Name",
+            "available": "Available",
+            "closed": "Closed",
+            "address": "Address",
+            "serviceType": "Type of service",
+            "facebook": "Facebook",
+            "instagram": "Instagram",
+            "twitter": "Twitter",
+            "youtube": "Youtube",
+            "whatapp": "Whatapp",
+            "phone": "Phone",
+            "email": "Email",
+            "yes": "Yes",
+            "no": "No"
         }
     },
     "MenuCard": {
@@ -163,6 +179,31 @@
         }, 
         "campus": {
             "title": "Campus"
+        },
+        "login": {
+            "title": "Log In"
+        },
+        "sign_up": {
+            "title": "Sign Up"
+        }
+    },    
+    "Product":{
+        "variants":{
+            "CC01": {
+                "label": "Choose your preferred cooking method"
+            },
+            "CC02": {
+                "label": "Select the quantity of pieces"
+            },
+            "CC03": {
+                "label": "Select the quantity"
+            },
+            "CC04": {
+                "label": "Select the volume of the drink"
+            },
+            "CC05": {
+                "label": "Select the size"
+            }
         }
     }
 }

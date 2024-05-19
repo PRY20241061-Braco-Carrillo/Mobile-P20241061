@@ -132,6 +132,22 @@
                 "label": "Platos de fondo",
                 "ariaLabel": "Categoria de platos de fondo"
             }
+        },
+        "infoDialog": {
+            "name": "Nombre",
+            "available": "Disponible",
+            "closed": "Cerrado",
+            "address": "Dirección",
+            "serviceType": "Tipo de servicio",
+            "facebook": "Facebook",
+            "instagram": "Instagram",
+            "twitter": "Twitter",
+            "youtube": "Youtube",
+            "whatapp": "Whatapp",
+            "phone": "Teléfono",
+            "email": "Correo",
+            "yes" : "Si",
+            "no" : "No"
         }
     },
     "MenuCard": {
@@ -167,6 +183,57 @@
         }, 
         "campus": {
             "title": "Sedes"
+        },
+        "login": {
+            "title": "Iniciar Sesión"
+        },
+        "sign_up": {
+            "title": "Registrarse"
+        }
+    },
+    "Product":{
+        "variants":{
+            "CC01": {
+                "label": "Seleccione su método de cocinado preferido"
+            },
+            "CC02": {
+                "label": "Seleccione la cantidad de piezas"
+            },
+            "CC03": {
+                "label": "Seleccione la cantidad"
+            },
+            "CC04": {
+                "label": "Seleccione el volumen de la bebida"
+            },
+            "CC05": {
+                "label": "Seleccione el tamaño"
+            }
+        },
+        "buttons": {
+            "ADD": {
+                "label": "Agregar"
+            },
+            "CANCEL": {
+                "label": "Cancelar"
+            },
+            "CONFIRM": {
+                "label": "Confirmar"
+            },
+            "CONTINUE": {
+                "label": "Continuar"
+            },
+            "FINISH": {
+                "label": "Finalizar"
+            },
+            "VIEW": {
+                "label": "Ver"
+            },
+            "AR": {
+                "label": "Realidad Aumentada"
+            },
+            "PROMOTION_DETAIL": {
+                "label": "Detalle de promoción"
+            }
         }
     }
 }

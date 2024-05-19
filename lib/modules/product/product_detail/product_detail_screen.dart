@@ -8,9 +8,10 @@ import "../../../config/routes/routes.dart";
 import "../../../core/models/base_response.dart";
 import "../../../core/models/management/product_variant/variants_by_product.response.types.dart";
 import "../../../core/notifiers/management/product_variant/variants_by_product.notifier.dart";
-import "../../../layout/main_layout.dart";
+import "../../../layout/base_layout.dart";
 import "../../../layout/scrollable_layout.dart";
 import "../../../shared/widgets/features/header/product-header/products_categories_header.dart";
+import "../../../shared/widgets/features/product-card/buttons/button_product.dart";
 import "../../../shared/widgets/features/product-card/product_detail-card/product_detail.dart";
 import "../../../shared/widgets/features/product-card/product_detail-card/product_detail.types.dart";
 import "../../../shared/widgets/features/product-card/product_detail-card/variants/variant_detail.dart";
@@ -30,6 +31,9 @@ class ProductDetailScreen extends ConsumerWidget {
     final AsyncValue<BaseResponse<VariantsByProductResponse>> variantsResponse =
         ref.watch(variantsByProductNotifierProvider(
             productDetailNavigationData.productData.productId));
+
+    final ProductVariant? selectedVariant =
+        ref.watch(selectedProductVariantProvider);
 
     final AsyncValue<ProductDetailCardData> categoryCard =
         variantsResponse.when(
@@ -56,6 +60,7 @@ class ProductDetailScreen extends ConsumerWidget {
           itemBuilder: (BuildContext context, int index) {
             return ProductVariantSelector(
               productVariants: data.productVariants,
+              data: data,
             );
           },
         );
@@ -107,12 +112,16 @@ class ProductDetailScreen extends ConsumerWidget {
           .reloadData();
     }
 
+    final Widget buttonProduct = ButtonProduct(
+      productId: productDetailNavigationData.productData.productId,
+    );
+
     return BackButtonListener(
       onBackButtonPressed: () async {
         if (GoRouter.of(context).canPop()) {
           GoRouter.of(context).pop();
         } else {
-          context.go(
+          await GoRouter.of(context).push(
               "${AppRoutes.products}/${productDetailNavigationData.categoryData.campusCategoryId}",
               extra: CategoryNavigationData(
                   categoryData: productDetailNavigationData.categoryData,
@@ -120,7 +129,7 @@ class ProductDetailScreen extends ConsumerWidget {
         }
         return true;
       },
-      child: MainLayout(
+      child: BaseLayout(
         tabController: controller,
         body: ScrollableLayout(
           onRefresh: () => handleRefresh(ref),
@@ -128,7 +137,7 @@ class ProductDetailScreen extends ConsumerWidget {
             title: productDetailNavigationData.productData.name,
             height: 220,
             onButtonPressed: (BuildContext context) {
-              context.go(
+              GoRouter.of(context).push(
                   "${AppRoutes.products}/${productDetailNavigationData.categoryData.campusCategoryId}",
                   extra: CategoryNavigationData(
                       categoryData: productDetailNavigationData.categoryData,
@@ -143,7 +152,11 @@ class ProductDetailScreen extends ConsumerWidget {
               const ThemeSwitcherWidget(),
               const SizedBox(height: 10),
               productContent,
+              if (selectedVariant != null)
+                Text(
+                    "Price: \$${selectedVariant.amountPrice.toStringAsFixed(2)}"),
               detailsContent,
+              buttonProduct,
             ],
           ),
         ),

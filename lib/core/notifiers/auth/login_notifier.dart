@@ -1,11 +1,11 @@
 import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
-
-import "../../../mock/auth/mock_login/mock_login.dart";
 import "../../managers/secure_storage_manager.dart";
 import "../../models/auth/login/login_request.types.dart";
 import "../../models/auth/login/login_response.types.dart";
 import "../../models/base_response.dart";
+
+import "../../repository/auth/auth.repository.dart";
 import "../base.notifier.dart";
 
 final AutoDisposeStateNotifierProvider<LogInNotifier,
@@ -27,8 +27,10 @@ class LogInNotifier
       Function(String) onSuccess, Function(String) onError) async {
     onLoading();
     try {
+      final AuthenticationRepository authRepo =
+          ref.read(authenticationRepositoryProvider);
       final BaseResponse<LoginResponse> response =
-          await ref.read(mockLogInServiceProvider).logInUser(requestData);
+          await authRepo.login(requestData);
       handleResponse(response, (String successMessage) {
         storeSecureData(response.data);
         onSuccess(successMessage);

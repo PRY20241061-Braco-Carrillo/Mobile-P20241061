@@ -69,9 +69,9 @@ class LogInScreen extends ConsumerWidget {
       body: ScrollableLayout(
         header: CBaseIconHeader(
           height: 200,
-          headerKey: "",
+          headerKey: "login",
           onButtonPressed: (BuildContext context) {
-            context.go(AppRoutes.accessOptions);
+            GoRouter.of(context).push(AppRoutes.accessOptions);
           },
         ),
         body: _buildLoginForm(context, ref),
@@ -155,10 +155,10 @@ class LogInScreen extends ConsumerWidget {
             const SizedBox(height: 30),
             BaseButton(
               label: labelLoginKey.tr(),
-              onPressed: () {
+              onPressed: () async {
                 if (formKey.currentState!.validate() && isFormValid(ref)) {
                   final LoginRequest requestData = buildLoginRequest(ref);
-                  ref
+                  await ref
                       .read(logInNotifierProvider.notifier)
                       .performAction(requestData, () {
                     ref.read(isLoadingProvider.notifier).state = true;
@@ -169,7 +169,7 @@ class LogInScreen extends ConsumerWidget {
                         type: QuickAlertType.success,
                         text: labelLogInDialogSuccess.tr(),
                         onConfirmBtnTap: () {
-                          context.go(AppRoutes.home);
+                          GoRouter.of(context).push(AppRoutes.home);
                         });
                   }, (String errorMessage) {
                     ref.read(isLoadingProvider.notifier).state = false;
@@ -180,7 +180,7 @@ class LogInScreen extends ConsumerWidget {
                     );
                   });
                 } else {
-                  QuickAlert.show(
+                  await QuickAlert.show(
                     context: context,
                     type: QuickAlertType.error,
                     text: labelLoginDialogValidation.tr(),

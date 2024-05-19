@@ -44,4 +44,12 @@ class SharedPreferencesService {
   Future<bool> removeHeaders() async {
     return await _prefs?.remove(AppKeys.headers) ?? false;
   }
+
+  Future<bool> setHeadersVersion(String version) async {
+    return await _prefs?.setString(AppKeys.headersVersion, version) ?? false;
+  }
+
+  String? getHeadersVersion() {
+    return _prefs?.getString(AppKeys.headersVersion);
+  }
 }

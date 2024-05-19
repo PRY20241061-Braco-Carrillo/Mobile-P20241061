@@ -87,11 +87,11 @@ class CProductDetailCard extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 2),
                   margin: const EdgeInsets.only(left: 10.0, right: 8.0),
                   alignment: Alignment.centerLeft,
-                  child: Text(
+                  child: const Text(
                     //getCurrencySymbol(data.currencyPrice) +
                     //  data.price.toString(),
                     "S/. 12.99",
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.w400,
                       fontSize: 18,

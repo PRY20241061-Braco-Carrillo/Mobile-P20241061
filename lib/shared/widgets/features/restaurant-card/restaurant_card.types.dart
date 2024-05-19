@@ -6,7 +6,7 @@ part "restaurant_card.types.g.dart";
 class RestaurantCardData {
   final String name;
   final String logoUrl;
-  final String imageUrl;
+  final String? imageUrl;
   final bool isAvailable;
   final String restaurantId;
 
@@ -16,7 +16,7 @@ class RestaurantCardData {
   RestaurantCardData({
     required this.name,
     required this.logoUrl,
-    required this.imageUrl,
+    this.imageUrl,
     required this.isAvailable,
     required this.restaurantId,
   });

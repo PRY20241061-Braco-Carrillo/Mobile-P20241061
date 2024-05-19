@@ -35,16 +35,16 @@ class CBaseRestaurantCategoriesHeader extends ConsumerWidget {
       padding: const EdgeInsets.only(top: 20),
       child: Stack(
         children: <Widget>[
-          Row(
-            children: <Widget>[
-              Expanded(
-                flex: 7,
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      left: 20, top: 80, bottom: 10, right: 10),
+          Padding(
+            padding: const EdgeInsets.only(
+                left: 20, top: 100, bottom: 10, right: 10),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  flex: 7,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
                         campusCardData.name,
@@ -80,15 +80,9 @@ class CBaseRestaurantCategoriesHeader extends ConsumerWidget {
                     ],
                   ),
                 ),
-              ),
-              Expanded(
-                flex: 3,
-                child: Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(25),
-                  ),
+                const SizedBox(width: 10),
+                Expanded(
+                  flex: 3,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(25),
                     child: ImageDisplay(
@@ -96,8 +90,8 @@ class CBaseRestaurantCategoriesHeader extends ConsumerWidget {
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           Positioned(
             top: padding.top,
