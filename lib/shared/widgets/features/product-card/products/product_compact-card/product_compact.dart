@@ -3,34 +3,47 @@ import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 import "package:skeletonizer/skeletonizer.dart";
 
-import "../../../../../config/routes/routes.dart";
-import "../../../../../modules/product/product_detail/product_detail_navigation_data.types.dart";
-import "../../../../utils/constants/currency_types.dart";
-import "../../../../../modules/product/products_list/category_navigation_data.types.dart";
-import "../labels/size_labels.dart";
+import "../../../../../../config/routes/routes.dart";
+import "../../../../../../modules/product/menus/menu_detail_navigation_data.types.dart";
+import "../../../../../../modules/product/product_detail/product_detail_navigation_data.types.dart";
+import "../../../../../utils/constants/currency_types.dart";
+import "../../../../../../modules/product/products_list/category_navigation_data.types.dart";
+import "../../../campus-card/campus_card.types.dart";
+import "../../labels/size_labels.dart";
 import "../product_base-card/product_base.types.dart";
 
 class CProductCompactCard extends StatelessWidget {
   final ProductBaseCardData? data;
   final CategoryNavigationData? categoryNavigationData;
+  final CampusCardData? campusCardData;
+
+  final String type;
   final bool showSkeleton;
   final String? error;
 
-  const CProductCompactCard(
-      {super.key, required this.data, required this.categoryNavigationData})
-      : showSkeleton = false,
+  const CProductCompactCard({
+    super.key,
+    required this.data,
+    this.campusCardData,
+    required this.categoryNavigationData,
+    this.type = ProductBaseTypes.product,
+  })  : showSkeleton = false,
         error = null;
 
   const CProductCompactCard.skeleton({super.key})
       : data = null,
         error = null,
+        type = ProductBaseTypes.product,
         showSkeleton = true,
-        categoryNavigationData = null;
+        categoryNavigationData = null,
+        campusCardData = null;
 
   const CProductCompactCard.error({super.key, required this.error})
       : data = null,
         showSkeleton = false,
-        categoryNavigationData = null;
+        type = ProductBaseTypes.product,
+        categoryNavigationData = null,
+        campusCardData = null;
 
   @override
   Widget build(BuildContext context) {
@@ -48,12 +61,22 @@ class CProductCompactCard extends StatelessWidget {
 
     return InkWell(
       onTap: () {
-        GoRouter.of(context).push(
-            "${AppRoutes.products}/${categoryNavigationData?.categoryData.campusCategoryId}/${data.productId}",
-            extra: ProductDetailNavigationData(
-                categoryData: categoryNavigationData!.categoryData,
-                campusData: categoryNavigationData!.campusData,
-                productData: data));
+        if (categoryNavigationData == null &&
+            type == ProductBaseTypes.menu &&
+            campusCardData != null) {
+          GoRouter.of(context).push(
+              "${AppRoutes.categories}${AppRoutes.menu}/${campusCardData?.campusId}/${data.productId}",
+              extra: MenuDetailNavigationData(
+                  campusData: campusCardData!, productData: data));
+        }
+        if (type == ProductBaseTypes.product) {
+          GoRouter.of(context).push(
+              "${AppRoutes.products}/${categoryNavigationData?.categoryData.campusCategoryId}/${data.productId}",
+              extra: ProductDetailNavigationData(
+                  categoryData: categoryNavigationData!.categoryData,
+                  campusData: categoryNavigationData!.campusData,
+                  productData: data));
+        }
       },
       child: Container(
         height: 100,
@@ -84,7 +107,7 @@ class CProductCompactCard extends StatelessWidget {
                     style: const TextStyle(
                         fontSize: 16, fontWeight: FontWeight.bold),
                   ),
-                  if (data.hasVariant) ...<Widget>[
+                  if (data.hasVariant != null && data.hasVariant!) ...<Widget>[
                     const SizedBox(height: 4),
                     const SizeLabel(fontSize: 12),
                   ],
@@ -94,7 +117,7 @@ class CProductCompactCard extends StatelessWidget {
             Expanded(
               flex: 3,
               child: Text(
-                data.hasVariant
+                data.hasVariant != null && data.hasVariant!
                     ? "${labelSincePriceKey.tr()} ${getCurrencySymbol(data.currencyPrice)}${data.amountPrice}"
                     : getCurrencySymbol(data.currencyPrice) +
                         data.amountPrice.toString(),

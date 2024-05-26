@@ -1,4 +1,4 @@
-import "../product-card/product_detail-card/product_detail.types.dart";
+import "../product-card/products/product_detail-card/product_detail.types.dart";
 
 class SelectedProductInfo {
   final String productId;

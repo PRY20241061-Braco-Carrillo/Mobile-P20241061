@@ -6,32 +6,28 @@ import "package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart";
 
 import "../../../config/routes/routes.dart";
 import "../../../core/models/base_response.dart";
-import "../../../core/models/management/product/products_by_category_of_campus.response.types.dart";
-import "../../../core/notifiers/management/product/products_by_category_of_campus.notifier.dart";
+import "../../../core/models/management/menu/menu_by_campus.response.types.dart";
+import "../../../core/notifiers/management/menu/menu_by_campus.notifier.dart";
 import "../../../layout/base_layout.dart";
 import "../../../layout/scrollable_layout.dart";
+import "../../../shared/widgets/features/campus-card/campus_card.types.dart";
 import "../../../shared/widgets/features/header/product-header/products_categories_header.dart";
 import "../../../shared/widgets/features/product-card/products/product_base-card/product_base.dart";
 import "../../../shared/widgets/features/product-card/products/product_base-card/product_base.types.dart";
 import "../../../shared/widgets/features/product-card/products/product_compact-card/product_compact.dart";
 import "../../../shared/widgets/global/theme_switcher/theme_switcher.dart";
-import "category_navigation_data.types.dart";
+import "../products_list/products_by_category_of_campus_screen.dart";
 
-final StateProvider<bool> gridModeProvider =
-    StateProvider<bool>((StateProviderRef<bool> ref) => true);
+class CombosDetailScreen extends ConsumerStatefulWidget {
+  final CampusCardData campusCardData;
 
-class ProductsByCategoryScreen extends ConsumerStatefulWidget {
-  final CategoryNavigationData campusCategoryData;
-
-  const ProductsByCategoryScreen({super.key, required this.campusCategoryData});
+  const CombosDetailScreen({super.key, required this.campusCardData});
 
   @override
-  ProductsByCategoryScreenState createState() =>
-      ProductsByCategoryScreenState();
+  CombosDetailScreenState createState() => CombosDetailScreenState();
 }
 
-class ProductsByCategoryScreenState
-    extends ConsumerState<ProductsByCategoryScreen>
+class CombosDetailScreenState extends ConsumerState<CombosDetailScreen>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
@@ -42,14 +38,13 @@ class ProductsByCategoryScreenState
 
     final bool isFullMode = ref.watch(gridModeProvider);
 
-    final AsyncValue<BaseResponse<List<ProductByCategoryOfCampusResponse>>>
-        restaurantResponse = ref.watch(
-            productsByCategoryOfCampusNotifierProvider(
-                widget.campusCategoryData.categoryData.campusCategoryId));
+    final AsyncValue<BaseResponse<List<MenuByCampusResponse>>>
+        restaurantResponse =
+        ref.watch(menuByCampusNotifierProvider(widget.campusCardData.campusId));
 
     final AsyncValue<List<ProductBaseCardData>> categoryCard =
         restaurantResponse.when(
-      data: (BaseResponse<List<ProductByCategoryOfCampusResponse>> response) {
+      data: (BaseResponse<List<MenuByCampusResponse>> response) {
         return AsyncValue<List<ProductBaseCardData>>.data(
             response.data.map(_mapRestaurantToCardData).toList());
       },
@@ -71,15 +66,12 @@ class ProductsByCategoryScreenState
     );
 
     final Widget gridContent = isFullMode
-        ? gridContentFullMode(
-            context, ref, categoryCard, widget.campusCategoryData)
-        : gridContentCompactMode(
-            context, ref, categoryCard, widget.campusCategoryData);
+        ? gridContentFullMode(context, ref, categoryCard)
+        : gridContentCompactMode(context, ref, categoryCard);
 
     Future<void> handleRefresh(WidgetRef ref) async {
       await ref
-          .read(productsByCategoryOfCampusNotifierProvider(
-                  widget.campusCategoryData.categoryData.campusCategoryId)
+          .read(menuByCampusNotifierProvider(widget.campusCardData.campusId)
               .notifier)
           .reloadData();
     }
@@ -90,8 +82,8 @@ class ProductsByCategoryScreenState
           GoRouter.of(context).pop();
         } else {
           await GoRouter.of(context).push(
-              "${AppRoutes.categories}/${widget.campusCategoryData.campusData.campusId}",
-              extra: widget.campusCategoryData.campusData);
+              "${AppRoutes.categories}/${widget.campusCardData.campusId}",
+              extra: widget.campusCardData);
         }
         return true;
       },
@@ -101,14 +93,13 @@ class ProductsByCategoryScreenState
           onRefresh: () => handleRefresh(ref),
           header: CBaseProductCategoriesHeader(
             height: 220,
-            title: widget.campusCategoryData.categoryData.name,
-            iconUrl: widget.campusCategoryData.categoryData.urlImage,
-            withIcon:
-                widget.campusCategoryData.categoryData.urlImage.isNotEmpty,
+            title: widget.campusCardData.name,
+            iconUrl: widget.campusCardData.imageUrl,
+            withIcon: widget.campusCardData.imageUrl.isNotEmpty,
             onButtonPressed: (BuildContext context) {
               GoRouter.of(context).push(
-                  "${AppRoutes.categories}/${widget.campusCategoryData.campusData.campusId}",
-                  extra: widget.campusCategoryData.campusData);
+                  "${AppRoutes.categories}/${widget.campusCardData.campusId}",
+                  extra: widget.campusCardData);
             },
           ),
           backgroundColor: Theme.of(context).colorScheme.secondary,
@@ -126,15 +117,14 @@ class ProductsByCategoryScreenState
     );
   }
 
-  ProductBaseCardData _mapRestaurantToCardData(
-      ProductByCategoryOfCampusResponse response) {
+  ProductBaseCardData _mapRestaurantToCardData(MenuByCampusResponse response) {
     return ProductBaseCardData(
-      productId: response.productId,
+      productId: response.menuId,
       name: response.name,
       urlImage: response.urlImage,
       amountPrice: response.amountPrice,
       currencyPrice: response.currencyPrice,
-      hasVariant: response.hasVariant,
+      hasVariant: null,
       maxCookingTime: response.maxCookingTime,
       minCookingTime: response.minCookingTime,
       unitOfTimeCookingTime: response.unitOfTimeCookingTime,
@@ -142,11 +132,8 @@ class ProductsByCategoryScreenState
   }
 }
 
-Widget gridContentFullMode(
-    BuildContext context,
-    WidgetRef ref,
-    AsyncValue<List<ProductBaseCardData>> categoryCard,
-    CategoryNavigationData data) {
+Widget gridContentFullMode(BuildContext context, WidgetRef ref,
+    AsyncValue<List<ProductBaseCardData>> categoryCard) {
   return categoryCard.when(
     data: (List<ProductBaseCardData> dataList) {
       return AlignedGridView.count(
@@ -157,7 +144,9 @@ Widget gridContentFullMode(
         itemCount: dataList.length,
         itemBuilder: (BuildContext context, int index) {
           return CProductBaseCard(
-              data: dataList[index], categoryNavigationData: data);
+              data: dataList[index],
+              categoryNavigationData: null,
+              type: ProductBaseTypes.combo);
         },
       );
     },
@@ -188,11 +177,8 @@ Widget gridContentFullMode(
   );
 }
 
-Widget gridContentCompactMode(
-    BuildContext context,
-    WidgetRef ref,
-    AsyncValue<List<ProductBaseCardData>> categoryCard,
-    CategoryNavigationData data) {
+Widget gridContentCompactMode(BuildContext context, WidgetRef ref,
+    AsyncValue<List<ProductBaseCardData>> categoryCard) {
   return categoryCard.when(
     data: (List<ProductBaseCardData> dataList) {
       return AlignedGridView.count(
@@ -203,7 +189,9 @@ Widget gridContentCompactMode(
         itemCount: dataList.length,
         itemBuilder: (BuildContext context, int index) {
           return CProductCompactCard(
-              data: dataList[index], categoryNavigationData: data);
+              data: dataList[index],
+              categoryNavigationData: null,
+              type: ProductBaseTypes.combo);
         },
       );
     },

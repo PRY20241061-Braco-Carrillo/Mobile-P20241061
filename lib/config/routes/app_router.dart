@@ -2,6 +2,8 @@ import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 
+import "../../ar_core/ar.types.dart";
+import "../../ar_core/ar_module.dart";
 import "../../core/managers/secure_storage_manager.dart";
 import "../../core/shared_preferences/services/shared_preferences.service.dart";
 import "../../modules/auth/log_in/log_in_screen.dart";
@@ -11,6 +13,11 @@ import "../../modules/auth/sign_up/sign_up_screen.dart";
 import "../../modules/campus/campus_screen.dart";
 import "../../modules/cart/qr_generation/cart_screen.dart";
 import "../../modules/categories/categories_screen.dart";
+import "../../modules/product/combos/combos_screen.dart";
+import "../../modules/product/menus/menu_detail_navigation_data.types.dart";
+import "../../modules/product/menus/menus_detail_screen.dart";
+import "../../modules/product/menus/menus_screen.dart";
+import "../../modules/product/promotions/promotions_screen.dart";
 import "../../modules/home/home_screen.dart";
 import "../../modules/product/product_detail/product_detail_navigation_data.types.dart";
 import "../../modules/product/product_detail/product_detail_screen.dart";
@@ -90,6 +97,46 @@ final Provider<GoRouter> goRouterProvider =
         path: AppRoutes.cart,
         builder: (BuildContext context, GoRouterState state) =>
             const CartScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.ar,
+        builder: (BuildContext context, GoRouterState state) {
+          final Map<String, dynamic> args = state.extra as Map<String, dynamic>;
+          final String urlGLB = args["urlGLB"];
+          final NutritionalInformationAR nutritionalInformation =
+              args["nutritionalInformation"];
+          return ARScreen(
+              urlGLB: urlGLB, nutritionalInformation: nutritionalInformation);
+        },
+      ),
+      GoRoute(
+        path: "${AppRoutes.categories}${AppRoutes.combos}/:campusId",
+        builder: (BuildContext context, GoRouterState state) {
+          final CampusCardData data = state.extra as CampusCardData;
+          return CombosDetailScreen(campusCardData: data);
+        },
+      ),
+      GoRoute(
+        path: "${AppRoutes.categories}${AppRoutes.menu}/:campusId",
+        builder: (BuildContext context, GoRouterState state) {
+          final CampusCardData data = state.extra as CampusCardData;
+          return MenuScreen(campusCardData: data);
+        },
+      ),
+      GoRoute(
+        path: "${AppRoutes.categories}${AppRoutes.menu}/:campusId/:productId",
+        builder: (BuildContext context, GoRouterState state) {
+          final MenuDetailNavigationData data =
+              state.extra as MenuDetailNavigationData;
+          return MenusDetailScreen(menuDetailNavigationData: data);
+        },
+      ),
+      GoRoute(
+        path: "${AppRoutes.categories}${AppRoutes.promotions}/:campusId",
+        builder: (BuildContext context, GoRouterState state) {
+          final CampusCardData data = state.extra as CampusCardData;
+          return PromotionsDetailScreen(campusCardData: data);
+        },
       ),
       GoRoute(
         path: AppRoutes.logIn,

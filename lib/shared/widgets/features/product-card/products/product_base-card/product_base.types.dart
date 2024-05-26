@@ -11,7 +11,7 @@ class ProductBaseCardData {
   String unitOfTimeCookingTime;
   String urlImage;
   double amountPrice;
-  bool hasVariant;
+  bool? hasVariant;
   String currencyPrice;
 
   ProductBaseCardData({
@@ -30,4 +30,11 @@ class ProductBaseCardData {
       _$ProductBaseCardDataFromJson(json);
 
   Map<String, dynamic> toJson() => _$ProductBaseCardDataToJson(this);
+}
+
+class ProductBaseTypes {
+  static const String product = "product";
+  static const String combo = "combo";
+  static const String menu = "menu";
+  static const String promotion = "promotion";
 }

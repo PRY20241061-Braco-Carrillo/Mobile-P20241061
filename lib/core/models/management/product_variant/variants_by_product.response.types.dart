@@ -1,6 +1,6 @@
 import "package:json_annotation/json_annotation.dart";
 
-import "../../../../shared/widgets/features/product-card/product_detail-card/product_detail.types.dart";
+import "../../../../shared/widgets/features/product-card/products/product_detail-card/product_detail.types.dart";
 
 @JsonSerializable()
 class VariantsByProductResponse {

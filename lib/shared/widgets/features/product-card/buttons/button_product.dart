@@ -1,10 +1,11 @@
+import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 
 import "../../order_cart/order_cart.notifier.dart";
 import "../../order_cart/selected_product_info.types.dart";
-import "../product_detail-card/product_detail.types.dart";
-import "../product_detail-card/variants/variant_detail.dart";
+import "../products/product_detail-card/product_detail.types.dart";
+import "../products/product_detail-card/variants/variant_detail.dart";
 
 class ButtonProduct extends ConsumerWidget {
   final String productId;
@@ -12,6 +13,8 @@ class ButtonProduct extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    const String labelButton = "MenuCard.buttons.ADD.label";
+
     final ProductDetailCardData? productData =
         ref.watch(productDetailCardDataProvider);
 
@@ -33,14 +36,9 @@ class ButtonProduct extends ConsumerWidget {
               );
 
               ref.read(cartProvider.notifier).addProduct(selectedProductInfo);
-
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text("Producto añadido al carrito"),
-                duration: Duration(seconds: 2),
-              ));
             }
           : null,
-      child: const Text("Agregar al Carrito"),
+      child: Text(labelButton.tr()),
     );
   }
 }

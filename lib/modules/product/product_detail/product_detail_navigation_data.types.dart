@@ -1,6 +1,6 @@
 import "../../../shared/widgets/features/campus-card/campus_card.types.dart";
 import "../../../shared/widgets/features/category-button/category_button.types.dart";
-import "../../../shared/widgets/features/product-card/product_base-card/product_base.types.dart";
+import "../../../shared/widgets/features/product-card/products/product_base-card/product_base.types.dart";
 
 class ProductDetailNavigationData {
   final CategoryButtonData categoryData;

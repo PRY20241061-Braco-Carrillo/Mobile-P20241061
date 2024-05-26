@@ -1,17 +1,17 @@
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
+import "package:flutter/material.dart";
+import "package:go_router/go_router.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:infinite_scroll_pagination/infinite_scroll_pagination.dart";
+import "package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart";
 
-import '../../config/routes/routes.dart';
-import '../../core/models/base_response.dart';
-import '../../core/models/management/campus/campus.response.types.dart';
-import '../../core/notifiers/management/campus/campus.notifier.dart';
-import '../../layout/base_layout.dart';
-import '../../shared/widgets/features/campus-card/campus_card.dart';
-import '../../shared/widgets/features/campus-card/campus_card.types.dart';
-import '../../shared/widgets/global/header/icon_header.dart';
+import "../../config/routes/routes.dart";
+import "../../core/models/base_response.dart";
+import "../../core/models/management/campus/campus.response.types.dart";
+import "../../core/notifiers/management/campus/campus.notifier.dart";
+import "../../layout/base_layout.dart";
+import "../../shared/widgets/features/campus-card/campus_card.dart";
+import "../../shared/widgets/features/campus-card/campus_card.types.dart";
+import "../../shared/widgets/global/header/icon_header.dart";
 
 class CampusScreen extends ConsumerStatefulWidget {
   final String restaurantId;
@@ -41,7 +41,7 @@ class CampusScreenState extends ConsumerState<CampusScreen> {
   }
 
   Future<void> _fetchInitialData() async {
-    final notifier =
+    final CampusNotifier notifier =
         ref.read(campusNotifierProvider(widget.restaurantId).notifier);
     await notifier.loadData();
   }

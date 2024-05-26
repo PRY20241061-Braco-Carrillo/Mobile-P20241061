@@ -15,7 +15,7 @@ ProductBaseCardData _$ProductBaseCardDataFromJson(Map<String, dynamic> json) =>
       unitOfTimeCookingTime: json['unitOfTimeCookingTime'] as String,
       urlImage: json['urlImage'] as String,
       amountPrice: (json['amountPrice'] as num).toDouble(),
-      hasVariant: json['hasVariant'] as bool,
+      hasVariant: json['hasVariant'] as bool?,
       currencyPrice: json['currencyPrice'] as String,
     );
 

@@ -1,22 +1,26 @@
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
+import "package:flutter/material.dart";
+import "package:go_router/go_router.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:infinite_scroll_pagination/infinite_scroll_pagination.dart";
+import "package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart";
 
-import '../../config/routes/routes.dart';
-import '../../core/models/base_response.dart';
-import '../../core/models/management/campus_category/campus_category.response.types.dart';
-import '../../core/notifiers/management/campus_category/campus_category.notifier.dart';
-import '../../layout/base_layout.dart';
-import '../../shared/widgets/features/campus-card/campus_card.types.dart';
-import '../../shared/widgets/features/category-button/category_button.dart';
-import '../../shared/widgets/features/category-button/category_button.types.dart';
-import '../../shared/widgets/features/header/category-header/restaurant_categories_header.dart';
-import '../../shared/widgets/global/theme_switcher/theme_switcher.dart';
+import "../../config/routes/routes.dart";
+import "../../core/models/base_response.dart";
+import "../../core/models/management/campus_category/campus_category.response.types.dart";
+import "../../core/notifiers/management/campus_category/campus_category.notifier.dart";
+import "../../layout/base_layout.dart";
+import "../../shared/widgets/features/campus-card/campus_card.types.dart";
+import "../../shared/widgets/features/category-button/category_button.dart";
+import "../../shared/widgets/features/category-button/category_button.types.dart";
+import "../../shared/widgets/features/category-button/category_simple_button.dart";
+import "../../shared/widgets/features/header/category-header/restaurant_categories_header.dart";
+import "../../shared/widgets/global/theme_switcher/theme_switcher.dart";
 
 class CategoriesScreen extends ConsumerStatefulWidget {
   final CampusCardData campusData;
+  static const String? promotions = 'Promotions';
+  static const String? menu = 'Menu';
+  static const String? combo = 'Combo';
 
   const CategoriesScreen({super.key, required this.campusData});
 
@@ -43,7 +47,7 @@ class CategoriesScreenState extends ConsumerState<CategoriesScreen> {
   }
 
   Future<void> _fetchInitialData() async {
-    final notifier = ref.read(
+    final CampusCategoryNotifier notifier = ref.read(
         campusCategoryNotifierProvider(widget.campusData.campusId).notifier);
     await notifier.loadData();
   }
@@ -117,8 +121,45 @@ class CategoriesScreenState extends ConsumerState<CategoriesScreen> {
                             PagedChildBuilderDelegate<CategoryButtonData>(
                           itemBuilder: (BuildContext context,
                                   CategoryButtonData item, int index) =>
-                              CCategoryButton(
-                                  data: item, campusData: widget.campusData),
+                              index == 0 &&
+                                      (CategoriesScreen.promotions != null ||
+                                          CategoriesScreen.menu != null ||
+                                          CategoriesScreen.combo != null)
+                                  ? Column(
+                                      children: <Widget>[
+                                        if (CategoriesScreen.promotions != null)
+                                          CategorySimpleButton(
+                                              title:
+                                                  CategoriesScreen.promotions!,
+                                              imageUrl:
+                                                  "https://estrellasupermercados.com/wp-content/uploads/2021/06/POLLOS.jpg",
+                                              path:
+                                                  "${AppRoutes.categories}${AppRoutes.promotions}/${widget.campusData.campusId}",
+                                              campusData: widget.campusData),
+                                        if (CategoriesScreen.menu != null)
+                                          CategorySimpleButton(
+                                              title: CategoriesScreen.menu!,
+                                              imageUrl:
+                                                  "https://estrellasupermercados.com/wp-content/uploads/2021/06/POLLOS.jpg",
+                                              path:
+                                                  "${AppRoutes.categories}${AppRoutes.menu}/${widget.campusData.campusId}",
+                                              campusData: widget.campusData),
+                                        if (CategoriesScreen.combo != null)
+                                          CategorySimpleButton(
+                                              title: CategoriesScreen.combo!,
+                                              imageUrl:
+                                                  "https://estrellasupermercados.com/wp-content/uploads/2021/06/POLLOS.jpg",
+                                              path:
+                                                  "${AppRoutes.categories}${AppRoutes.combos}/${widget.campusData.campusId}",
+                                              campusData: widget.campusData),
+                                        CCategoryButton(
+                                            data: item,
+                                            campusData: widget.campusData),
+                                      ],
+                                    )
+                                  : CCategoryButton(
+                                      data: item,
+                                      campusData: widget.campusData),
                           firstPageProgressIndicatorBuilder:
                               (BuildContext context) => const Center(
                                   child: CircularProgressIndicator()),

@@ -5,28 +5,27 @@ import "../../../../../../modules/product/products_list/category_navigation_data
 import "../../../../../providers/image_provider.dart";
 import "../../../../global/image_display/image_display.dart";
 import "../../labels/size_labels.dart";
-import "../../product_base-card/product_base.types.dart";
+import "../product_base-card/product_base.types.dart";
 
-class CDetailComplementsCard extends StatelessWidget {
-  //final ProductDetailCardData? data;
+class CProductDetailCard extends StatelessWidget {
   final CategoryNavigationData? categoryNavigationData;
   final ProductBaseCardData? productBaseCardData;
 
   final bool showSkeleton;
   final String? error;
 
-  const CDetailComplementsCard(
+  const CProductDetailCard(
       {super.key, this.categoryNavigationData, this.productBaseCardData})
       : showSkeleton = false,
         error = null;
 
-  const CDetailComplementsCard.skeleton({super.key})
+  const CProductDetailCard.skeleton({super.key})
       : error = null,
         showSkeleton = true,
         categoryNavigationData = null,
         productBaseCardData = null;
 
-  const CDetailComplementsCard.error({super.key, required this.error})
+  const CProductDetailCard.error({super.key, required this.error})
       : showSkeleton = false,
         categoryNavigationData = null,
         productBaseCardData = null;
@@ -59,8 +58,8 @@ class CDetailComplementsCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Container(
-                  height: 150, // Altura fija para la imagen
                   width: width,
+                  height: 300,
                   margin: const EdgeInsets.only(bottom: 8),
                   child: Stack(
                     alignment: Alignment.bottomLeft,
@@ -70,13 +69,16 @@ class CDetailComplementsCard extends StatelessWidget {
                             topLeft: Radius.circular(10),
                             topRight: Radius.circular(10)),
                         child: ImageDisplay(
-                          config: ImageConfig(imageUrl: data.urlImage),
-                        ),
+                            config: ImageConfig(
+                                imageUrl: data.urlImage,
+                                width: width,
+                                height: 300,
+                                fit: BoxFit.fill)),
                       ),
                       if (data.hasVariant == true)
                         const Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: SizeLabel(fontSize: 12),
+                          child: SizeLabel(fontSize: 15, height: 10, width: 20),
                         ),
                     ],
                   ),

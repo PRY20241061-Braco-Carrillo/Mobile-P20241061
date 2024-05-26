@@ -4,6 +4,7 @@ import "package:go_router/go_router.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart";
 
+import "../../../ar_core/ar.types.dart";
 import "../../../config/routes/routes.dart";
 import "../../../core/models/base_response.dart";
 import "../../../core/models/management/product_variant/variants_by_product.response.types.dart";
@@ -11,10 +12,11 @@ import "../../../core/notifiers/management/product_variant/variants_by_product.n
 import "../../../layout/base_layout.dart";
 import "../../../layout/scrollable_layout.dart";
 import "../../../shared/widgets/features/header/product-header/products_categories_header.dart";
+import "../../../shared/widgets/features/product-card/buttons/button_ar.dart";
 import "../../../shared/widgets/features/product-card/buttons/button_product.dart";
-import "../../../shared/widgets/features/product-card/product_detail-card/product_detail.dart";
-import "../../../shared/widgets/features/product-card/product_detail-card/product_detail.types.dart";
-import "../../../shared/widgets/features/product-card/product_detail-card/variants/variant_detail.dart";
+import "../../../shared/widgets/features/product-card/products/product_detail-card/product_detail.dart";
+import "../../../shared/widgets/features/product-card/products/product_detail-card/product_detail.types.dart";
+import "../../../shared/widgets/features/product-card/products/product_detail-card/variants/variant_detail.dart";
 import "../../../shared/widgets/global/theme_switcher/theme_switcher.dart";
 import "../products_list/category_navigation_data.types.dart";
 import "product_detail_navigation_data.types.dart";
@@ -112,8 +114,31 @@ class ProductDetailScreen extends ConsumerWidget {
           .reloadData();
     }
 
-    final Widget buttonProduct = ButtonProduct(
+    final Widget buttonAddProduct = ButtonProduct(
       productId: productDetailNavigationData.productData.productId,
+    );
+
+    final Widget buttonArProduct = ButtonAR(
+      productId: productDetailNavigationData.productData.productId,
+      urlGLB:
+          "https://drive.usercontent.google.com/uc?id=19Lht8jgi8xMn1AfV44Wv1-80CsAhF5uJ&export=download",
+      nutritionalInformation: NutritionalInformationAR(
+        calories: 100,
+        carbohydrates: 10,
+        isHighProtein: true,
+        proteins: 10,
+        totalFat: 10,
+        isLowCalories: true,
+        isVegan: true,
+        isVegetarian: true,
+        isWithoutEggs: false,
+        isWithoutGluten: false,
+        isWithoutLactose: false,
+        isWithoutNut: true,
+        isWithoutPig: true,
+        isWithoutSeafood: true,
+        nutritionalInformationId: "1",
+      ),
     );
 
     return BackButtonListener(
@@ -152,11 +177,12 @@ class ProductDetailScreen extends ConsumerWidget {
               const ThemeSwitcherWidget(),
               const SizedBox(height: 10),
               productContent,
+              buttonArProduct,
               if (selectedVariant != null)
                 Text(
                     "Price: \$${selectedVariant.amountPrice.toStringAsFixed(2)}"),
               detailsContent,
-              buttonProduct,
+              buttonAddProduct,
             ],
           ),
         ),
