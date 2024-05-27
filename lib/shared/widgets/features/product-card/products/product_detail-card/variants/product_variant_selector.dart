@@ -24,6 +24,11 @@ class ProductVariantSelector extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Inicia el Notifier con las variantes disponibles si aún no se ha inicializado
+    ref
+        .read(getSelectedVariantsProvider(type)(productId).notifier)
+        .initializeVariants(variants);
+
     final List<ProductDetailVariantCard> productDetails =
         variants.map((Variant variant) {
       print("Mapping variant: ${variant.productVariantId}");
@@ -71,6 +76,9 @@ class ProductVariantSelector extends ConsumerWidget {
       if (previous?[productId]?.selectedSize != next[productId]?.selectedSize ||
           previous?[productId]?.selectedCookingType !=
               next[productId]?.selectedCookingType) {
+        print('Selected size changed: ${next[productId]?.selectedSize}');
+        print(
+            'Selected cooking type changed: ${next[productId]?.selectedCookingType}');
         updateSelectedProductVariant(ref, productDetails, {
           ProductVariantKeys.size: next[productId]?.selectedSize,
           ProductVariantKeys.cookingType: next[productId]?.selectedCookingType,
@@ -140,7 +148,7 @@ class ProductVariantSelector extends ConsumerWidget {
             .read(getSelectedVariantsProvider(type)(productId).notifier)
             .updateSelectedVariant(productId, productVariant);
       } else {
-        print("No matching product variant found");
+        print("No matching variant found for the selected criteria");
         ref
             .read(getSelectedVariantsProvider(type)(productId).notifier)
             .updateSelectedVariant(productId, null);

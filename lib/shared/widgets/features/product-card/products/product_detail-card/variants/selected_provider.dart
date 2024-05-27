@@ -1,31 +1,47 @@
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import "package:collection/collection.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+
 import "../../../menus/menus_detail-card/menus_detail.types.dart";
-import 'variant_abstract.types.dart';
-import 'variant_detail.types.dart';
-import '../product_detail.types.dart';
+import "../product_detail.types.dart";
+import "variant_abstract.types.dart";
+import "variants_keys.dart";
 
 // Provider para los detalles del producto
-final productDetailCardDataProvider = StateProvider<ProductDetailCardData?>(
-  (ref) => null,
+final StateProvider<ProductDetailCardData?> productDetailCardDataProvider =
+    StateProvider<ProductDetailCardData?>(
+  (StateProviderRef<ProductDetailCardData?> ref) => null,
 );
 
 // Provider para los detalles del menú
-final menuDetailCardDataProvider = StateProvider<MenuDetailCardData?>(
-  (ref) => null,
+final StateProvider<MenuDetailCardData?> menuDetailCardDataProvider =
+    StateProvider<MenuDetailCardData?>(
+  (StateProviderRef<MenuDetailCardData?> ref) => null,
 );
 
-// Define los providers para productos y menús
-final selectedProductVariantsProvider = StateNotifierProvider.family<
-    SelectedVariantsNotifier, Map<String, SelectedVariantsState>, String>(
-  (ref, productId) => SelectedVariantsNotifier(productId),
+final StateNotifierProviderFamily<SelectedVariantsNotifier,
+        Map<String, SelectedVariantsState>, String>
+    selectedProductVariantsProvider = StateNotifierProvider.family<
+        SelectedVariantsNotifier, Map<String, SelectedVariantsState>, String>(
+  (StateNotifierProviderRef<SelectedVariantsNotifier,
+              Map<String, SelectedVariantsState>>
+          ref,
+      String productId) {
+    return SelectedVariantsNotifier(productId);
+  },
 );
 
-final selectedMenuVariantsProvider = StateNotifierProvider.family<
-    SelectedVariantsNotifier, Map<String, SelectedVariantsState>, String>(
-  (ref, menuId) => SelectedVariantsNotifier(menuId),
+final StateNotifierProviderFamily<SelectedVariantsNotifier,
+        Map<String, SelectedVariantsState>, String>
+    selectedMenuVariantsProvider = StateNotifierProvider.family<
+        SelectedVariantsNotifier, Map<String, SelectedVariantsState>, String>(
+  (StateNotifierProviderRef<SelectedVariantsNotifier,
+              Map<String, SelectedVariantsState>>
+          ref,
+      String menuId) {
+    return SelectedVariantsNotifier(menuId);
+  },
 );
 
-// Función para seleccionar el provider adecuado según el tipo
 StateNotifierProviderFamily<
     SelectedVariantsNotifier,
     Map<String, SelectedVariantsState>,
@@ -35,18 +51,16 @@ StateNotifierProviderFamily<
       : selectedMenuVariantsProvider;
 }
 
-// Función para seleccionar el provider de detalles adecuado según el tipo
 StateProvider<dynamic> getDetailProvider(String type) {
   return type == "product"
       ? productDetailCardDataProvider
       : menuDetailCardDataProvider;
 }
 
-// Estado que representa las variantes seleccionadas
 class SelectedVariantsState {
   final String? selectedSize;
   final String? selectedCookingType;
-  final Variant? selectedVariant; // Usar la interfaz Variant
+  final Variant? selectedVariant;
 
   SelectedVariantsState({
     this.selectedSize,
@@ -67,44 +81,56 @@ class SelectedVariantsState {
   }
 }
 
-// Notificador para gestionar el estado de las variantes seleccionadas
 class SelectedVariantsNotifier
     extends StateNotifier<Map<String, SelectedVariantsState>> {
-  SelectedVariantsNotifier(String id) : super({});
+  final String id;
+  List<Variant> availableVariants = [];
+
+  SelectedVariantsNotifier(this.id) : super({});
+
+  void initializeVariants(List<Variant> variants) {
+    availableVariants = variants;
+    print('Variants initialized for $id: $variants');
+  }
 
   void updateSelectedSize(String productId, String? size) {
-    final stateForProduct = state[productId] ?? SelectedVariantsState();
+    final SelectedVariantsState stateForProduct =
+        state[productId] ?? SelectedVariantsState();
     print('Updating selected size for $productId to $size');
-    state = {...state, productId: stateForProduct.copyWith(selectedSize: size)};
+    state = {
+      ...state,
+      productId: stateForProduct.copyWith(selectedSize: size),
+    };
     _updateSelectedVariant(productId);
   }
 
   void updateSelectedCookingType(String productId, String? cookingType) {
-    final stateForProduct = state[productId] ?? SelectedVariantsState();
+    final SelectedVariantsState stateForProduct =
+        state[productId] ?? SelectedVariantsState();
     print('Updating selected cooking type for $productId to $cookingType');
     state = {
       ...state,
-      productId: stateForProduct.copyWith(selectedCookingType: cookingType)
+      productId: stateForProduct.copyWith(selectedCookingType: cookingType),
     };
     _updateSelectedVariant(productId);
   }
 
   void updateSelectedVariant(String productId, Variant? variant) {
-    final stateForProduct = state[productId] ?? SelectedVariantsState();
+    final SelectedVariantsState stateForProduct =
+        state[productId] ?? SelectedVariantsState();
     print(
         'Updating selected variant for $productId to ${variant?.productVariantId}');
     state = {
       ...state,
-      productId: stateForProduct.copyWith(selectedVariant: variant)
+      productId: stateForProduct.copyWith(selectedVariant: variant),
     };
   }
 
   void _updateSelectedVariant(String productId) {
-    final stateForProduct = state[productId];
+    final SelectedVariantsState? stateForProduct = state[productId];
     print('Current state for $productId: $stateForProduct');
     if (stateForProduct?.selectedSize != null &&
         stateForProduct?.selectedCookingType != null) {
-      // Aquí deberías obtener la variante correcta basada en las selecciones
       final Variant? selectedVariant = _findMatchingVariant(stateForProduct!);
       print(
           'Selected variant after matching: ${selectedVariant?.productVariantId}');
@@ -122,8 +148,11 @@ class SelectedVariantsNotifier
   }
 
   Variant? _findMatchingVariant(SelectedVariantsState state) {
-    // Implementa la lógica para encontrar la variante que coincida con el estado actual
-    // Aquí puedes buscar en una lista de variantes disponibles y devolver la que coincida
-    return null;
+    return availableVariants.firstWhereOrNull((variant) {
+      final Map<String, String> variantMap = variant.getVariantsMap();
+      return variantMap[ProductVariantKeys.size] == state.selectedSize &&
+          variantMap[ProductVariantKeys.cookingType] ==
+              state.selectedCookingType;
+    });
   }
 }

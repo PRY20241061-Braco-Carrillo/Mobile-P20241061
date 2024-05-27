@@ -16,6 +16,7 @@ import "../../../shared/widgets/features/product-card/buttons/button_ar.dart";
 import "../../../shared/widgets/features/product-card/buttons/button_product.dart";
 import "../../../shared/widgets/features/product-card/products/product_detail-card/product_detail.dart";
 import "../../../shared/widgets/features/product-card/products/product_detail-card/product_detail.types.dart";
+import "../../../shared/widgets/features/product-card/products/product_detail-card/variants/selected_provider.dart";
 import "../../../shared/widgets/features/product-card/products/product_detail-card/variants/variant_abstract.types.dart";
 import "../../../shared/widgets/features/product-card/products/product_detail-card/variants/product_variant_selector.dart";
 import "../../../shared/widgets/global/theme_switcher/theme_switcher.dart";
@@ -38,8 +39,15 @@ class ProductDetailScreen extends ConsumerWidget {
     final AsyncValue<ProductDetailCardData> categoryCard =
         variantsResponse.when(
       data: (BaseResponse<VariantsByProductResponse> response) {
-        return AsyncValue<ProductDetailCardData>.data(
-            ProductDetailCardData.fromJson(response.data.toJson()));
+        final productDetailCardData =
+            ProductDetailCardData.fromJson(response.data.toJson());
+        Future.microtask(() {
+          ref.read(productDetailCardDataProvider.notifier).state =
+              productDetailCardData;
+        });
+        print(
+            "Updated productDetailCardDataProvider with: $productDetailCardData");
+        return AsyncValue<ProductDetailCardData>.data(productDetailCardData);
       },
       loading: () {
         return const AsyncValue<ProductDetailCardData>.loading();

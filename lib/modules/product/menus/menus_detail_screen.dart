@@ -5,8 +5,6 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart";
 
 import "../../../config/routes/routes.dart";
-import "../../../core/models/base_response.dart";
-import "../../../core/models/management/menu/menu_detail.response.types.dart";
 import "../../../core/notifiers/management/menu/menu_detail.notifier.dart";
 import "../../../layout/base_layout.dart";
 import "../../../layout/scrollable_layout.dart";
@@ -14,9 +12,6 @@ import "../../../shared/widgets/features/header/product-header/products_categori
 import "../../../shared/widgets/features/product-card/buttons/button_product.dart";
 import "../../../shared/widgets/features/product-card/menus/menus_detail-card/menu_selector/menu_selector.dart";
 import "../../../shared/widgets/features/product-card/menus/menus_detail-card/menus_detail.dart";
-import "../../../shared/widgets/features/product-card/menus/menus_detail-card/menus_detail.types.dart";
-import "../../../shared/widgets/features/product-card/products/product_detail-card/product_detail.types.dart";
-import "../../../shared/widgets/features/product-card/products/product_detail-card/variants/product_variant_selector.dart";
 import "../../../shared/widgets/global/theme_switcher/theme_switcher.dart";
 import "menu_detail_navigation_data.types.dart";
 
