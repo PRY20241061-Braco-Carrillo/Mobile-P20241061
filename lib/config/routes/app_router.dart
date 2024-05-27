@@ -113,7 +113,7 @@ final Provider<GoRouter> goRouterProvider =
         path: "${AppRoutes.categories}${AppRoutes.combos}/:campusId",
         builder: (BuildContext context, GoRouterState state) {
           final CampusCardData data = state.extra as CampusCardData;
-          return CombosDetailScreen(campusCardData: data);
+          return CombosScreen(campusCardData: data);
         },
       ),
       GoRoute(

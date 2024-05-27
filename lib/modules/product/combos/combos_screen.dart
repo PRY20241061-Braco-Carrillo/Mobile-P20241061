@@ -6,28 +6,29 @@ import "package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart";
 
 import "../../../config/routes/routes.dart";
 import "../../../core/models/base_response.dart";
-import "../../../core/models/management/menu/menu_by_campus.response.types.dart";
+import "../../../core/models/management/combo/combo_by_campus.response.types.dart";
+import "../../../core/notifiers/management/combo/combo_by_campus.notifier.dart";
 import "../../../core/notifiers/management/menu/menu_by_campus.notifier.dart";
 import "../../../layout/base_layout.dart";
 import "../../../layout/scrollable_layout.dart";
 import "../../../shared/widgets/features/campus-card/campus_card.types.dart";
 import "../../../shared/widgets/features/header/product-header/products_categories_header.dart";
-import "../../../shared/widgets/features/product-card/products/product_base-card/product_base.dart";
-import "../../../shared/widgets/features/product-card/products/product_base-card/product_base.types.dart";
-import "../../../shared/widgets/features/product-card/products/product_compact-card/product_compact.dart";
+import "../../../shared/widgets/features/product-card/combos/combos_base-card/combo_base.dart";
+import "../../../shared/widgets/features/product-card/combos/combos_base-card/combo_base.types.dart";
+import "../../../shared/widgets/features/product-card/combos/combos_compact-card/combo_compact.dart";
 import "../../../shared/widgets/global/theme_switcher/theme_switcher.dart";
 import "../products_list/products_by_category_of_campus_screen.dart";
 
-class CombosDetailScreen extends ConsumerStatefulWidget {
+class CombosScreen extends ConsumerStatefulWidget {
   final CampusCardData campusCardData;
 
-  const CombosDetailScreen({super.key, required this.campusCardData});
+  const CombosScreen({super.key, required this.campusCardData});
 
   @override
   CombosDetailScreenState createState() => CombosDetailScreenState();
 }
 
-class CombosDetailScreenState extends ConsumerState<CombosDetailScreen>
+class CombosDetailScreenState extends ConsumerState<CombosScreen>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
@@ -38,21 +39,21 @@ class CombosDetailScreenState extends ConsumerState<CombosDetailScreen>
 
     final bool isFullMode = ref.watch(gridModeProvider);
 
-    final AsyncValue<BaseResponse<List<MenuByCampusResponse>>>
-        restaurantResponse =
-        ref.watch(menuByCampusNotifierProvider(widget.campusCardData.campusId));
+    final AsyncValue<BaseResponse<List<ComboByCampusResponse>>>
+        restaurantResponse = ref.watch(
+            comboByCampusNotifierProvider(widget.campusCardData.campusId));
 
-    final AsyncValue<List<ProductBaseCardData>> categoryCard =
+    final AsyncValue<List<ComboByCampusCardData>> categoryCard =
         restaurantResponse.when(
-      data: (BaseResponse<List<MenuByCampusResponse>> response) {
-        return AsyncValue<List<ProductBaseCardData>>.data(
-            response.data.map(_mapRestaurantToCardData).toList());
+      data: (BaseResponse<List<ComboByCampusResponse>> response) {
+        return AsyncValue<List<ComboByCampusCardData>>.data(
+            response.data.map(_mapComboToCardData).toList());
       },
       loading: () {
-        return const AsyncValue<List<ProductBaseCardData>>.loading();
+        return const AsyncValue<List<ComboByCampusCardData>>.loading();
       },
       error: (Object error, StackTrace stackTrace) {
-        return AsyncValue<List<ProductBaseCardData>>.error(error, stackTrace);
+        return AsyncValue<List<ComboByCampusCardData>>.error(error, stackTrace);
       },
     );
 
@@ -117,25 +118,34 @@ class CombosDetailScreenState extends ConsumerState<CombosDetailScreen>
     );
   }
 
-  ProductBaseCardData _mapRestaurantToCardData(MenuByCampusResponse response) {
-    return ProductBaseCardData(
-      productId: response.menuId,
+  ComboByCampusCardData _mapComboToCardData(ComboByCampusResponse response) {
+    return ComboByCampusCardData(
+      amountPrice: response.amountPrice,
+      comboId: response.comboId,
       name: response.name,
       urlImage: response.urlImage,
-      amountPrice: response.amountPrice,
       currencyPrice: response.currencyPrice,
-      hasVariant: null,
+      freeSauce: response.freeSauce,
       maxCookingTime: response.maxCookingTime,
       minCookingTime: response.minCookingTime,
       unitOfTimeCookingTime: response.unitOfTimeCookingTime,
+      products: response.products
+          .map((ProductByCampusResponse e) => ProductByCampusCardData(
+                description: e.description,
+                name: e.name,
+                productId: e.productId,
+                productAmount: e.productAmount,
+                urlImage: e.urlImage,
+              ))
+          .toList(),
     );
   }
 }
 
 Widget gridContentFullMode(BuildContext context, WidgetRef ref,
-    AsyncValue<List<ProductBaseCardData>> categoryCard) {
+    AsyncValue<List<ComboByCampusCardData>> categoryCard) {
   return categoryCard.when(
-    data: (List<ProductBaseCardData> dataList) {
+    data: (List<ComboByCampusCardData> dataList) {
       return AlignedGridView.count(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -143,10 +153,10 @@ Widget gridContentFullMode(BuildContext context, WidgetRef ref,
         mainAxisSpacing: 10,
         itemCount: dataList.length,
         itemBuilder: (BuildContext context, int index) {
-          return CProductBaseCard(
-              data: dataList[index],
-              categoryNavigationData: null,
-              type: ProductBaseTypes.combo);
+          return CComboBaseCard(
+            data: dataList[index],
+            categoryNavigationData: null,
+          );
         },
       );
     },
@@ -158,7 +168,7 @@ Widget gridContentFullMode(BuildContext context, WidgetRef ref,
         mainAxisSpacing: 10,
         itemCount: 2,
         itemBuilder: (BuildContext context, int index) {
-          return const CProductBaseCard.skeleton();
+          return const CComboBaseCard.skeleton();
         },
       );
     },
@@ -170,7 +180,7 @@ Widget gridContentFullMode(BuildContext context, WidgetRef ref,
         mainAxisSpacing: 10,
         itemCount: 2,
         itemBuilder: (BuildContext context, int index) {
-          return CProductBaseCard.error(error: error.toString());
+          return CComboBaseCard.error(error: error.toString());
         },
       );
     },
@@ -178,9 +188,9 @@ Widget gridContentFullMode(BuildContext context, WidgetRef ref,
 }
 
 Widget gridContentCompactMode(BuildContext context, WidgetRef ref,
-    AsyncValue<List<ProductBaseCardData>> categoryCard) {
+    AsyncValue<List<ComboByCampusCardData>> categoryCard) {
   return categoryCard.when(
-    data: (List<ProductBaseCardData> dataList) {
+    data: (List<ComboByCampusCardData> dataList) {
       return AlignedGridView.count(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -188,10 +198,10 @@ Widget gridContentCompactMode(BuildContext context, WidgetRef ref,
         mainAxisSpacing: 10,
         itemCount: dataList.length,
         itemBuilder: (BuildContext context, int index) {
-          return CProductCompactCard(
-              data: dataList[index],
-              categoryNavigationData: null,
-              type: ProductBaseTypes.combo);
+          return CComboCompactCard(
+            data: dataList[index],
+            categoryNavigationData: null,
+          );
         },
       );
     },
@@ -203,7 +213,7 @@ Widget gridContentCompactMode(BuildContext context, WidgetRef ref,
         mainAxisSpacing: 10,
         itemCount: 2,
         itemBuilder: (BuildContext context, int index) {
-          return const CProductCompactCard.skeleton();
+          return const CComboCompactCard.skeleton();
         },
       );
     },
@@ -215,7 +225,7 @@ Widget gridContentCompactMode(BuildContext context, WidgetRef ref,
         mainAxisSpacing: 10,
         itemCount: 2,
         itemBuilder: (BuildContext context, int index) {
-          return CProductCompactCard.error(error: error.toString());
+          return CComboCompactCard.error(error: error.toString());
         },
       );
     },
