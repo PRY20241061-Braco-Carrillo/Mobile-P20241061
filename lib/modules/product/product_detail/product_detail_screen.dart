@@ -16,7 +16,8 @@ import "../../../shared/widgets/features/product-card/buttons/button_ar.dart";
 import "../../../shared/widgets/features/product-card/buttons/button_product.dart";
 import "../../../shared/widgets/features/product-card/products/product_detail-card/product_detail.dart";
 import "../../../shared/widgets/features/product-card/products/product_detail-card/product_detail.types.dart";
-import "../../../shared/widgets/features/product-card/products/product_detail-card/variants/variant_detail.dart";
+import "../../../shared/widgets/features/product-card/products/product_detail-card/variants/variant_abstract.types.dart";
+import "../../../shared/widgets/features/product-card/products/product_detail-card/variants/product_variant_selector.dart";
 import "../../../shared/widgets/global/theme_switcher/theme_switcher.dart";
 import "../products_list/category_navigation_data.types.dart";
 import "product_detail_navigation_data.types.dart";
@@ -34,9 +35,6 @@ class ProductDetailScreen extends ConsumerWidget {
         ref.watch(variantsByProductNotifierProvider(
             productDetailNavigationData.productData.productId));
 
-    final ProductVariant? selectedVariant =
-        ref.watch(selectedProductVariantProvider);
-
     final AsyncValue<ProductDetailCardData> categoryCard =
         variantsResponse.when(
       data: (BaseResponse<VariantsByProductResponse> response) {
@@ -53,6 +51,7 @@ class ProductDetailScreen extends ConsumerWidget {
 
     final Widget detailsContent = categoryCard.when(
       data: (ProductDetailCardData data) {
+        print("Rendering ProductDetailCardData: $data");
         return MasonryGridView.count(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -61,8 +60,10 @@ class ProductDetailScreen extends ConsumerWidget {
           itemCount: 1,
           itemBuilder: (BuildContext context, int index) {
             return ProductVariantSelector(
-              productVariants: data.productVariants,
-              data: data,
+              type: "product",
+              productId: productDetailNavigationData.productData.productId,
+              variants:
+                  data.productVariants.map((pv) => pv as Variant).toList(),
             );
           },
         );
@@ -80,6 +81,7 @@ class ProductDetailScreen extends ConsumerWidget {
         );
       },
       error: (Object error, _) {
+        print("Error loading ProductDetailCardData: $error");
         return MasonryGridView.count(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -114,8 +116,9 @@ class ProductDetailScreen extends ConsumerWidget {
           .reloadData();
     }
 
-    final Widget buttonAddProduct = ButtonProduct(
+    final Widget buttonAddProduct = ButtonAddProductToCart(
       productId: productDetailNavigationData.productData.productId,
+      type: "product",
     );
 
     final Widget buttonArProduct = ButtonAR(
@@ -178,9 +181,6 @@ class ProductDetailScreen extends ConsumerWidget {
               const SizedBox(height: 10),
               productContent,
               buttonArProduct,
-              if (selectedVariant != null)
-                Text(
-                    "Price: \$${selectedVariant.amountPrice.toStringAsFixed(2)}"),
               detailsContent,
               buttonAddProduct,
             ],

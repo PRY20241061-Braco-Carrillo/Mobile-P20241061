@@ -16,7 +16,7 @@ import "../../../shared/widgets/features/product-card/menus/menus_detail-card/me
 import "../../../shared/widgets/features/product-card/menus/menus_detail-card/menus_detail.dart";
 import "../../../shared/widgets/features/product-card/menus/menus_detail-card/menus_detail.types.dart";
 import "../../../shared/widgets/features/product-card/products/product_detail-card/product_detail.types.dart";
-import "../../../shared/widgets/features/product-card/products/product_detail-card/variants/variant_detail.dart";
+import "../../../shared/widgets/features/product-card/products/product_detail-card/variants/product_variant_selector.dart";
 import "../../../shared/widgets/global/theme_switcher/theme_switcher.dart";
 import "menu_detail_navigation_data.types.dart";
 
@@ -71,8 +71,9 @@ class MenusDetailScreen extends ConsumerWidget {
           .loadData();
     }
 
-    final Widget buttonAddProduct = ButtonProduct(
+    final Widget buttonAddProduct = ButtonAddProductToCart(
       productId: menuDetailNavigationData.productData.productId,
+      type: "menu",
     );
 
     return BackButtonListener(
@@ -111,7 +112,7 @@ class MenusDetailScreen extends ConsumerWidget {
                 Text(
                     "Price: \$${selectedVariant.amountPrice.toStringAsFixed(2)}"),*/
               detailsContent,
-              //buttonAddProduct,
+              buttonAddProduct,
             ],
           ),
         ),

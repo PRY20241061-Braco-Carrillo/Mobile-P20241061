@@ -1,25 +1,35 @@
 import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
-
 import "../../order_cart/order_cart.notifier.dart";
 import "../../order_cart/selected_product_info.types.dart";
 import "../products/product_detail-card/product_detail.types.dart";
-import "../products/product_detail-card/variants/variant_detail.dart";
+import "../products/product_detail-card/variants/selected_provider.dart";
+import "../products/product_detail-card/variants/variant_abstract.types.dart";
 
-class ButtonProduct extends ConsumerWidget {
+class ButtonAddProductToCart extends ConsumerWidget {
   final String productId;
-  const ButtonProduct({super.key, required this.productId});
+  final String type; // Nuevo parámetro para definir el tipo (producto o menú)
+
+  const ButtonAddProductToCart({
+    super.key,
+    required this.productId,
+    required this.type,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     const String labelButton = "MenuCard.buttons.ADD.label";
 
-    final ProductDetailCardData? productData =
-        ref.watch(productDetailCardDataProvider);
+    final productData = ref.watch(getDetailProvider(type));
+    final selectedVariantsState =
+        ref.watch(getSelectedVariantsProvider(type)(productId))[productId];
+    final selectedVariant = selectedVariantsState?.selectedVariant;
 
-    final ProductVariant? selectedVariant =
-        ref.watch(selectedProductVariantProvider);
+    // Prints para depurar el estado del producto y las variantes seleccionadas
+    print("Product data: $productData");
+    print("Selected variants state: $selectedVariantsState");
+    print("Selected variant: $selectedVariant");
 
     return ElevatedButton(
       onPressed: productData != null && selectedVariant != null
@@ -28,10 +38,12 @@ class ButtonProduct extends ConsumerWidget {
                   SelectedProductInfo(
                 productId: productId,
                 productName: productData.product.name,
-                price: selectedVariant.amountPrice,
+                price: selectedVariant!.amountPrice,
                 currency: selectedVariant.currencyPrice,
                 imageUrl: productData.product.urlImage,
-                selectedVariants: <ProductVariant>[selectedVariant],
+                selectedVariants: <Variant>[
+                  if (selectedVariant != null) selectedVariant
+                ],
                 selectedComplements: productData.complements,
               );
 

@@ -1,12 +1,12 @@
-import "../product_detail.types.dart";
+import "variant_abstract.types.dart";
 
 class ProductDetailVariantCard {
   final String productVariantId;
   final double amountPrice;
   final String currencyPrice;
   final String variantInfo;
+  final double variantOrder;
   final Map<String, String> variants;
-  final int variantOrder;
 
   ProductDetailVariantCard({
     required this.productVariantId,
@@ -14,24 +14,17 @@ class ProductDetailVariantCard {
     required this.currencyPrice,
     required this.variantInfo,
     required this.variantOrder,
-  }) : variants = Map.fromEntries(variantInfo
-            .split(",")
-            .map((String e) {
-              final List<String> parts = e.trim().split(":");
-              return parts.length >= 2
-                  ? MapEntry(parts[0].trim(), parts[1].trim())
-                  : null;
-            })
-            .where((MapEntry<String, String>? entry) => entry != null)
-            .cast<MapEntry<String, String>>());
+    required this.variants,
+  });
 
-  static ProductDetailVariantCard fromProductVariant(ProductVariant pv) {
+  factory ProductDetailVariantCard.fromVariant(Variant variant) {
     return ProductDetailVariantCard(
-      productVariantId: pv.productVariantId,
-      amountPrice: pv.amountPrice,
-      currencyPrice: pv.currencyPrice,
-      variantInfo: pv.variantInfo,
-      variantOrder: pv.variantOrder.toInt(),
+      productVariantId: variant.productVariantId,
+      amountPrice: variant.amountPrice,
+      currencyPrice: variant.currencyPrice,
+      variantInfo: variant.variantInfo,
+      variantOrder: variant.variantOrder,
+      variants: variant.getVariantsMap(),
     );
   }
 }

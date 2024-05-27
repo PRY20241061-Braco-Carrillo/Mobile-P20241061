@@ -1,3 +1,5 @@
+import "variants/variant_abstract.types.dart";
+
 class ProductDetailCardData {
   Product product;
   List<ProductVariant> productVariants;
@@ -172,35 +174,72 @@ class NutritionalInformation {
       };
 }
 
-class ProductVariant {
-  String productVariantId;
-  double amountPrice;
-  String currencyPrice;
-  String variantInfo;
-  double variantOrder;
+class ProductVariant implements Variant {
+  String _productVariantId;
+  double _amountPrice;
+  String _currencyPrice;
+  String _variantInfo;
+  double _variantOrder;
 
   ProductVariant({
-    required this.productVariantId,
-    required this.amountPrice,
-    required this.currencyPrice,
-    required this.variantInfo,
-    required this.variantOrder,
-  });
+    required String productVariantId,
+    required double amountPrice,
+    required String currencyPrice,
+    required String variantInfo,
+    required double variantOrder,
+  })  : _productVariantId = productVariantId,
+        _amountPrice = amountPrice,
+        _currencyPrice = currencyPrice,
+        _variantInfo = variantInfo,
+        _variantOrder = variantOrder;
+
+  @override
+  String get productVariantId => _productVariantId;
+
+  @override
+  double get amountPrice => _amountPrice;
+
+  @override
+  String get currencyPrice => _currencyPrice;
+
+  @override
+  String get variantInfo => _variantInfo;
+
+  @override
+  double get variantOrder => _variantOrder;
+
+  @override
+  Map<String, String> getVariantsMap() {
+    // Implementación específica para ProductVariant
+    return _parseVariantInfo(_variantInfo);
+  }
+
+  Map<String, String> _parseVariantInfo(String info) {
+    final Map<String, String> variantsMap = {};
+    final List<String> parts = info.split(", ");
+    for (final part in parts) {
+      final List<String> keyValue = part.split(": ");
+      if (keyValue.length == 2) {
+        variantsMap[keyValue[0]] = keyValue[1];
+      }
+    }
+    return variantsMap;
+  }
 
   factory ProductVariant.fromJson(Map<String, dynamic> json) => ProductVariant(
-        productVariantId: json["productVariantId"],
-        amountPrice: json["amountPrice"]?.toDouble(),
-        currencyPrice: json["currencyPrice"],
-        variantInfo: json["variantInfo"],
-        variantOrder: json["variantOrder"]?.toDouble(),
+        productVariantId: json["productVariantId"] ?? "",
+        amountPrice: json["amountPrice"]?.toDouble() ?? 0.0,
+        currencyPrice: json["currencyPrice"] ?? "",
+        variantInfo: json["variantInfo"] ?? "",
+        variantOrder: json["variantOrder"]?.toDouble() ?? 0.0,
       );
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        "productVariantId": productVariantId,
-        "amountPrice": amountPrice,
-        "currencyPrice": currencyPrice,
-        "variantInfo": variantInfo,
-        "variantOrder": variantOrder,
+  Map<String, dynamic> toJson() => {
+        "productVariantId": _productVariantId,
+        "amountPrice": _amountPrice,
+        "currencyPrice": _currencyPrice,
+        "variantInfo": _variantInfo,
+        "variantOrder": _variantOrder,
       };
 }
 

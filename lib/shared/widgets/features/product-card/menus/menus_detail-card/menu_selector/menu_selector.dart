@@ -1,11 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
-import 'dart:convert';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import "../../../../../../../core/models/management/menu/menu_detail.response.types.dart";
-import "../variants/variant_detail.dart";
-import "../variants/variant_detail.types.dart";
+import "../../../products/product_detail-card/variants/variant_abstract.types.dart";
+import "../../../products/product_detail-card/variants/product_variant_selector.dart";
+import "../menus_detail.types.dart";
 
 class MenuSelectorType extends StatefulWidget {
   const MenuSelectorType({super.key});
@@ -15,7 +15,7 @@ class MenuSelectorType extends StatefulWidget {
 }
 
 class MenuSelectorTypeState extends State<MenuSelectorType> {
-  MenuDetailResponse? menuDetail;
+  MenuDetailCardData? menuDetail;
   bool isLoading = true;
 
   @override
@@ -28,23 +28,30 @@ class MenuSelectorTypeState extends State<MenuSelectorType> {
     final String response =
         await rootBundle.loadString('assets/pruebas/prueba.json');
     final data = json.decode(response);
-    final MenuDetailResponse menuDetailResponse =
-        MenuDetailResponse.fromJson(data["data"]);
+    final MenuDetailCardData menuDetailResponse =
+        MenuDetailCardData.fromJson(data["data"]);
     setState(() {
       menuDetail = menuDetailResponse;
       isLoading = false;
     });
   }
 
-  Widget buildPlatesList(String title, List<PlatesDetailResponse> plates) {
+  Widget buildPlatesList(String title, List<DishesDetailCardData> plates) {
     return ExpansionTile(
       title: Text(title, style: Theme.of(context).textTheme.titleLarge),
-      children: plates.map((PlatesDetailResponse plate) {
+      children: plates.map((DishesDetailCardData plate) {
+        final List<Variant> menuVariants = plate.variants.cast<Variant>();
+
         return Column(
           children: [
             ListTile(
               title: Text(plate.name),
               subtitle: Text(plate.description),
+            ),
+            ProductVariantSelector(
+              productId: plate.productId,
+              variants: menuVariants,
+              type: "menu",
             ),
           ],
         );
@@ -67,7 +74,7 @@ class MenuSelectorTypeState extends State<MenuSelectorType> {
         children: <Widget>[
           Text(menuDetail!.name, style: Theme.of(context).textTheme.headline4),
           Text(
-            '${menuDetail!.amountPrice} ${menuDetail!.currencyPrice}',
+            "${menuDetail!.amountPrice} ${menuDetail!.currencyPrice}",
             style: Theme.of(context).textTheme.subtitle1,
           ),
           buildPlatesList("Desserts", menuDetail!.desserts),

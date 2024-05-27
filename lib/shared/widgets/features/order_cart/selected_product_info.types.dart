@@ -1,4 +1,5 @@
 import "../product-card/products/product_detail-card/product_detail.types.dart";
+import "../product-card/products/product_detail-card/variants/variant_abstract.types.dart";
 
 class SelectedProductInfo {
   final String productId;
@@ -6,7 +7,7 @@ class SelectedProductInfo {
   final double price;
   final String currency;
   final String imageUrl;
-  final List<ProductVariant> selectedVariants;
+  final List<Variant> selectedVariants;
   final List<Complement> selectedComplements;
 
   SelectedProductInfo({
@@ -15,13 +16,13 @@ class SelectedProductInfo {
     required this.price,
     required this.currency,
     required this.imageUrl,
-    this.selectedVariants = const <ProductVariant>[],
+    this.selectedVariants = const <Variant>[],
     this.selectedComplements = const <Complement>[],
   });
 
   double getTotalPrice() {
     double total = price;
-    for (final ProductVariant variant in selectedVariants) {
+    for (final Variant variant in selectedVariants) {
       total += variant.amountPrice;
     }
     for (final Complement complement in selectedComplements) {
@@ -38,7 +39,7 @@ class SelectedProductInfo {
       "currency": currency,
       "imageUrl": imageUrl,
       "selectedVariants":
-          selectedVariants.map((ProductVariant v) => v.toJson()).toList(),
+          selectedVariants.map((Variant v) => v.toJson()).toList(),
       "selectedComplements":
           selectedComplements.map((Complement c) => c.toJson()).toList(),
     };
