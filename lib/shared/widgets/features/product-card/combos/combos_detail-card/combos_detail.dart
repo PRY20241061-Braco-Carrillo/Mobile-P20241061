@@ -1,44 +1,28 @@
 import "package:flutter/material.dart";
-import "package:go_router/go_router.dart";
 import "package:skeletonizer/skeletonizer.dart";
 
-import "../../../../../../config/routes/routes.dart";
-import "../../../../../../modules/product/combos/combos_detail_navigations_data.types.dart";
-import "../../../../../../modules/product/products_list/category_navigation_data.types.dart";
 import "../../../../../providers/image_provider.dart";
-import "../../../../../utils/constants/currency_types.dart";
 import "../../../../global/image_display/image_display.dart";
-import "../../../campus-card/campus_card.types.dart";
-import "combo_base.types.dart";
+import "../combos_base-card/combo_base.types.dart";
 
-class CComboBaseCard extends StatelessWidget {
-  final ComboByCampusCardData? data;
-  final CategoryNavigationData? categoryNavigationData;
-  final CampusCardData? campusCardData;
+class CComboDetailCard extends StatelessWidget {
+  final ComboByCampusCardData? comboDetailCardData;
 
   final bool showSkeleton;
   final String? error;
 
-  const CComboBaseCard({
-    super.key,
-    required this.data,
-    required this.categoryNavigationData,
-    this.campusCardData,
-  })  : showSkeleton = false,
+  const CComboDetailCard({super.key, this.comboDetailCardData})
+      : showSkeleton = false,
         error = null;
 
-  const CComboBaseCard.skeleton({super.key})
-      : data = null,
+  const CComboDetailCard.skeleton({super.key})
+      : showSkeleton = true,
         error = null,
-        showSkeleton = true,
-        categoryNavigationData = null,
-        campusCardData = null;
+        comboDetailCardData = null;
 
-  const CComboBaseCard.error({super.key, required this.error})
-      : data = null,
-        showSkeleton = false,
-        categoryNavigationData = null,
-        campusCardData = null;
+  const CComboDetailCard.error({super.key, required this.error})
+      : showSkeleton = false,
+        comboDetailCardData = null;
 
   @override
   Widget build(BuildContext context) {
@@ -47,56 +31,49 @@ class CComboBaseCard extends StatelessWidget {
     } else if (error != null) {
       return _buildErrorContent(error!);
     } else {
-      return _buildCardContent(context, data!);
+      return _buildCardContent(context, comboDetailCardData!);
     }
   }
 
   Widget _buildCardContent(BuildContext context, ComboByCampusCardData data) {
-    final double width = MediaQuery.of(context).size.width / 2 - 20;
+    final double width = MediaQuery.of(context).size.width - 20;
     return InkWell(
       onTap: () {
-        GoRouter.of(context).push(
-          "${AppRoutes.categories}${AppRoutes.combos}/${campusCardData?.campusId}/${data.comboId}",
-          extra: ComboDetailNavigationData(
-              campusData: campusCardData!, productData: data),
-        );
+        // Action on tap
       },
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-        padding: const EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: const Color.fromRGBO(204, 230, 255, 1),
           borderRadius: BorderRadius.circular(10),
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 2,
+              blurRadius: 4,
+              offset: const Offset(0, 3),
+            ),
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Container(
-              height: 150,
               width: width,
+              height: 300,
               margin: const EdgeInsets.only(bottom: 8),
-              child: Stack(
-                alignment: Alignment.bottomLeft,
-                children: <Widget>[
-                  ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      topRight: Radius.circular(10),
-                    ),
-                    child: ImageDisplay(
-                      config: ImageConfig(
-                        imageUrl: data.urlImage,
-                        height: 150,
-                        width: width,
-                        onErrorHeight: 50,
-                        onErrorWidth: 50,
-                        onErrorFit: BoxFit.contain,
-                        onErrorPadding:
-                            const EdgeInsets.only(bottom: 70, top: 30),
-                      ),
-                    ),
+              child: ClipRRect(
+                borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    topRight: Radius.circular(10)),
+                child: ImageDisplay(
+                  config: ImageConfig(
+                    imageUrl: data.urlImage,
+                    width: width,
+                    height: 300,
                   ),
-                ],
+                ),
               ),
             ),
             Container(
@@ -104,8 +81,7 @@ class CComboBaseCard extends StatelessWidget {
               margin: const EdgeInsets.only(left: 10.0, right: 8.0),
               alignment: Alignment.centerLeft,
               child: Text(
-                getCurrencySymbol(data.currencyPrice) +
-                    data.amountPrice.toString(),
+                "S/. ${data.amountPrice.toString()}",
                 style: const TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.w400,
@@ -119,43 +95,63 @@ class CComboBaseCard extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: Text(
                 data.name,
-                maxLines: 4,
+                maxLines: 2,
                 textAlign: TextAlign.start,
                 textDirection: TextDirection.ltr,
                 style: const TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.w400,
-                  fontSize: 14,
-                  height: 1,
+                  fontSize: 16,
                 ),
               ),
             ),
-            _buildProductSummary(data.products),
+            const SizedBox(height: 10),
+            _buildProductDetails(data.products),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildProductSummary(List<ProductByCampusCardData> products) {
-    String productSummary =
-        products.map((ProductByCampusCardData p) => p.name).join(", ");
-    if (productSummary.length > 40) {
-      productSummary = "${productSummary.substring(0, 40)}...";
-    }
-
-    return Container(
-      padding: const EdgeInsets.only(left: 10.0, right: 8.0, top: 5),
-      child: Text(
-        productSummary,
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
-        style: const TextStyle(
-          color: Colors.black,
-          fontWeight: FontWeight.w400,
-          fontSize: 12,
-        ),
-      ),
+  Widget _buildProductDetails(List<ProductByCampusCardData> products) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: products.map((ProductByCampusCardData product) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4.0),
+          child: Row(
+            children: <Widget>[
+              Image.network(
+                product.urlImage,
+                width: 50,
+                height: 50,
+                fit: BoxFit.cover,
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      product.name,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      product.description,
+                      style: const TextStyle(
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      }).toList(),
     );
   }
 
@@ -185,9 +181,8 @@ class CComboBaseCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Colors.grey[300],
                   borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(10),
-                    topRight: Radius.circular(10),
-                  ),
+                      topLeft: Radius.circular(10),
+                      topRight: Radius.circular(10)),
                 ),
               ),
             ),

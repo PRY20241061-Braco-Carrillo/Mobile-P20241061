@@ -1,3 +1,4 @@
+import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
@@ -13,6 +14,7 @@ class CartScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    const String labelOrderKey = "Cart.labels.CART.label";
     final List<CartItem> cartItems = ref.watch(cartProvider);
     final PersistentTabController controller = PersistentTabController();
 
@@ -27,7 +29,7 @@ class CartScreen extends ConsumerWidget {
               slivers: <Widget>[
                 SliverToBoxAdapter(
                   child: CBaseProductCategoriesHeader(
-                    title: "Carrito de Compras",
+                    title: labelOrderKey.tr(),
                     height: 220,
                     onButtonPressed: (BuildContext context) {
                       if (GoRouter.of(context).canPop()) {

@@ -1,0 +1,81 @@
+{
+    "code": "SUCCESS",
+    "data": {
+        "comboId": "2f5d3d62-12d9-45c3-8c6f-4f415e1b3d39",
+        "name": "Combo Mega Pollo Burguer",
+        "amountPrice": 25.99,
+        "currencyPrice": "PEN",
+        "urlImage": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2DbJTUAhjta6B9fu25aYNspKKxT-eho0_gHRX6YZhjzlIVXB6oje3u13QZnsBktxKFhQ&usqp=CAU",
+        "freeSauce": 2,
+        "minCookingTime": 10,
+        "maxCookingTime": 15,
+        "unitOfTimeCookingTime": "MIN",
+        "products": [
+            {
+                "productId": "86a1e63a-95a3-4540-95c8-dfe7b3b48a4b",
+                "name": "Pollo a la Horneado",
+                "description": "A grill peruvian chicken with extra fries potatoes",
+                "urlImage": "https://estrellasupermercados.com/wp-content/uploads/2021/06/POLLOS.jpg",
+                "productAmount": 1,
+                "productVariants": [
+                    {
+                        "productVariantId": "5c63e9e9-ebc6-4e15-b77d-5a0fb2d8a1a7",
+                        "detail": "1/4 Leña",
+                        "variantOrder": 2,
+                        "variantInfo": "CC05: 1/4, CC01: Leña"
+                    },
+                    {
+                        "productVariantId": "d5f8c758-76f4-49e7-a979-7a479926a72a",
+                        "detail": "1/4 Brasa",
+                        "variantOrder": 2,
+                        "variantInfo": "CC05: 1/4, CC01: Brasa"
+                    }
+                ]
+            },
+            {
+                "productId": "6a7f852e-537d-4a5f-bb6c-0578cc72bc7d",
+                "name": "Cheeseburger",
+                "description": "Juicy beef patty topped with cheddar cheese, lettuce, tomato, and mayo",
+                "urlImage": "https://s23209.pcdn.co/wp-content/uploads/2022/07/220602_DD_The-Best-Ever-Cheeseburger_267.jpg",
+                "productAmount": 2,
+                "productVariants": [
+                    {
+                        "productVariantId": "892f1d91-3636-46c7-8ff0-cc4a6c3c4ea5",
+                        "detail": "Medium",
+                        "variantOrder": 2,
+                        "variantInfo": "CC05: Medium"
+                    }
+                ]
+            }
+        ],
+        "complements": [
+            {
+                "complementId": "22ed25d2-6178-49a2-8a82-3908c38e8c5a",
+                "name": "Mayonesa",
+                "amountPrice": 0.2,
+                "currencyPrice": "PEN",
+                "isSauce": true,
+                "urlImage": "https://www.cocinavital.mx/wp-content/uploads/2019/09/mayonesa-casera.jpg",
+                "freeAmount": 2
+            },
+            {
+                "complementId": "c8b7f6cb-4b78-4973-9d6f-4741d0072cb9",
+                "name": "Mostaza",
+                "amountPrice": 0.2,
+                "currencyPrice": "PEN",
+                "isSauce": true,
+                "urlImage": "https://www.cocinavital.mx/wp-content/uploads/2019/09/mayonesa-casera.jpg",
+                "freeAmount": 2
+            },
+            {
+                "complementId": "f5b7f6cb-4b78-4973-9d6f-4741d0072cb9",
+                "name": "Porcion de Papas ",
+                "amountPrice": 7,
+                "currencyPrice": "PEN",
+                "isSauce": false,
+                "urlImage": "https://www.cocinavital.mx/wp-content/uploads/2019/09/mayonesa-casera.jpg",
+                "freeAmount": 1
+            }
+        ]
+    }
+}

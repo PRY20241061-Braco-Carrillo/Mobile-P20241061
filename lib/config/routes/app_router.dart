@@ -13,6 +13,8 @@ import "../../modules/auth/sign_up/sign_up_screen.dart";
 import "../../modules/campus/campus_screen.dart";
 import "../../modules/cart/qr_generation/cart_screen.dart";
 import "../../modules/categories/categories_screen.dart";
+import "../../modules/product/combos/combos_detail_navigations_data.types.dart";
+import "../../modules/product/combos/combos_detail_screen.dart";
 import "../../modules/product/combos/combos_screen.dart";
 import "../../modules/product/menus/menu_detail_navigation_data.types.dart";
 import "../../modules/product/menus/menus_detail_screen.dart";
@@ -114,6 +116,14 @@ final Provider<GoRouter> goRouterProvider =
         builder: (BuildContext context, GoRouterState state) {
           final CampusCardData data = state.extra as CampusCardData;
           return CombosScreen(campusCardData: data);
+        },
+      ),
+      GoRoute(
+        path: "${AppRoutes.categories}${AppRoutes.combos}/:campusId/:comboId",
+        builder: (BuildContext context, GoRouterState state) {
+          final ComboDetailNavigationData data =
+              state.extra as ComboDetailNavigationData;
+          return CombosDetailScreen(comboDetailNavigationData: data);
         },
       ),
       GoRoute(

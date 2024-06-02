@@ -235,5 +235,102 @@
                 "label": "Detalle de promoción"
             }
         }
+    },
+    "Cart": {
+        "buttons": {
+            "ADD": {
+                "label": "Agregar"
+            },
+            "CANCEL": {
+                "label": "Cancelar"
+            },
+            "CONFIRM": {
+                "label": "Confirmar"
+            },
+            "CONTINUE": {
+                "label": "Continuar"
+            },
+            "FINISH": {
+                "label": "Finalizar"
+            },
+            "VIEW": {
+                "label": "Ver"
+            },
+            "AR": {
+                "label": "Realidad Aumentada"
+            },
+            "PROMOTION_DETAIL": {
+                "label": "Detalle de promoción"
+            }
+        },
+        "labels": {
+            "CART": {
+                "label": "Orden"
+            },
+            "TOTAL": {
+                "label": "Total"
+            },
+            "SUBTOTAL": {
+                "label": "Subtotal"
+            },
+            "TAX": {
+                "label": "Impuesto"
+            },
+            "DELIVERY": {
+                "label": "Delivery"
+            },
+            "PROMOTION": {
+                "label": "Promoción"
+            },
+            "DISCOUNT": {
+                "label": "Descuento"
+            },
+            "SERVICE": {
+                "label": "Servicio"
+            },
+            "TIP": {
+                "label": "Propina"
+            },
+            "PAYMENT": {
+                "label": "Pago"
+            },
+            "CASH": {
+                "label": "Efectivo"
+            },
+            "CARD": {
+                "label": "Tarjeta"
+            },
+            "CHANGE": {
+                "label": "Cambio"
+            },
+            "PAY": {
+                "label": "Pagar"
+            },
+            "PAYMENT_METHOD": {
+                "label": "Método de pago"
+            },
+            "CASH_PAYMENT": {
+                "label": "Pago en efectivo"
+            },
+            "CARD_PAYMENT": {
+                "label": "Pago con tarjeta"
+            },
+            "TIP_PAYMENT": {
+                "label": "Propina"
+            },
+            "TIP_PERCENT": {
+                "label": "Porcentaje de propina"
+            },
+            "TIP_AMOUNT": {
+                "label": "Monto de propina"
+            },
+            "TIP_TOTAL": {
+                "label": "Total con propina"
+            },
+            "TIP_TOTAL_AMOUNT": {
+                "label": "Monto total con propina"
+            }
+
+        }
     }
 }

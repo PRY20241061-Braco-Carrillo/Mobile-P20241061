@@ -1,10 +1,9 @@
-import "../../../../../../core/models/management/menu/menu_detail.response.types.dart";
 import "../../products/product_detail-card/variants/variant_abstract.types.dart";
 
 class MenuDetailCardData {
   String menuId;
   String name;
-  int amountPrice;
+  double amountPrice;
   String currencyPrice;
   int minCookingTime;
   int maxCookingTime;

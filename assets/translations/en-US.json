@@ -205,5 +205,86 @@
                 "label": "Select the size"
             }
         }
+    },
+    "Cart": {
+        "buttons": {
+            "ADD": {
+                "label": "Add"
+            },
+            "CANCEL": {
+                "label": "Cancel"
+            },
+            "CONFIRM": {
+                "label": "Confirm"
+            },
+            "CONTINUE": {
+                "label": "Continue"
+            },
+            "FINISH": {
+                "label": "Finish"
+            }
+        },
+        "labels": {
+            "CART": {
+                "label": "Order"
+            },
+            "TOTAL": {
+                "label": "Total"
+            },
+            "SUBTOTAL": {
+                "label": "Subtotal"
+            },
+            "TAX": {
+                "label": "Tax"
+            },
+            "DELIVERY": {
+                "label": "Delivery"
+            },
+            "PROMOTION": {
+                "label": "Promotion"
+            },
+            "DISCOUNT": {
+                "label": "Discount"
+            },
+            "SERVICE": {
+                "label": "Service"
+            },
+            "PAYMENT": {
+                "label": "Pago"
+            },
+            "CASH": {
+                "label": "Efectivo"
+            },
+            "CARD": {
+                "label": "Tarjeta"
+            },
+            "CHANGE": {
+                "label": "Cambio"
+            },
+            "PAYMENT_METHOD": {
+                "label": "Método de pago"
+            },
+            "CASH_PAYMENT": {
+                "label": "Pago en efectivo"
+            },
+            "CARD_PAYMENT": {
+                "label": "Pago con tarjeta"
+            },
+            "TIP_PAYMENT": {
+                "label": "Propina"
+            },
+            "TIP_PERCENT": {
+                "label": "Porcentaje de propina"
+            },
+            "TIP_AMOUNT": {
+                "label": "Monto de propina"
+            },
+            "TIP_TOTAL": {
+                "label": "Total con propina"
+            },
+            "TIP_TOTAL_AMOUNT": {
+                "label": "Monto total con propina"
+            }
+        }
     }
 }

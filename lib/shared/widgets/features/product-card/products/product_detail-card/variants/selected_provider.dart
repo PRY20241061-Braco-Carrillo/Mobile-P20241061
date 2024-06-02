@@ -4,7 +4,7 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "../../../menus/menus_detail-card/menus_detail.types.dart";
 import "../product_detail.types.dart";
 import "variant_abstract.types.dart";
-import "variants_keys.dart";
+import "../../../../../../utils/constants/variants_keys.dart";
 
 // Provider para los detalles del producto
 final StateProvider<ProductDetailCardData?> productDetailCardDataProvider =

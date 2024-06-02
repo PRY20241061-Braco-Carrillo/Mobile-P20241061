@@ -1,44 +1,31 @@
 import "package:flutter/material.dart";
-import "package:go_router/go_router.dart";
 import "package:skeletonizer/skeletonizer.dart";
 
-import "../../../../../../config/routes/routes.dart";
-import "../../../../../../modules/product/combos/combos_detail_navigations_data.types.dart";
-import "../../../../../../modules/product/products_list/category_navigation_data.types.dart";
 import "../../../../../providers/image_provider.dart";
-import "../../../../../utils/constants/currency_types.dart";
+import "../../../../../utils/constants/promotions_keys.dart";
 import "../../../../global/image_display/image_display.dart";
-import "../../../campus-card/campus_card.types.dart";
-import "combo_base.types.dart";
 
-class CComboBaseCard extends StatelessWidget {
-  final ComboByCampusCardData? data;
-  final CategoryNavigationData? categoryNavigationData;
-  final CampusCardData? campusCardData;
+import "../../labels/size_labels.dart";
+import "../promotions_base-card/promotion_base.types.dart";
+
+class CPromotionDetailCard extends StatelessWidget {
+  final PromotionByCampusCardData? comboDetailCardData;
 
   final bool showSkeleton;
   final String? error;
 
-  const CComboBaseCard({
-    super.key,
-    required this.data,
-    required this.categoryNavigationData,
-    this.campusCardData,
-  })  : showSkeleton = false,
+  const CPromotionDetailCard({super.key, this.comboDetailCardData})
+      : showSkeleton = false,
         error = null;
 
-  const CComboBaseCard.skeleton({super.key})
-      : data = null,
+  const CPromotionDetailCard.skeleton({super.key})
+      : showSkeleton = true,
         error = null,
-        showSkeleton = true,
-        categoryNavigationData = null,
-        campusCardData = null;
+        comboDetailCardData = null;
 
-  const CComboBaseCard.error({super.key, required this.error})
-      : data = null,
-        showSkeleton = false,
-        categoryNavigationData = null,
-        campusCardData = null;
+  const CPromotionDetailCard.error({super.key, required this.error})
+      : showSkeleton = false,
+        comboDetailCardData = null;
 
   @override
   Widget build(BuildContext context) {
@@ -47,19 +34,16 @@ class CComboBaseCard extends StatelessWidget {
     } else if (error != null) {
       return _buildErrorContent(error!);
     } else {
-      return _buildCardContent(context, data!);
+      return _buildCardContent(context, comboDetailCardData!);
     }
   }
 
-  Widget _buildCardContent(BuildContext context, ComboByCampusCardData data) {
+  Widget _buildCardContent(
+      BuildContext context, PromotionByCampusCardData data) {
     final double width = MediaQuery.of(context).size.width / 2 - 20;
     return InkWell(
       onTap: () {
-        GoRouter.of(context).push(
-          "${AppRoutes.categories}${AppRoutes.combos}/${campusCardData?.campusId}/${data.comboId}",
-          extra: ComboDetailNavigationData(
-              campusData: campusCardData!, productData: data),
-        );
+        // Acción al hacer clic en la tarjeta
       },
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
@@ -96,6 +80,11 @@ class CComboBaseCard extends StatelessWidget {
                       ),
                     ),
                   ),
+                  if (data.hasVariant == true)
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: SizeLabel(fontSize: 12),
+                    ),
                 ],
               ),
             ),
@@ -104,8 +93,9 @@ class CComboBaseCard extends StatelessWidget {
               margin: const EdgeInsets.only(left: 10.0, right: 8.0),
               alignment: Alignment.centerLeft,
               child: Text(
-                getCurrencySymbol(data.currencyPrice) +
-                    data.amountPrice.toString(),
+                data.discountType == PromotionKeys.percentage
+                    ? "${data.discount}%"
+                    : "S/. ${data.discount}",
                 style: const TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.w400,
@@ -130,30 +120,7 @@ class CComboBaseCard extends StatelessWidget {
                 ),
               ),
             ),
-            _buildProductSummary(data.products),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildProductSummary(List<ProductByCampusCardData> products) {
-    String productSummary =
-        products.map((ProductByCampusCardData p) => p.name).join(", ");
-    if (productSummary.length > 40) {
-      productSummary = "${productSummary.substring(0, 40)}...";
-    }
-
-    return Container(
-      padding: const EdgeInsets.only(left: 10.0, right: 8.0, top: 5),
-      child: Text(
-        productSummary,
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
-        style: const TextStyle(
-          color: Colors.black,
-          fontWeight: FontWeight.w400,
-          fontSize: 12,
         ),
       ),
     );
@@ -185,9 +152,8 @@ class CComboBaseCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Colors.grey[300],
                   borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(10),
-                    topRight: Radius.circular(10),
-                  ),
+                      topLeft: Radius.circular(10),
+                      topRight: Radius.circular(10)),
                 ),
               ),
             ),

@@ -1,7 +1,7 @@
 class MenuDetailResponse {
   String menuId;
   String name;
-  int amountPrice;
+  double amountPrice;
   String currencyPrice;
   int minCookingTime;
   int maxCookingTime;

@@ -67,8 +67,9 @@ class CombosDetailScreenState extends ConsumerState<CombosScreen>
     );
 
     final Widget gridContent = isFullMode
-        ? gridContentFullMode(context, ref, categoryCard)
-        : gridContentCompactMode(context, ref, categoryCard);
+        ? gridContentFullMode(context, ref, categoryCard, widget.campusCardData)
+        : gridContentCompactMode(
+            context, ref, categoryCard, widget.campusCardData);
 
     Future<void> handleRefresh(WidgetRef ref) async {
       await ref
@@ -142,8 +143,11 @@ class CombosDetailScreenState extends ConsumerState<CombosScreen>
   }
 }
 
-Widget gridContentFullMode(BuildContext context, WidgetRef ref,
-    AsyncValue<List<ComboByCampusCardData>> categoryCard) {
+Widget gridContentFullMode(
+    BuildContext context,
+    WidgetRef ref,
+    AsyncValue<List<ComboByCampusCardData>> categoryCard,
+    CampusCardData campusCardData) {
   return categoryCard.when(
     data: (List<ComboByCampusCardData> dataList) {
       return AlignedGridView.count(
@@ -156,6 +160,7 @@ Widget gridContentFullMode(BuildContext context, WidgetRef ref,
           return CComboBaseCard(
             data: dataList[index],
             categoryNavigationData: null,
+            campusCardData: campusCardData,
           );
         },
       );
@@ -187,8 +192,11 @@ Widget gridContentFullMode(BuildContext context, WidgetRef ref,
   );
 }
 
-Widget gridContentCompactMode(BuildContext context, WidgetRef ref,
-    AsyncValue<List<ComboByCampusCardData>> categoryCard) {
+Widget gridContentCompactMode(
+    BuildContext context,
+    WidgetRef ref,
+    AsyncValue<List<ComboByCampusCardData>> categoryCard,
+    CampusCardData campusCardData) {
   return categoryCard.when(
     data: (List<ComboByCampusCardData> dataList) {
       return AlignedGridView.count(
@@ -201,6 +209,7 @@ Widget gridContentCompactMode(BuildContext context, WidgetRef ref,
           return CComboCompactCard(
             data: dataList[index],
             categoryNavigationData: null,
+            campusCardData: campusCardData,
           );
         },
       );

@@ -1,12 +1,12 @@
-import 'package:collection/collection.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../product_detail.types.dart';
-import 'selected_provider.dart';
-import 'variant_abstract.types.dart';
-import 'variant_detail.types.dart';
-import 'variants_keys.dart';
+import "package:collection/collection.dart";
+import "package:easy_localization/easy_localization.dart";
+import "package:flutter/material.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "../product_detail.types.dart";
+import "selected_provider.dart";
+import "variant_abstract.types.dart";
+import "variant_detail.types.dart";
+import "../../../../../../utils/constants/variants_keys.dart";
 
 class ProductVariantSelector extends ConsumerWidget {
   final String productId;

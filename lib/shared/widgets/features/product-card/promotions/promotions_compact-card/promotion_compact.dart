@@ -1,22 +1,21 @@
 import "package:flutter/material.dart";
-import "package:go_router/go_router.dart";
 import "package:skeletonizer/skeletonizer.dart";
 
-import "../../../../../../config/routes/routes.dart";
-import "../../../../../../modules/product/combos/combos_detail_navigations_data.types.dart";
 import "../../../../../../modules/product/products_list/category_navigation_data.types.dart";
+import "../../../../../utils/constants/promotions_keys.dart";
 import "../../../campus-card/campus_card.types.dart";
-import "../combos_base-card/combo_base.types.dart";
+import "../../labels/size_labels.dart";
+import "../promotions_base-card/promotion_base.types.dart";
 
-class CComboCompactCard extends StatelessWidget {
-  final ComboByCampusCardData? data;
+class CCPromotionCompactCard extends StatelessWidget {
+  final PromotionByCampusCardData? data;
   final CategoryNavigationData? categoryNavigationData;
   final CampusCardData? campusCardData;
 
   final bool showSkeleton;
   final String? error;
 
-  const CComboCompactCard({
+  const CCPromotionCompactCard({
     super.key,
     required this.data,
     this.campusCardData,
@@ -24,14 +23,14 @@ class CComboCompactCard extends StatelessWidget {
   })  : showSkeleton = false,
         error = null;
 
-  const CComboCompactCard.skeleton({super.key})
+  const CCPromotionCompactCard.skeleton({super.key})
       : data = null,
         error = null,
         showSkeleton = true,
         categoryNavigationData = null,
         campusCardData = null;
 
-  const CComboCompactCard.error({super.key, required this.error})
+  const CCPromotionCompactCard.error({super.key, required this.error})
       : data = null,
         showSkeleton = false,
         categoryNavigationData = null,
@@ -48,17 +47,14 @@ class CComboCompactCard extends StatelessWidget {
     }
   }
 
-  Widget _buildCardContent(BuildContext context, ComboByCampusCardData data) {
+  Widget _buildCardContent(
+      BuildContext context, PromotionByCampusCardData data) {
     return InkWell(
       onTap: () {
-        GoRouter.of(context).push(
-          "${AppRoutes.categories}${AppRoutes.combos}/${campusCardData?.campusId}/${data.comboId}",
-          extra: ComboDetailNavigationData(
-              campusData: campusCardData!, productData: data),
-        );
+        // Acción al hacer clic en la tarjeta
       },
       child: Container(
-        height: 120,
+        height: 100,
         margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -88,15 +84,19 @@ class CComboCompactCard extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  _buildProductSummary(data.products),
+                  if (data.hasVariant) ...<Widget>[
+                    const SizedBox(height: 4),
+                    const SizeLabel(fontSize: 12),
+                  ],
                 ],
               ),
             ),
             Expanded(
               flex: 3,
               child: Text(
-                "${data.currencyPrice} ${data.amountPrice}",
+                data.discountType == PromotionKeys.percentage
+                    ? "${data.discount}%"
+                    : "S/. ${data.discount}",
                 style: const TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.w400,
@@ -107,25 +107,6 @@ class CComboCompactCard extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildProductSummary(List<ProductByCampusCardData> products) {
-    String productSummary =
-        products.map((ProductByCampusCardData p) => p.name).join(", ");
-    if (productSummary.length > 40) {
-      productSummary = "${productSummary.substring(0, 40)}...";
-    }
-
-    return Text(
-      productSummary,
-      maxLines: 2,
-      overflow: TextOverflow.ellipsis,
-      style: const TextStyle(
-        color: Colors.black,
-        fontWeight: FontWeight.w400,
-        fontSize: 12,
       ),
     );
   }
