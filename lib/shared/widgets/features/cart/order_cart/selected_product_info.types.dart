@@ -1,6 +1,6 @@
-import "../main-cards/combos/combos_detail-card/variants/combo/combo_detail.variant.types.dart";
-import "../main-cards/menus/menus_detail-card/variants/menu/menu_detail_variant.types.dart";
-import "../main-cards/products/product_detail-card/variants/product/product_detail_variant.types.dart";
+import "../../main-cards/combos/combos_detail-card/variants/combo/combo_detail.variant.types.dart";
+import "../../main-cards/menus/menus_detail-card/variants/menu/menu_detail_variant.types.dart";
+import "../../main-cards/products/product_detail-card/variants/product/product_detail_variant.types.dart";
 
 class SelectedProductInfo {
   final String productId;

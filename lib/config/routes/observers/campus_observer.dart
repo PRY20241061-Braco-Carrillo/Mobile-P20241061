@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 
-import "../../../shared/widgets/features/order_cart/order_cart.notifier.dart";
+import "../../../shared/widgets/features/cart/order_cart/order_cart.notifier.dart";
 import "../routes.dart";
 
 class CampusRouteObserver extends RouteObserver<PageRoute<dynamic>> {

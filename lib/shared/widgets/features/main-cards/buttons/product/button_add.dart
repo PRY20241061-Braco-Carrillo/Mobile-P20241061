@@ -2,8 +2,9 @@ import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 
-import "../../../order_cart/order_cart.notifier.dart";
-import "../../../order_cart/selected_product_info.types.dart";
+import "../../../campus-card/campus_card.types.dart";
+import "../../../cart/order_cart/order_cart.notifier.dart";
+import "../../../cart/order_cart/selected_product_info.types.dart";
 import "../../menus/menus_detail-card/variants/menu/menu_detail_variant.types.dart";
 import "../../products/product_detail-card/product_detail.types.dart";
 import "../../products/product_detail-card/variants/product/product_detail_variant.types.dart";
@@ -11,10 +12,12 @@ import "../../products/product_detail-card/variants/product/product_variant.prov
 
 class ButtonAddProductVariantToCart extends ConsumerWidget {
   final String productId;
+  final CampusCardData campusData;
 
   const ButtonAddProductVariantToCart({
     super.key,
     required this.productId,
+    required this.campusData,
   });
 
   @override

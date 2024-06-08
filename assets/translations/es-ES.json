@@ -352,5 +352,36 @@
             }
 
         }
+    },
+    "Order":{
+        "order_request":{
+            "ORDER_REQUEST": {
+                "label": "Solicitar Orden"
+            },
+            "ORDER_REQUESTED": {
+                "label": "Orden Solicitada"
+            },
+            "ORDER_REQUESTED_MESSAGE": {
+                "label": "Su orden ha sido solicitada"
+            },
+            "alerts":{
+                "ORDER_REQUESTED": {
+                    "title": "Orden Solicitada",
+                    "message": "Su orden ha sido solicitada"
+                },
+                "ORDER_IN_PROGRESS": {
+                    "title": "Orden en progreso",
+                    "message": "Su orden se encuentra en progreso"
+                },
+                "ORDER_CANCELED_OTHER_ORDER_IN_PROGRESS": {
+                    "title": "Orden cancelada",
+                    "message": "Su orden ha sido cancelada debido a que ya tiene otra orden en progreso"
+                },
+                "ERROR":{
+                    "title": "Error",
+                    "message": "Ha ocurrido un error, intenta nuevamente"
+                }
+            }
+        }
     }
 }

@@ -138,8 +138,8 @@ class ProductDetailScreen extends ConsumerWidget {
     }
 
     final Widget buttonAddProduct = ButtonAddProductVariantToCart(
-      productId: productDetailNavigationData.productData.productId,
-    );
+        productId: productDetailNavigationData.productData.productId,
+        campusData: productDetailNavigationData.campusData);
 
     final Widget buttonArProduct = ButtonAR(
       productId: productDetailNavigationData.productData.productId,

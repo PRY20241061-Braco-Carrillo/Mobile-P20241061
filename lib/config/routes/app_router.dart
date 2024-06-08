@@ -18,6 +18,7 @@ import "../../modules/combos/combos_detail_screen.dart";
 import "../../modules/combos/combos_screen.dart";
 import "../../modules/home/home_screen.dart";
 
+import "../../modules/order/order_request/order_request_screen.dart";
 import "../../modules/product/menus/menu_detail_navigation_data.types.dart";
 import "../../modules/product/menus/menus_detail_screen.dart";
 import "../../modules/product/menus/menus_screen.dart";
@@ -185,6 +186,13 @@ final Provider<GoRouter> goRouterProvider =
               state.extra as PromotionDetailNavigationData;
           return PromotionProductDetailScreen(
               promotionDetailNavigationData: data);
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.orderRequest,
+        builder: (BuildContext context, GoRouterState state) {
+          final String confirmationToken = state.extra as String;
+          return OrderRequestScreen(confirmationToken: confirmationToken);
         },
       )
     ],

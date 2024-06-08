@@ -2,9 +2,11 @@ import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart";
 
-import "../shared/widgets/features/order_cart/order_cart.notifier.dart";
-import "../shared/widgets/features/order_cart/order_cart.types.dart";
-import "../shared/widgets/features/order_cart/order_summary_cart_bar.dart";
+import "../modules/order/order_request/providers/order_in_progress.notifier.dart";
+import "../shared/widgets/features/cart/order_cart/order_cart.notifier.dart";
+import "../shared/widgets/features/cart/order_cart/order_cart.types.dart";
+import "../shared/widgets/features/cart/order_cart/order_summary_cart_bar.dart";
+import "../shared/widgets/order/order_progress/order_summary_bar.dart";
 
 class BaseLayout extends StatelessWidget {
   final Widget body;
@@ -27,7 +29,12 @@ class BaseLayout extends StatelessWidget {
           Consumer(
             builder: (BuildContext context, WidgetRef ref, Widget? child) {
               final List<CartItem> cartItems = ref.watch(cartProvider);
-              if (cartItems.isNotEmpty) {
+              final OrderInProgressState orderInProgressState =
+                  ref.watch(orderInProgressProvider);
+
+              if (orderInProgressState.inProgress) {
+                return const OrderSummaryBar();
+              } else if (cartItems.isNotEmpty) {
                 return const CartSummaryBar();
               } else {
                 return const SizedBox.shrink();

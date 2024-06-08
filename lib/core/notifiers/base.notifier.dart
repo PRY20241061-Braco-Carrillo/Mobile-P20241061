@@ -49,3 +49,27 @@ abstract class BaseNotifier<T>
     }
   }
 }
+
+abstract class BaseNotifierWithId<T>
+    extends StateNotifier<AsyncValue<BaseResponse<T>>> {
+  final Ref ref;
+
+  BaseNotifierWithId(this.ref)
+      : super(const AsyncValue<BaseResponse<Never>>.loading());
+
+  Future<void> performActionWithId(String id, VoidCallback onLoading,
+      Function(String) onSuccess, Function(String) onError);
+
+  void handleResponse(BaseResponse<T> response, Function(String) onSuccess,
+      Function(String) onError) {
+    if (response.code == "SUCCESS") {
+      state = AsyncValue<BaseResponse<T>>.data(response);
+      onSuccess("Operation Successful: ${response.data}");
+    } else {
+      state = AsyncValue<BaseResponse<T>>.error(
+          Exception("Error: ${ResponseCodes.getMessage(response.code)}"),
+          StackTrace.current);
+      onError("Error: ${ResponseCodes.getMessage(response.code)}");
+    }
+  }
+}

@@ -306,5 +306,36 @@
                 "label": "Monto total con propina"
             }
         }
+    },
+    "Order":{
+        "order_request":{
+            "ORDER_REQUEST": {
+                "label": "Order"
+            },
+            "ORDER_REQUESTED": {
+                "label": "Order requested"
+            },
+            "ORDER_REQUESTED_MESSAGE": {
+                "label": "Your order has been requested"
+            },
+            "alerts":{
+                "ORDER_REQUESTED": {
+                    "title": "Order requested",
+                    "message": "Your order has been requested"
+                },
+                "ORDER_IN_PROGRESS": {
+                    "title": "Order in progress",
+                    "message": "Your order is in progress"
+                },
+                "ORDER_CANCELED_OTHER_ORDER_IN_PROGRESS": {
+                    "title": "Order canceled",
+                    "message": "Your order has been canceled because you have another order in progress"
+                },
+                "ERROR":{
+                    "title": "Error",
+                    "message": "An error occurred, please try again"
+                }
+            }
+        }
     }
 }

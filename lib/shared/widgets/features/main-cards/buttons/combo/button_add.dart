@@ -2,8 +2,8 @@ import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 
-import "../../../order_cart/order_cart.notifier.dart";
-import "../../../order_cart/selected_product_info.types.dart";
+import "../../../cart/order_cart/order_cart.notifier.dart";
+import "../../../cart/order_cart/selected_product_info.types.dart";
 import "../../combos/combos_detail-card/combos_detail.types.dart";
 import "../../combos/combos_detail-card/variants/combo/combo_detail.variant.types.dart";
 import "../../combos/combos_detail-card/variants/combo/combo_variant.provider.dart";

@@ -10,7 +10,7 @@ final cartProvider = StateNotifierProvider<CartNotifier, List<CartItem>>(
 class CartNotifier extends StateNotifier<List<CartItem>> {
   CartNotifier() : super(<CartItem>[]);
 
-  void addProduct(SelectedProductInfo productInfo) {
+  void addProduct(SelectedProductInfo productInfo, [String campusId = ""]) {
     final CartItem? existingItem = state.firstWhereOrNull((CartItem item) =>
         item.productInfo.productId == productInfo.productId &&
         _areVariantsAndComplementsEqual(item.productInfo, productInfo));
@@ -18,7 +18,12 @@ class CartNotifier extends StateNotifier<List<CartItem>> {
     if (existingItem != null) {
       existingItem.increment();
     } else {
-      state = <CartItem>[...state, CartItem(productInfo: productInfo)];
+      state = <CartItem>[
+        ...state,
+        CartItem(
+          productInfo: productInfo,
+        )
+      ];
     }
     state = <CartItem>[...state];
   }
@@ -43,7 +48,7 @@ class CartNotifier extends StateNotifier<List<CartItem>> {
   }
 
   void resetCart() {
-    state = <CartItem>[]; // Forzar actualización
+    state = <CartItem>[];
     state = [...state];
   }
 
