@@ -1,18 +1,15 @@
-import "package:collection/collection.dart";
-import "package:easy_localization/easy_localization.dart";
-import "package:flutter/material.dart";
-import "package:hooks_riverpod/hooks_riverpod.dart";
+import 'package:collection/collection.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import "../../../../../../providers/image_provider.dart";
-import "../../../../../global/image_display/image_display.dart";
-import "../variants/menu/menu_detail_variant.types.dart";
-import "../variants/menu/menu_variant_selector.dart";
-import "../menus_detail.types.dart";
+import '../menus_detail.types.dart';
+import '../variants/menu/menu_variant.provider.dart';
+import '../variants/menu/menu_variant_selector.dart';
 
 final StateNotifierProvider<PanelExpansionNotifier, List<bool>>
     panelExpansionStateProvider =
-    StateNotifierProvider<PanelExpansionNotifier, List<bool>>(
-        (StateNotifierProviderRef<PanelExpansionNotifier, List<bool>> ref) {
+    StateNotifierProvider<PanelExpansionNotifier, List<bool>>((ref) {
   return PanelExpansionNotifier();
 });
 
@@ -20,14 +17,16 @@ class PanelExpansionNotifier extends StateNotifier<List<bool>> {
   PanelExpansionNotifier() : super(<bool>[]);
 
   void togglePanel(int index) {
-    state = <bool>[
-      for (int i = 0; i < state.length; i++)
-        if (i == index) !state[i] else state[i]
-    ];
+    if (index >= 0 && index < state.length) {
+      state = <bool>[
+        for (int i = 0; i < state.length; i++)
+          if (i == index) !state[i] else state[i]
+      ];
+    }
   }
 
   void setPanelCount(int count) {
-    state = List<bool>.generate(count, (int index) => true);
+    state = List<bool>.generate(count, (index) => true);
   }
 }
 
@@ -50,7 +49,6 @@ class MenuSelectorTypeState extends ConsumerState<MenuSelectorType> {
   void initState() {
     super.initState();
     Future.microtask(() {
-      ref.read(panelExpansionStateProvider.notifier).setPanelCount(4);
       initializeSelectedProduct();
     });
   }
@@ -72,19 +70,6 @@ class MenuSelectorTypeState extends ConsumerState<MenuSelectorType> {
 
   @override
   Widget build(BuildContext context) {
-    const String labelDessertsKey = "MenuCategory.categories.DESSERTS.label";
-    const String labelDrinksKey = "MenuCategory.categories.DRINKS.label";
-    const String labelInitialDishesKey =
-        "MenuCategory.categories.INITIAL_DISHES.label";
-    const String labelPrincipalDishesKey =
-        "MenuCategory.categories.PRINCIPAL_DISHES.label";
-    const String selectDessertsKey = "MenuCategory.categories.DESSERTS.select";
-    const String selectDrinksKey = "MenuCategory.categories.DRINKS.select";
-    const String selectInitialDishesKey =
-        "MenuCategory.categories.INITIAL_DISHES.select";
-    const String selectPrincipalDishesKey =
-        "MenuCategory.categories.PRINCIPAL_DISHES.select";
-
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[
@@ -93,32 +78,39 @@ class MenuSelectorTypeState extends ConsumerState<MenuSelectorType> {
           Text(
               "${widget.menuDetail.amountPrice} ${widget.menuDetail.currencyPrice}",
               style: Theme.of(context).textTheme.titleMedium),
-          buildCategoryPanel(labelDessertsKey, widget.menuDetail.desserts, 0,
-              selectDessertsKey),
+          buildCategoryPanel('MenuCategory.categories.DESSERTS.label',
+              widget.menuDetail.desserts, 0, selectedDessertsVariantsProvider),
+          buildCategoryPanel('MenuCategory.categories.DRINKS.label',
+              widget.menuDetail.drinks, 1, selectedDrinksVariantsProvider),
           buildCategoryPanel(
-              labelDrinksKey, widget.menuDetail.drinks, 1, selectDrinksKey),
-          buildCategoryPanel(labelInitialDishesKey,
-              widget.menuDetail.initialDishes, 2, selectInitialDishesKey),
-          buildCategoryPanel(labelPrincipalDishesKey,
-              widget.menuDetail.principalDishes, 3, selectPrincipalDishesKey),
+              'MenuCategory.categories.INITIAL_DISHES.label',
+              widget.menuDetail.initialDishes,
+              2,
+              selectedInitialDishesVariantsProvider),
+          buildCategoryPanel(
+              'MenuCategory.categories.PRINCIPAL_DISHES.label',
+              widget.menuDetail.principalDishes,
+              3,
+              selectedPrincipalDishesVariantsProvider),
         ],
       ),
     );
   }
 
-  Widget buildCategoryPanel(String title, List<DishesDetailCardData> items,
-      int index, String selectKey) {
-    final List<bool> panelState = ref.watch(panelExpansionStateProvider);
-
-    print("Building category panel: $title with items: ${items.length}");
-
-    if (items.isEmpty) {
-      return const SizedBox.shrink();
-    }
+  Widget buildCategoryPanel(
+      String title,
+      List<DishesDetailCardData> items,
+      int index,
+      StateNotifierProvider<SelectedMenuVariantsNotifier, SelectedVariantsState>
+          provider) {
+    final bool allVariantsSelected =
+        ref.watch(provider.select((state) => state.selectedVariant != null));
 
     return ExpansionPanelList(
       expansionCallback: (int i, bool isExpanded) {
-        ref.read(panelExpansionStateProvider.notifier).togglePanel(index);
+        setState(() {
+          // handle panel expansion state
+        });
       },
       children: <ExpansionPanel>[
         ExpansionPanel(
@@ -126,6 +118,9 @@ class MenuSelectorTypeState extends ConsumerState<MenuSelectorType> {
             return ListTile(
               title: Text(title.tr(),
                   style: Theme.of(context).textTheme.titleLarge),
+              trailing: allVariantsSelected
+                  ? Icon(Icons.check_circle, color: Colors.green)
+                  : Icon(Icons.error, color: Colors.red),
             );
           },
           body: Padding(
@@ -134,13 +129,12 @@ class MenuSelectorTypeState extends ConsumerState<MenuSelectorType> {
               children: <Widget>[
                 DropdownButton<DishesDetailCardData>(
                   isExpanded: true,
-                  hint: Text(selectKey.tr()),
+                  hint: Text('Select ${title.tr()}'),
                   value: getSelectedProduct(index),
                   onChanged: (DishesDetailCardData? newValue) {
                     setState(() {
                       setSelectedProduct(newValue, index);
-                      print(
-                          "Selected product: ${newValue?.name} for index: $index");
+                      resetSelectedVariants(index);
                     });
                   },
                   items: items.map((DishesDetailCardData item) {
@@ -149,47 +143,37 @@ class MenuSelectorTypeState extends ConsumerState<MenuSelectorType> {
                       child: Text(item.name),
                     );
                   }).toList(),
-                  style: Theme.of(context).textTheme.bodyMedium,
-                  dropdownColor: Theme.of(context).colorScheme.surfaceVariant,
                 ),
                 if (getSelectedProduct(index) != null)
-                  buildProductDetails(getSelectedProduct(index)!),
+                  buildProductDetails(getSelectedProduct(index)!, provider),
               ],
             ),
           ),
-          isExpanded: panelState[index],
+          isExpanded: true, // control this value
         ),
       ],
     );
   }
 
-  Widget buildProductDetails(DishesDetailCardData product) {
-    print(
-        "Building product details for: ${product.name} with variants: ${product.variants.length}");
+  Widget buildProductDetails(
+      DishesDetailCardData product,
+      StateNotifierProvider<SelectedMenuVariantsNotifier, SelectedVariantsState>
+          provider) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         ListTile(
           leading: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 50, maxHeight: 50),
-            child: ImageDisplay(
-              config: ImageConfig(
-                imageUrl: product.urlImage,
-                width: 50,
-                height: 50,
-                onErrorHeight: 50,
-                onErrorWidth: 50,
-                onErrorPadding: const EdgeInsets.only(bottom: 70, top: 30),
-              ),
-            ),
+            child: Image.network(product.urlImage),
           ),
           title: Text(product.name),
           subtitle: Text(product.description),
         ),
         MenuVariantSelector(
           menuId: product.productMenuId,
-          variants: convertVariantMenuSelectorDetailsToMenuDetailVariantCards(
-              product.variants),
+          variants: product.toVariantMenuSelectorDetails(),
+          provider: provider,
         ),
       ],
     );
@@ -198,19 +182,17 @@ class MenuSelectorTypeState extends ConsumerState<MenuSelectorType> {
   DishesDetailCardData? getSelectedProduct(int index) {
     switch (index) {
       case 0:
-        return widget.menuDetail.desserts.firstWhereOrNull(
-            (DishesDetailCardData item) => item.productId == selectedDessert);
+        return widget.menuDetail.desserts
+            .firstWhereOrNull((item) => item.productId == selectedDessert);
       case 1:
-        return widget.menuDetail.drinks.firstWhereOrNull(
-            (DishesDetailCardData item) => item.productId == selectedDrink);
+        return widget.menuDetail.drinks
+            .firstWhereOrNull((item) => item.productId == selectedDrink);
       case 2:
-        return widget.menuDetail.initialDishes.firstWhereOrNull(
-            (DishesDetailCardData item) =>
-                item.productId == selectedInitialDish);
+        return widget.menuDetail.initialDishes
+            .firstWhereOrNull((item) => item.productId == selectedInitialDish);
       case 3:
         return widget.menuDetail.principalDishes.firstWhereOrNull(
-            (DishesDetailCardData item) =>
-                item.productId == selectedPrincipalDish);
+            (item) => item.productId == selectedPrincipalDish);
       default:
         return null;
     }
@@ -233,17 +215,24 @@ class MenuSelectorTypeState extends ConsumerState<MenuSelectorType> {
     }
   }
 
-  List<MenuDetailVariantCard>
-      convertVariantMenuSelectorDetailsToMenuDetailVariantCards(
-          List<VariantMenuSelectorDetail> variantDetails) {
-    return variantDetails.map((VariantMenuSelectorDetail variantDetail) {
-      return MenuDetailVariantCard(
-        productVariantId: variantDetail.productVariantId,
-        detail: double.tryParse(variantDetail.detail) ?? 0.0,
-        variantInfo: variantDetail.variantInfo,
-        variantOrder: variantDetail.variantOrder.toDouble(),
-        variants: variantDetail.variants,
-      );
-    }).toList();
+  void resetSelectedVariants(int index) {
+    final provider = getProviderForIndex(index);
+    ref.read(provider.notifier).resetVariants();
+  }
+
+  StateNotifierProvider<SelectedMenuVariantsNotifier, SelectedVariantsState>
+      getProviderForIndex(int index) {
+    switch (index) {
+      case 0:
+        return selectedDessertsVariantsProvider;
+      case 1:
+        return selectedDrinksVariantsProvider;
+      case 2:
+        return selectedInitialDishesVariantsProvider;
+      case 3:
+        return selectedPrincipalDishesVariantsProvider;
+      default:
+        throw ArgumentError('Invalid index');
+    }
   }
 }

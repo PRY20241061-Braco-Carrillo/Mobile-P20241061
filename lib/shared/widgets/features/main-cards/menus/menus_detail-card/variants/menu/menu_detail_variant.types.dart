@@ -1,8 +1,8 @@
 class MenuDetailVariantCard {
   final String productVariantId;
-  final double detail;
+  final String detail;
   final String variantInfo;
-  final double variantOrder;
+  final int variantOrder;
   final Map<String, String> variants;
   final double amountPrice = 0.0;
 

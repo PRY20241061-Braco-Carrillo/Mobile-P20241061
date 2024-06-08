@@ -1,3 +1,5 @@
+import "variants/menu/menu_detail_variant.types.dart";
+
 class MenuDetailCardData {
   String menuId;
   String name;
@@ -103,13 +105,25 @@ class DishesDetailCardData {
         "urlImage": urlImage,
         "variants": List<dynamic>.from(variants.map((x) => x.toJson())),
       };
+
+  List<MenuDetailVariantCard> toVariantMenuSelectorDetails() {
+    return variants.map((VariantMenuSelectorDetail variant) {
+      return MenuDetailVariantCard(
+        productVariantId: variant.productVariantId,
+        detail: variant.detail,
+        variantInfo: variant.variantInfo ?? '',
+        variantOrder: variant.variantOrder,
+        variants: variant.getVariantsMap(),
+      );
+    }).toList();
+  }
 }
 
 class VariantMenuSelectorDetail {
   final String productVariantId;
   final String detail;
   final int variantOrder;
-  final String variantInfo;
+  final String? variantInfo;
   final Map<String, String> variants;
 
   VariantMenuSelectorDetail({
@@ -140,7 +154,7 @@ class VariantMenuSelectorDetail {
       };
 
   Map<String, String> getVariantsMap() {
-    return _parseVariantInfo(variantInfo);
+    return _parseVariantInfo(variantInfo ?? '');
   }
 
   Map<String, String> _parseVariantInfo(String info) {

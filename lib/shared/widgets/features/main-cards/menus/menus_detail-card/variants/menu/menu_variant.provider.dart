@@ -1,33 +1,46 @@
-import "package:collection/collection.dart";
-import "package:hooks_riverpod/hooks_riverpod.dart";
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import "../../../../../../../utils/constants/variants_keys.dart";
-import "../../menus_detail.types.dart";
-import "menu_detail_variant.types.dart";
+import '../../menus_detail.types.dart';
+import 'menu_detail_variant.types.dart';
 
 final StateProvider<MenuDetailCardData?> menuDetailCardDataProvider =
     StateProvider<MenuDetailCardData?>(
   (StateProviderRef<MenuDetailCardData?> ref) => null,
 );
 
-final StateProviderFamily<bool, String> allMenuVariantsSelectedProvider =
-    StateProvider.family<bool, String>(
-  (StateProviderRef<bool> ref, String menuId) => false,
+// Proveedores para cada categoría
+final selectedDessertsVariantsProvider =
+    StateNotifierProvider<SelectedMenuVariantsNotifier, SelectedVariantsState>(
+  (ref) => SelectedMenuVariantsNotifier("desserts", ref),
 );
 
-final StateNotifierProviderFamily<SelectedMenuVariantsNotifier,
-        Map<String, SelectedVariantsState>, String>
-    selectedMenuVariantsProvider = StateNotifierProvider.family<
-        SelectedMenuVariantsNotifier,
-        Map<String, SelectedVariantsState>,
-        String>(
-  (StateNotifierProviderRef<SelectedMenuVariantsNotifier,
-              Map<String, SelectedVariantsState>>
-          ref,
-      String menuId) {
-    return SelectedMenuVariantsNotifier(menuId, ref);
-  },
+final selectedDrinksVariantsProvider =
+    StateNotifierProvider<SelectedMenuVariantsNotifier, SelectedVariantsState>(
+  (ref) => SelectedMenuVariantsNotifier("drinks", ref),
 );
+
+final selectedInitialDishesVariantsProvider =
+    StateNotifierProvider<SelectedMenuVariantsNotifier, SelectedVariantsState>(
+  (ref) => SelectedMenuVariantsNotifier("initialDishes", ref),
+);
+
+final selectedPrincipalDishesVariantsProvider =
+    StateNotifierProvider<SelectedMenuVariantsNotifier, SelectedVariantsState>(
+  (ref) => SelectedMenuVariantsNotifier("principalDishes", ref),
+);
+
+// Proveedor para habilitar el botón
+final buttonEnabledProvider = StateProvider.family<bool, String>((ref, menuId) {
+  final initialDishState = ref.watch(selectedInitialDishesVariantsProvider);
+  final principalDishState = ref.watch(selectedPrincipalDishesVariantsProvider);
+  final drinkState = ref.watch(selectedDrinksVariantsProvider);
+  final dessertState = ref.watch(selectedDessertsVariantsProvider);
+
+  return initialDishState.selectedVariant != null &&
+      principalDishState.selectedVariant != null &&
+      drinkState.selectedVariant != null &&
+      dessertState.selectedVariant != null;
+});
 
 class SelectedVariantsState {
   final String? selectedSize;
@@ -70,120 +83,66 @@ class SelectedVariantsState {
 }
 
 class SelectedMenuVariantsNotifier
-    extends StateNotifier<Map<String, SelectedVariantsState>> {
+    extends StateNotifier<SelectedVariantsState> {
   final String menuId;
   final Ref ref;
   List<MenuDetailVariantCard> availableVariants = <MenuDetailVariantCard>[];
 
   SelectedMenuVariantsNotifier(this.menuId, this.ref)
-      : super(<String, SelectedVariantsState>{});
+      : super(SelectedVariantsState());
 
   void initializeVariants(List<MenuDetailVariantCard> variants) {
     availableVariants = variants;
-    print('Variants initialized for $menuId: $variants');
-    if (variants.length == 1) {
-      updateSelectedVariant(menuId, variants.first);
+    if (variants.length == 1 || variants.first.variantInfo == '') {
+      print("Automatically selecting the only variant available for $menuId");
+      updateSelectedVariant(variants.first);
     }
   }
 
-  void updateSelectedSize(String menuId, String? size) {
-    final SelectedVariantsState stateForMenu =
-        state[menuId] ?? SelectedVariantsState();
-    state = <String, SelectedVariantsState>{
-      ...state,
-      menuId: stateForMenu.copyWith(selectedSize: size),
-    };
-    _updateSelectedVariant(menuId);
+  void resetVariants() {
+    state = SelectedVariantsState();
+    print("Variants reset for menuId: $menuId");
   }
 
-  void updateSelectedCookingType(String menuId, String? cookingType) {
-    final SelectedVariantsState stateForMenu =
-        state[menuId] ?? SelectedVariantsState();
-    state = <String, SelectedVariantsState>{
-      ...state,
-      menuId: stateForMenu.copyWith(selectedCookingType: cookingType),
-    };
-    _updateSelectedVariant(menuId);
+  void updateSelectedSize(String? size) {
+    state = state.copyWith(selectedSize: size);
+    resetVariants();
   }
 
-  void updateSelectedVariant(String menuId, MenuDetailVariantCard? variant) {
-    final SelectedVariantsState stateForMenu =
-        state[menuId] ?? SelectedVariantsState();
-
-    state = <String, SelectedVariantsState>{
-      ...state,
-      menuId: stateForMenu.copyWith(selectedVariant: variant),
-    };
-    ref.read(allMenuVariantsSelectedProvider(menuId).notifier).state = true;
+  void updateSelectedCookingType(String? cookingType) {
+    state = state.copyWith(selectedCookingType: cookingType);
   }
 
-  void updateMenuDetails(String menuId, String menuName, double price,
-      String currency, String imageUrl) {
-    final SelectedVariantsState stateForMenu =
-        state[menuId] ?? SelectedVariantsState();
-
-    state = <String, SelectedVariantsState>{
-      ...state,
-      menuId: stateForMenu.copyWith(
-        menuName: menuName,
-        price: price,
-        currency: currency,
-        imageUrl: imageUrl,
-      ),
-    };
+  void updateSelectedVariant(MenuDetailVariantCard? variant) {
+    state = state.copyWith(selectedVariant: variant);
+    _updateAllVariantsSelected();
   }
 
-  void _updateSelectedVariant(String menuId) {
-    final SelectedVariantsState? stateForMenu = state[menuId];
-    final bool hasAllVariantsSelected = _areAllVariantsSelected(stateForMenu);
-    ref.read(allMenuVariantsSelectedProvider(menuId).notifier).state =
-        hasAllVariantsSelected;
+  void updateMenuDetails(
+      String menuName, double price, String currency, String imageUrl) {
+    state = state.copyWith(
+      menuName: menuName,
+      price: price,
+      currency: currency,
+      imageUrl: imageUrl,
+    );
+  }
 
-    if (hasAllVariantsSelected) {
-      final MenuDetailVariantCard? selectedVariant =
-          _findMatchingVariant(stateForMenu!);
-      state = <String, SelectedVariantsState>{
-        ...state,
-        menuId: stateForMenu.copyWith(selectedVariant: selectedVariant),
-      };
+  void _updateAllVariantsSelected() {
+    final allSelected =
+        state.selectedSize != null && state.selectedCookingType != null;
+    ref.read(buttonEnabledProvider(menuId).notifier).state = allSelected;
+    if (allSelected) {
+      print("All variants are selected for menuId: $menuId");
     } else {
-      state = <String, SelectedVariantsState>{
-        ...state,
-        menuId: stateForMenu!.copyWith(selectedVariant: null),
-      };
+      print("Not all variants are selected for menuId: $menuId");
     }
-  }
-
-  bool _areAllVariantsSelected(SelectedVariantsState? stateForMenu) {
-    if (availableVariants.length == 1) return true;
-
-    final Set<String> requiredVariantKeys = availableVariants
-        .expand(
-            (MenuDetailVariantCard variant) => variant.getVariantsMap().keys)
-        .toSet();
-
-    for (final String key in requiredVariantKeys) {
-      if (stateForMenu?.selectedSize == null &&
-          key == ProductVariantKeys.size) {
-        return false;
-      }
-      if (stateForMenu?.selectedCookingType == null &&
-          key == ProductVariantKeys.cookingType) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  MenuDetailVariantCard? _findMatchingVariant(SelectedVariantsState state) {
-    return availableVariants.firstWhereOrNull((MenuDetailVariantCard variant) {
-      final Map<String, String> variantMap = variant.getVariantsMap();
-      final bool sizeMatches = state.selectedSize == null ||
-          variantMap[ProductVariantKeys.size] == state.selectedSize;
-      final bool cookingTypeMatches = state.selectedCookingType == null ||
-          variantMap[ProductVariantKeys.cookingType] ==
-              state.selectedCookingType;
-      return sizeMatches && cookingTypeMatches;
-    });
   }
 }
+
+final selectedMenuVariantsProvider = StateNotifierProvider.family<
+    SelectedMenuVariantsNotifier, SelectedVariantsState, String>(
+  (ref, menuId) {
+    return SelectedMenuVariantsNotifier(menuId, ref);
+  },
+);

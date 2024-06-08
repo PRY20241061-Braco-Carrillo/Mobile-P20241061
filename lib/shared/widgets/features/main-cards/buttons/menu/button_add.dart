@@ -1,13 +1,14 @@
-import "package:easy_localization/easy_localization.dart";
-import "package:flutter/material.dart";
-import "package:hooks_riverpod/hooks_riverpod.dart";
+import 'package:collection/collection.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import "../../../order_cart/order_cart.notifier.dart";
-import "../../../order_cart/selected_product_info.types.dart";
-import "../../menus/menus_detail-card/menus_detail.types.dart";
-import "../../menus/menus_detail-card/variants/menu/menu_detail_variant.types.dart";
-import "../../menus/menus_detail-card/variants/menu/menu_variant.provider.dart";
-import "../../products/product_detail-card/variants/product/product_detail_variant.types.dart";
+import '../../../order_cart/order_cart.notifier.dart';
+import '../../../order_cart/selected_product_info.types.dart';
+import '../../menus/menus_detail-card/menus_detail.types.dart';
+import '../../menus/menus_detail-card/variants/menu/menu_detail_variant.types.dart';
+import '../../menus/menus_detail-card/variants/menu/menu_variant.provider.dart';
+import '../../products/product_detail-card/variants/product/product_detail_variant.types.dart';
 
 class ButtonAddMenuVariantToCart extends ConsumerWidget {
   final String menuId;
@@ -19,35 +20,50 @@ class ButtonAddMenuVariantToCart extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    const String labelButton = "MenuCard.buttons.ADD.label";
+    const String labelButton = 'MenuCard.buttons.ADD.label';
 
     final MenuDetailCardData? menuData = ref.watch(menuDetailCardDataProvider);
-    final bool allVariantsSelected =
-        ref.watch(allMenuVariantsSelectedProvider(menuId));
+    final bool buttonEnabled = ref.watch(buttonEnabledProvider(menuId));
 
     return ElevatedButton(
-      onPressed: menuData != null && allVariantsSelected
+      onPressed: menuData != null && buttonEnabled
           ? () {
-              final Map<String, SelectedVariantsState> selectedVariantsState =
-                  ref.read(selectedMenuVariantsProvider(menuId));
-              final MenuDetailVariantCard? selectedVariant =
-                  selectedVariantsState[menuId]?.selectedVariant;
+              final initialDishVariant = ref
+                  .read(selectedInitialDishesVariantsProvider)
+                  .selectedVariant;
+              final principalDishVariant = ref
+                  .read(selectedPrincipalDishesVariantsProvider)
+                  .selectedVariant;
+              final drinkVariant =
+                  ref.read(selectedDrinksVariantsProvider).selectedVariant;
+              final dessertVariant =
+                  ref.read(selectedDessertsVariantsProvider).selectedVariant;
 
-              if (selectedVariant == null) return;
+              final List<MenuDetailVariantCard> selectedVariants = [];
+              if (initialDishVariant != null)
+                selectedVariants.add(initialDishVariant);
+              if (principalDishVariant != null)
+                selectedVariants.add(principalDishVariant);
+              if (drinkVariant != null) selectedVariants.add(drinkVariant);
+              if (dessertVariant != null) selectedVariants.add(dessertVariant);
 
-              final SelectedVariantsState? menuDetails =
-                  selectedVariantsState[menuId];
-              if (menuDetails == null) return;
+              if (selectedVariants.isEmpty) {
+                print('No variants selected');
+                return;
+              }
+
+              print(
+                  'Selected Variants: ${selectedVariants.map((e) => e.toJson()).toList()}');
 
               final SelectedProductInfo selectedProductInfo =
                   SelectedProductInfo(
                 productId: menuId,
-                productName: menuDetails.menuName!,
-                price: menuDetails.price!,
-                currency: menuDetails.currency!,
-                imageUrl: menuDetails.imageUrl!,
+                productName: menuData!.name,
+                price: menuData.amountPrice,
+                currency: menuData.currencyPrice,
+                imageUrl: menuData.urlImage,
                 selectedProductVariants: <ProductDetailVariantCard>[],
-                selectedMenuVariants: <MenuDetailVariantCard>[selectedVariant],
+                selectedMenuVariants: selectedVariants,
               );
 
               ref.read(cartProvider.notifier).addProduct(selectedProductInfo);

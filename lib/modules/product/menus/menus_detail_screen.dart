@@ -45,7 +45,6 @@ class MenusDetailScreen extends ConsumerWidget {
                       menuDetailNavigationData.productData.menuId)
                   .notifier);
           selectedMenuNotifier.updateMenuDetails(
-            menuDetailNavigationData.productData.menuId,
             menuDetailNavigationData.productData.name,
             menuDetailNavigationData.productData.amountPrice,
             menuDetailNavigationData.productData.currencyPrice,
