@@ -173,6 +173,26 @@
             "label": "Since"
         }
     },
+    "MenuCategory":{
+        "categories": {
+            "DESSERTS": {
+                "label": "Desserts",
+                "select": "Select a dessert"
+            },
+            "DRINKS": {
+                "label": "Drinks",
+                "select": "Select a drink"
+            },
+            "INITIAL_DISHES": {
+                "label": "Initial Dishes",
+                "select": "Select an initial dish"
+            },
+            "PRINCIPAL_DISHES": {
+                "label": "Principal Dishes",
+                "select": "Select a principal dish"
+            }
+        }
+    },
     "Header":{
         "home": {
             "title": "Restaurants"

@@ -107,7 +107,7 @@ class VariantDetailResponse {
   String productVariantId;
   String detail;
   int variantOrder;
-  String variantInfo;
+  String? variantInfo;
 
   VariantDetailResponse({
     required this.productVariantId,

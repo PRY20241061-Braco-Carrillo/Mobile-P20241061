@@ -143,7 +143,7 @@ class ProductVariantComboDetailResponse {
   String productVariantId;
   String detail;
   int variantOrder;
-  String variantInfo;
+  String? variantInfo;
 
   ProductVariantComboDetailResponse({
     required this.productVariantId,

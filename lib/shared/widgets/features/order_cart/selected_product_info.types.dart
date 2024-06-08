@@ -1,5 +1,6 @@
-import "../product-card/products/product_detail-card/product_detail.types.dart";
-import "../product-card/products/product_detail-card/variants/variant_abstract.types.dart";
+import "../main-cards/combos/combos_detail-card/variants/combo/combo_detail.variant.types.dart";
+import "../main-cards/menus/menus_detail-card/variants/menu/menu_detail_variant.types.dart";
+import "../main-cards/products/product_detail-card/variants/product/product_detail_variant.types.dart";
 
 class SelectedProductInfo {
   final String productId;
@@ -7,8 +8,9 @@ class SelectedProductInfo {
   final double price;
   final String currency;
   final String imageUrl;
-  final List<Variant> selectedVariants;
-  final List<Complement> selectedComplements;
+  final List<ProductDetailVariantCard> selectedProductVariants;
+  final List<MenuDetailVariantCard> selectedMenuVariants;
+  final List<ComboDetailVariantCard> selectedComboVariants;
 
   SelectedProductInfo({
     required this.productId,
@@ -16,17 +18,22 @@ class SelectedProductInfo {
     required this.price,
     required this.currency,
     required this.imageUrl,
-    this.selectedVariants = const <Variant>[],
-    this.selectedComplements = const <Complement>[],
+    this.selectedProductVariants = const <ProductDetailVariantCard>[],
+    this.selectedMenuVariants = const <MenuDetailVariantCard>[],
+    this.selectedComboVariants = const <ComboDetailVariantCard>[],
+    //this.selectedComplements = const <Complement>[],
   });
 
   double getTotalPrice() {
     double total = price;
-    for (final Variant variant in selectedVariants) {
+    for (final variant in selectedProductVariants) {
       total += variant.amountPrice;
     }
-    for (final Complement complement in selectedComplements) {
-      total += complement.amountPrice;
+    for (final variant in selectedMenuVariants) {
+      total += variant.amountPrice;
+    }
+    for (final variant in selectedComboVariants) {
+      total += variant.amountPrice;
     }
     return total;
   }
@@ -38,10 +45,12 @@ class SelectedProductInfo {
       "price": price,
       "currency": currency,
       "imageUrl": imageUrl,
-      "selectedVariants":
-          selectedVariants.map((Variant v) => v.toJson()).toList(),
-      "selectedComplements":
-          selectedComplements.map((Complement c) => c.toJson()).toList(),
+      "selectedProductVariants":
+          selectedProductVariants.map((v) => v.toJson()).toList(),
+      "selectedMenuVariants":
+          selectedMenuVariants.map((v) => v.toJson()).toList(),
+      "selectedComboVariants":
+          selectedComboVariants.map((v) => v.toJson()).toList(),
     };
   }
 }

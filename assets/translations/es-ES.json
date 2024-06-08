@@ -236,6 +236,26 @@
             }
         }
     },
+    "MenuCategory":{
+        "categories": {
+            "DESSERTS": {
+                "label": "Postres",
+                "select": "Seleccione un postre"
+            },
+            "DRINKS": {
+                "label": "Bebidas",
+                "select": "Seleccione una bebida"
+            },
+            "INITIAL_DISHES": {
+                "label": "Entradas",
+                "select": "Seleccione una entrada"
+            },
+            "PRINCIPAL_DISHES": {
+                "label": "Platos de fondo",
+                "select": "Seleccione un plato de fondo"
+            }
+        }
+    },
     "Cart": {
         "buttons": {
             "ADD": {

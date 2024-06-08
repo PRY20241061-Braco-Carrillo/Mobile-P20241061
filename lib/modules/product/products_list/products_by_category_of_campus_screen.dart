@@ -11,9 +11,9 @@ import "../../../core/notifiers/management/product/products_by_category_of_campu
 import "../../../layout/base_layout.dart";
 import "../../../layout/scrollable_layout.dart";
 import "../../../shared/widgets/features/header/product-header/products_categories_header.dart";
-import "../../../shared/widgets/features/product-card/products/product_base-card/product_base.dart";
-import "../../../shared/widgets/features/product-card/products/product_base-card/product_base.types.dart";
-import "../../../shared/widgets/features/product-card/products/product_compact-card/product_compact.dart";
+import "../../../shared/widgets/features/main-cards/products/product_base-card/product_base.dart";
+import "../../../shared/widgets/features/main-cards/products/product_base-card/product_base.types.dart";
+import "../../../shared/widgets/features/main-cards/products/product_compact-card/product_compact.dart";
 import "../../../shared/widgets/global/theme_switcher/theme_switcher.dart";
 import "category_navigation_data.types.dart";
 

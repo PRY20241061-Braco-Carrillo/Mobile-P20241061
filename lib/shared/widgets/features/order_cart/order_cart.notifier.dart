@@ -3,11 +3,9 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "order_cart.types.dart";
 import "selected_product_info.types.dart";
 
-final StateNotifierProvider<CartNotifier, List<CartItem>> cartProvider =
-    StateNotifierProvider<CartNotifier, List<CartItem>>(
-        (StateNotifierProviderRef<CartNotifier, List<CartItem>> ref) {
-  return CartNotifier();
-});
+final cartProvider = StateNotifierProvider<CartNotifier, List<CartItem>>(
+  (ref) => CartNotifier(),
+);
 
 class CartNotifier extends StateNotifier<List<CartItem>> {
   CartNotifier() : super(<CartItem>[]);
@@ -44,11 +42,18 @@ class CartNotifier extends StateNotifier<List<CartItem>> {
     }
   }
 
+  void resetCart() {
+    state = <CartItem>[]; // Forzar actualización
+    state = [...state];
+  }
+
   bool _areVariantsAndComplementsEqual(
       SelectedProductInfo info1, SelectedProductInfo info2) {
-    return const ListEquality<dynamic>()
-            .equals(info1.selectedVariants, info2.selectedVariants) &&
+    return const ListEquality<dynamic>().equals(
+            info1.selectedProductVariants, info2.selectedProductVariants) &&
         const ListEquality<dynamic>()
-            .equals(info1.selectedComplements, info2.selectedComplements);
+            .equals(info1.selectedMenuVariants, info2.selectedMenuVariants) &&
+        const ListEquality<dynamic>()
+            .equals(info1.selectedComboVariants, info2.selectedComboVariants);
   }
 }

@@ -11,11 +11,11 @@ import "../../../core/notifiers/management/menu/menu_detail.notifier.dart";
 import "../../../layout/base_layout.dart";
 import "../../../layout/scrollable_layout.dart";
 import "../../../shared/widgets/features/header/product-header/products_categories_header.dart";
-import "../../../shared/widgets/features/product-card/buttons/button_product.dart";
-import "../../../shared/widgets/features/product-card/menus/menus_detail-card/menu_selector/menu_selector.dart";
-import "../../../shared/widgets/features/product-card/menus/menus_detail-card/menus_detail.dart";
-import "../../../shared/widgets/features/product-card/menus/menus_detail-card/menus_detail.types.dart";
-import "../../../shared/widgets/features/product-card/products/product_detail-card/product_detail.dart";
+import "../../../shared/widgets/features/main-cards/buttons/menu/button_add.dart";
+import "../../../shared/widgets/features/main-cards/menus/menus_detail-card/menu_selector/menu_selector.dart";
+import "../../../shared/widgets/features/main-cards/menus/menus_detail-card/menus_detail.dart";
+import "../../../shared/widgets/features/main-cards/menus/menus_detail-card/menus_detail.types.dart";
+import "../../../shared/widgets/features/main-cards/menus/menus_detail-card/variants/menu/menu_variant.provider.dart";
 import "../../../shared/widgets/global/theme_switcher/theme_switcher.dart";
 import "menu_detail_navigation_data.types.dart";
 
@@ -29,12 +29,31 @@ class MenusDetailScreen extends ConsumerWidget {
     final PersistentTabController controller = PersistentTabController();
     final AsyncValue<BaseResponse<MenuDetailResponse>> menuDetailResponse =
         ref.watch(menuDetailNotifierProvider(
-            menuDetailNavigationData.productData.productId));
+            menuDetailNavigationData.productData.menuId));
 
     final AsyncValue<MenuDetailCardData> categoryCard = menuDetailResponse.when(
       data: (BaseResponse<MenuDetailResponse> response) {
-        return AsyncValue<MenuDetailCardData>.data(
-            MenuDetailCardData.fromJson(response.data.toJson()));
+        final MenuDetailCardData menuDetailCardData =
+            MenuDetailCardData.fromJson(response.data.toJson());
+
+        Future.microtask(() {
+          ref.read(menuDetailCardDataProvider.notifier).state =
+              menuDetailCardData;
+
+          final SelectedMenuVariantsNotifier selectedMenuNotifier = ref.read(
+              selectedMenuVariantsProvider(
+                      menuDetailNavigationData.productData.menuId)
+                  .notifier);
+          selectedMenuNotifier.updateMenuDetails(
+            menuDetailNavigationData.productData.menuId,
+            menuDetailNavigationData.productData.name,
+            menuDetailNavigationData.productData.amountPrice,
+            menuDetailNavigationData.productData.currencyPrice,
+            menuDetailNavigationData.productData.urlImage,
+          );
+        });
+
+        return AsyncValue<MenuDetailCardData>.data(menuDetailCardData);
       },
       loading: () {
         return const AsyncValue<MenuDetailCardData>.loading();
@@ -46,7 +65,6 @@ class MenusDetailScreen extends ConsumerWidget {
 
     final Widget detailsContent = categoryCard.when(
       data: (MenuDetailCardData data) {
-        print("Rendering ProductDetailCardData: $data");
         return MasonryGridView.count(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -68,12 +86,11 @@ class MenusDetailScreen extends ConsumerWidget {
           mainAxisSpacing: 10,
           itemCount: 1,
           itemBuilder: (BuildContext context, int index) {
-            return const CProductDetailCard.skeleton();
+            return const CMenuDetailCard.skeleton();
           },
         );
       },
       error: (Object error, _) {
-        print("Error loading ProductDetailCardData: $error");
         return MasonryGridView.count(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -81,7 +98,7 @@ class MenusDetailScreen extends ConsumerWidget {
           mainAxisSpacing: 10,
           itemCount: 1,
           itemBuilder: (BuildContext context, int index) {
-            return CProductDetailCard.error(error: error.toString());
+            return CMenuDetailCard.error(error: error.toString());
           },
         );
       },
@@ -103,14 +120,13 @@ class MenusDetailScreen extends ConsumerWidget {
     Future<void> handleRefresh(WidgetRef ref) async {
       await ref
           .read(menuDetailNotifierProvider(
-                  menuDetailNavigationData.productData.productId)
+                  menuDetailNavigationData.productData.menuId)
               .notifier)
-          .reloadData(); // Se llama a reloadData para asegurar la actualización
+          .reloadData();
     }
 
-    final Widget buttonAddProduct = ButtonAddProductToCart(
-      productId: menuDetailNavigationData.productData.productId,
-      type: "menu",
+    final Widget buttonAddMenu = ButtonAddMenuVariantToCart(
+      menuId: menuDetailNavigationData.productData.menuId,
     );
 
     return BackButtonListener(
@@ -146,7 +162,7 @@ class MenusDetailScreen extends ConsumerWidget {
               const SizedBox(height: 10),
               menuContent,
               detailsContent,
-              buttonAddProduct,
+              buttonAddMenu,
             ],
           ),
         ),

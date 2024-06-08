@@ -11,21 +11,26 @@ import "../../modules/auth/onboarding/access_options_screen.dart";
 import "../../modules/auth/onboarding/onboarding_screen.dart";
 import "../../modules/auth/sign_up/sign_up_screen.dart";
 import "../../modules/campus/campus_screen.dart";
-import "../../modules/cart/qr_generation/cart_screen.dart";
+import "../../modules/cart/cart_screen.dart";
 import "../../modules/categories/categories_screen.dart";
-import "../../modules/product/combos/combos_detail_navigations_data.types.dart";
-import "../../modules/product/combos/combos_detail_screen.dart";
-import "../../modules/product/combos/combos_screen.dart";
+import "../../modules/combos/combos_detail_navigations_data.types.dart";
+import "../../modules/combos/combos_detail_screen.dart";
+import "../../modules/combos/combos_screen.dart";
+import "../../modules/home/home_screen.dart";
+
 import "../../modules/product/menus/menu_detail_navigation_data.types.dart";
 import "../../modules/product/menus/menus_detail_screen.dart";
 import "../../modules/product/menus/menus_screen.dart";
-import "../../modules/product/promotions/promotions_screen.dart";
-import "../../modules/home/home_screen.dart";
 import "../../modules/product/product_detail/product_detail_navigation_data.types.dart";
 import "../../modules/product/product_detail/product_detail_screen.dart";
-import "../../modules/product/products_list/products_by_category_of_campus_screen.dart";
-import "../../shared/widgets/features/campus-card/campus_card.types.dart";
 import "../../modules/product/products_list/category_navigation_data.types.dart";
+import "../../modules/product/products_list/products_by_category_of_campus_screen.dart";
+import "../../modules/promotions/promotion_combo_detail_screen.dart";
+import "../../modules/promotions/promotion_navigations_data.types.dart";
+import "../../modules/promotions/promotion_product_detail_screen.dart";
+import "../../modules/promotions/promotions_screen.dart";
+import "../../shared/widgets/features/campus-card/campus_card.types.dart";
+import "observers/campus_observer.dart";
 import "routes.dart";
 
 final Provider<GoRouter> goRouterProvider =
@@ -34,9 +39,13 @@ final Provider<GoRouter> goRouterProvider =
   final bool onboardingComplete =
       ref.watch(sharedPreferencesServiceProvider).getOnboardingComplete();
 
+  final CampusRouteObserver routeObserver =
+      CampusRouteObserver(ref.container); // Usar ref.container aquí
+
   return GoRouter(
     debugLogDiagnostics: true,
     initialLocation: "/",
+    observers: <NavigatorObserver>[routeObserver],
     routes: <GoRoute>[
       GoRoute(
         path: "/",
@@ -49,6 +58,16 @@ final Provider<GoRouter> goRouterProvider =
             return AppRoutes.home;
           }
         },
+      ),
+      GoRoute(
+        path: AppRoutes.logIn,
+        builder: (BuildContext context, GoRouterState state) =>
+            const LogInScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.signUp,
+        builder: (BuildContext context, GoRouterState state) =>
+            const SignUpScreen(),
       ),
       GoRoute(
         path: AppRoutes.onboarding,
@@ -145,19 +164,29 @@ final Provider<GoRouter> goRouterProvider =
         path: "${AppRoutes.categories}${AppRoutes.promotions}/:campusId",
         builder: (BuildContext context, GoRouterState state) {
           final CampusCardData data = state.extra as CampusCardData;
-          return PromotionsDetailScreen(campusCardData: data);
+          return PromotionsScreen(campusCardData: data);
         },
       ),
       GoRoute(
-        path: AppRoutes.logIn,
-        builder: (BuildContext context, GoRouterState state) =>
-            const LogInScreen(),
+        path:
+            "${AppRoutes.categories}${AppRoutes.promotions}${AppRoutes.combos}/:promotionId",
+        builder: (BuildContext context, GoRouterState state) {
+          final PromotionDetailNavigationData data =
+              state.extra as PromotionDetailNavigationData;
+          return PromotionCombosDetailScreen(
+              promotionDetailNavigationData: data);
+        },
       ),
       GoRoute(
-        path: AppRoutes.signUp,
-        builder: (BuildContext context, GoRouterState state) =>
-            const SignUpScreen(),
-      ),
+        path:
+            "${AppRoutes.categories}${AppRoutes.promotions}${AppRoutes.products}/:promotionId",
+        builder: (BuildContext context, GoRouterState state) {
+          final PromotionDetailNavigationData data =
+              state.extra as PromotionDetailNavigationData;
+          return PromotionProductDetailScreen(
+              promotionDetailNavigationData: data);
+        },
+      )
     ],
     errorBuilder: (BuildContext context, GoRouterState state) => Scaffold(
       appBar: AppBar(title: const Text("Error")),

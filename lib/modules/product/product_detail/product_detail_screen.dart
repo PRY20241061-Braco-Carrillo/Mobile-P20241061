@@ -12,13 +12,12 @@ import "../../../core/notifiers/management/product_variant/variants_by_product.n
 import "../../../layout/base_layout.dart";
 import "../../../layout/scrollable_layout.dart";
 import "../../../shared/widgets/features/header/product-header/products_categories_header.dart";
-import "../../../shared/widgets/features/product-card/buttons/button_ar.dart";
-import "../../../shared/widgets/features/product-card/buttons/button_product.dart";
-import "../../../shared/widgets/features/product-card/products/product_detail-card/product_detail.dart";
-import "../../../shared/widgets/features/product-card/products/product_detail-card/product_detail.types.dart";
-import "../../../shared/widgets/features/product-card/products/product_detail-card/variants/selected_provider.dart";
-import "../../../shared/widgets/features/product-card/products/product_detail-card/variants/variant_abstract.types.dart";
-import "../../../shared/widgets/features/product-card/products/product_detail-card/variants/product_variant_selector.dart";
+import "../../../shared/widgets/features/main-cards/buttons/ar/button_ar.dart";
+import "../../../shared/widgets/features/main-cards/buttons/product/button_add.dart";
+import "../../../shared/widgets/features/main-cards/products/product_detail-card/product_detail.dart";
+import "../../../shared/widgets/features/main-cards/products/product_detail-card/product_detail.types.dart";
+import "../../../shared/widgets/features/main-cards/products/product_detail-card/variants/product/product_variant.provider.dart";
+import "../../../shared/widgets/features/main-cards/products/product_detail-card/variants/product/product_variant_selector.dart";
 import "../../../shared/widgets/global/theme_switcher/theme_switcher.dart";
 import "../products_list/category_navigation_data.types.dart";
 import "product_detail_navigation_data.types.dart";
@@ -33,33 +32,49 @@ class ProductDetailScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final PersistentTabController controller = PersistentTabController();
     final AsyncValue<BaseResponse<VariantsByProductResponse>> variantsResponse =
-        ref.watch(variantsByProductNotifierProvider(
+        ref.watch(productVariantNotifierProvider(
             productDetailNavigationData.productData.productId));
 
     final AsyncValue<ProductDetailCardData> categoryCard =
         variantsResponse.when(
       data: (BaseResponse<VariantsByProductResponse> response) {
-        final productDetailCardData =
+        final ProductDetailCardData productDetailCardData =
             ProductDetailCardData.fromJson(response.data.toJson());
+
         Future.microtask(() {
           ref.read(productDetailCardDataProvider.notifier).state =
               productDetailCardData;
+
+          final selectedProductNotifier = ref.read(
+              selectedProductVariantsProvider(
+                      productDetailNavigationData.productData.productId)
+                  .notifier);
+          selectedProductNotifier.updateProductDetails(
+            productDetailNavigationData.productData.productId,
+            productDetailNavigationData.productData.name,
+            productDetailNavigationData.productData.amountPrice,
+            productDetailNavigationData.productData.currencyPrice,
+            productDetailNavigationData.productData.urlImage,
+          );
         });
+
         print(
             "Updated productDetailCardDataProvider with: $productDetailCardData");
         return AsyncValue<ProductDetailCardData>.data(productDetailCardData);
       },
       loading: () {
+        print("Loading product variants...");
         return const AsyncValue<ProductDetailCardData>.loading();
       },
       error: (Object error, StackTrace stackTrace) {
+        print("Error loading product variants: $error");
         return AsyncValue<ProductDetailCardData>.error(error, stackTrace);
       },
     );
 
     final Widget detailsContent = categoryCard.when(
       data: (ProductDetailCardData data) {
-        print("Rendering ProductDetailCardData: $data");
+        print("Product details loaded: $data");
         return MasonryGridView.count(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -68,11 +83,8 @@ class ProductDetailScreen extends ConsumerWidget {
           itemCount: 1,
           itemBuilder: (BuildContext context, int index) {
             return ProductVariantSelector(
-              type: "product",
-              productId: productDetailNavigationData.productData.productId,
-              variants:
-                  data.productVariants.map((pv) => pv as Variant).toList(),
-            );
+                productId: productDetailNavigationData.productData.productId,
+                variants: data.toProductDetailVariantCards());
           },
         );
       },
@@ -117,16 +129,16 @@ class ProductDetailScreen extends ConsumerWidget {
     );
 
     Future<void> handleRefresh(WidgetRef ref) async {
+      print("Refreshing product variants...");
       await ref
-          .read(variantsByProductNotifierProvider(
+          .read(productVariantNotifierProvider(
                   productDetailNavigationData.productData.productId)
               .notifier)
           .reloadData();
     }
 
-    final Widget buttonAddProduct = ButtonAddProductToCart(
+    final Widget buttonAddProduct = ButtonAddProductVariantToCart(
       productId: productDetailNavigationData.productData.productId,
-      type: "product",
     );
 
     final Widget buttonArProduct = ButtonAR(

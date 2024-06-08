@@ -12,9 +12,9 @@ import "../../../layout/base_layout.dart";
 import "../../../layout/scrollable_layout.dart";
 import "../../../shared/widgets/features/campus-card/campus_card.types.dart";
 import "../../../shared/widgets/features/header/product-header/products_categories_header.dart";
-import "../../../shared/widgets/features/product-card/products/product_base-card/product_base.dart";
-import "../../../shared/widgets/features/product-card/products/product_base-card/product_base.types.dart";
-import "../../../shared/widgets/features/product-card/products/product_compact-card/product_compact.dart";
+import "../../../shared/widgets/features/main-cards/menus/menu_base-card/menu_base.dart";
+import "../../../shared/widgets/features/main-cards/menus/menu_base-card/menu_base.types.dart";
+import "../../../shared/widgets/features/main-cards/menus/menu_compact-card/menu_compact.dart";
 import "../../../shared/widgets/global/theme_switcher/theme_switcher.dart";
 import "../products_list/products_by_category_of_campus_screen.dart";
 
@@ -42,17 +42,17 @@ class MenuDetailScreenState extends ConsumerState<MenuScreen>
         restaurantResponse =
         ref.watch(menuByCampusNotifierProvider(widget.campusCardData.campusId));
 
-    final AsyncValue<List<ProductBaseCardData>> categoryCard =
+    final AsyncValue<List<MenuBaseCardData>> categoryCard =
         restaurantResponse.when(
       data: (BaseResponse<List<MenuByCampusResponse>> response) {
-        return AsyncValue<List<ProductBaseCardData>>.data(
+        return AsyncValue<List<MenuBaseCardData>>.data(
             response.data.map(_mapRestaurantToCardData).toList());
       },
       loading: () {
-        return const AsyncValue<List<ProductBaseCardData>>.loading();
+        return const AsyncValue<List<MenuBaseCardData>>.loading();
       },
       error: (Object error, StackTrace stackTrace) {
-        return AsyncValue<List<ProductBaseCardData>>.error(error, stackTrace);
+        return AsyncValue<List<MenuBaseCardData>>.error(error, stackTrace);
       },
     );
 
@@ -116,17 +116,16 @@ class MenuDetailScreenState extends ConsumerState<MenuScreen>
     );
   }
 
-  ProductBaseCardData _mapRestaurantToCardData(MenuByCampusResponse response) {
-    return ProductBaseCardData(
-      productId: response.menuId,
-      name: response.name,
-      urlImage: response.urlImage,
+  MenuBaseCardData _mapRestaurantToCardData(MenuByCampusResponse response) {
+    return MenuBaseCardData(
       amountPrice: response.amountPrice,
       currencyPrice: response.currencyPrice,
-      hasVariant: null,
       maxCookingTime: response.maxCookingTime,
+      menuId: response.menuId,
       minCookingTime: response.minCookingTime,
+      name: response.name,
       unitOfTimeCookingTime: response.unitOfTimeCookingTime,
+      urlImage: response.urlImage,
     );
   }
 }
@@ -134,10 +133,10 @@ class MenuDetailScreenState extends ConsumerState<MenuScreen>
 Widget gridContentFullMode(
     BuildContext context,
     WidgetRef ref,
-    AsyncValue<List<ProductBaseCardData>> categoryCard,
+    AsyncValue<List<MenuBaseCardData>> categoryCard,
     CampusCardData campusData) {
   return categoryCard.when(
-    data: (List<ProductBaseCardData> dataList) {
+    data: (List<MenuBaseCardData> dataList) {
       return AlignedGridView.count(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -145,10 +144,9 @@ Widget gridContentFullMode(
         mainAxisSpacing: 10,
         itemCount: dataList.length,
         itemBuilder: (BuildContext context, int index) {
-          return CProductBaseCard(
+          return CMenuBaseCard(
               data: dataList[index],
               categoryNavigationData: null,
-              type: ProductBaseTypes.menu,
               campusCardData: campusData);
         },
       );
@@ -161,7 +159,7 @@ Widget gridContentFullMode(
         mainAxisSpacing: 10,
         itemCount: 2,
         itemBuilder: (BuildContext context, int index) {
-          return const CProductBaseCard.skeleton();
+          return const CMenuBaseCard.skeleton();
         },
       );
     },
@@ -173,7 +171,7 @@ Widget gridContentFullMode(
         mainAxisSpacing: 10,
         itemCount: 2,
         itemBuilder: (BuildContext context, int index) {
-          return CProductBaseCard.error(error: error.toString());
+          return CMenuBaseCard.error(error: error.toString());
         },
       );
     },
@@ -183,10 +181,10 @@ Widget gridContentFullMode(
 Widget gridContentCompactMode(
     BuildContext context,
     WidgetRef ref,
-    AsyncValue<List<ProductBaseCardData>> categoryCard,
+    AsyncValue<List<MenuBaseCardData>> categoryCard,
     CampusCardData campusData) {
   return categoryCard.when(
-    data: (List<ProductBaseCardData> dataList) {
+    data: (List<MenuBaseCardData> dataList) {
       return AlignedGridView.count(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -194,10 +192,9 @@ Widget gridContentCompactMode(
         mainAxisSpacing: 10,
         itemCount: dataList.length,
         itemBuilder: (BuildContext context, int index) {
-          return CProductCompactCard(
+          return CMenuCompactCard(
               data: dataList[index],
               categoryNavigationData: null,
-              type: ProductBaseTypes.menu,
               campusCardData: campusData);
         },
       );
@@ -210,7 +207,7 @@ Widget gridContentCompactMode(
         mainAxisSpacing: 10,
         itemCount: 2,
         itemBuilder: (BuildContext context, int index) {
-          return const CProductCompactCard.skeleton();
+          return const CMenuCompactCard.skeleton();
         },
       );
     },
@@ -222,7 +219,7 @@ Widget gridContentCompactMode(
         mainAxisSpacing: 10,
         itemCount: 2,
         itemBuilder: (BuildContext context, int index) {
-          return CProductCompactCard.error(error: error.toString());
+          return CMenuCompactCard.error(error: error.toString());
         },
       );
     },
