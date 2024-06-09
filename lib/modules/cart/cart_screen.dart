@@ -16,16 +16,16 @@ import '../../shared/widgets/features/cart/order_cart/order_cart.types.dart';
 import '../../shared/widgets/features/header/product-header/products_categories_header.dart';
 import '../order/order_request/providers/order_in_progress.notifier.dart';
 
-// Define a notifier to handle the loading state
-class LoadingNotifier extends StateNotifier<bool> {
-  LoadingNotifier() : super(false);
+class CartLoadingNotifier extends StateNotifier<bool> {
+  CartLoadingNotifier() : super(false);
 
   void startLoading() => state = true;
   void stopLoading() => state = false;
 }
 
-final loadingProvider = StateNotifierProvider<LoadingNotifier, bool>((ref) {
-  return LoadingNotifier();
+final cartLoadingProvider =
+    StateNotifierProvider<CartLoadingNotifier, bool>((ref) {
+  return CartLoadingNotifier();
 });
 
 class CartScreen extends ConsumerWidget {
@@ -46,13 +46,13 @@ class CartScreen extends ConsumerWidget {
     final PersistentTabController controller = PersistentTabController();
     final OrderInProgressState orderInProgressState =
         ref.watch(orderInProgressProvider);
-    final isLoading = ref.watch(loadingProvider);
+    final isLoading = ref.watch(cartLoadingProvider);
 
     ref.listen<AsyncValue<BaseResponse<SaveOrderRequestResponse>>>(
         orderRequestNotifierProvider, (previous, next) {
       next.when(
         data: (response) async {
-          ref.read(loadingProvider.notifier).stopLoading();
+          ref.read(cartLoadingProvider.notifier).stopLoading();
           if (context.mounted) {
             Navigator.of(context, rootNavigator: true).pop();
             await ref.read(orderInProgressProvider.notifier).setOrderInProgress(
@@ -66,7 +66,7 @@ class CartScreen extends ConsumerWidget {
           }
         },
         loading: () {
-          ref.read(loadingProvider.notifier).startLoading();
+          ref.read(cartLoadingProvider.notifier).startLoading();
           showDialog(
             context: context,
             barrierDismissible: false,
@@ -78,7 +78,7 @@ class CartScreen extends ConsumerWidget {
           );
         },
         error: (error, _) async {
-          ref.read(loadingProvider.notifier).stopLoading();
+          ref.read(cartLoadingProvider.notifier).stopLoading();
           if (context.mounted) {
             Navigator.of(context, rootNavigator: true).pop();
             await ref

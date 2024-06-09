@@ -31,4 +31,16 @@ class OrderRepository {
       return json as String;
     });
   }
+
+  Future<BaseResponse<String>> getTokenHasBeenValidated(
+      String confirmationToken) async {
+    final String endpoint =
+        '${OrderEndpoints.order}${OrderEndpoints.orderRequest}/$confirmationToken${OrderEndpoints.hasValidate}';
+    final Response response = await apiService.getRequest(endpoint);
+    final Map<String, dynamic> responseData = response.data;
+
+    return BaseResponse<String>.fromJson(responseData, (Object? json) {
+      return json as String;
+    });
+  }
 }
