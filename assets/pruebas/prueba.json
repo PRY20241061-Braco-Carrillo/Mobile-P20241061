@@ -1,0 +1,18 @@
+{
+  "userId": "a2e8da0a-7add-4646-bae4-8951f7d229f9",
+  "campusId": "8c81aabb-dc05-4cf1-b9b3-1e3d3fd64ee2",
+  "order": {
+    "products": [
+      {
+        "productVariantId": "4c8d8ab5-d13e-4824-9d7c-d9f7b3a30c13",
+        "productAmount": 1,
+        "unitPrice": 20.99
+      }
+    ],
+    "complements": [],
+    "combos": [],
+    "comboPromotions": [],
+    "productPromotions": [],
+    "menus": []
+  }
+}

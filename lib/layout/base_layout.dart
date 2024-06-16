@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart";
 
-import "../modules/order/order_request/providers/order_in_progress.notifier.dart";
+import "../modules/order/providers/order_in_progress.notifier.dart";
 import "../shared/widgets/features/cart/order_cart/order_cart.notifier.dart";
 import "../shared/widgets/features/cart/order_cart/order_cart.types.dart";
 import "../shared/widgets/features/cart/order_cart/order_summary_cart_bar.dart";

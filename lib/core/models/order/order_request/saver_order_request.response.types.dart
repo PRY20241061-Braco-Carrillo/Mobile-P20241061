@@ -1,7 +1,7 @@
 class SaveOrderRequestResponse {
   String orderRequestId;
   String confirmationToken;
-  dynamic totalPrice;
+  double? totalPrice;
 
   SaveOrderRequestResponse({
     required this.orderRequestId,
@@ -13,12 +13,13 @@ class SaveOrderRequestResponse {
       SaveOrderRequestResponse(
         orderRequestId: json["orderRequestId"],
         confirmationToken: json["confirmationToken"],
-        totalPrice: json["totalPrice"],
+        totalPrice:
+            json["totalPrice"] == null ? null : json["totalPrice"].toDouble(),
       );
 
   Map<String, dynamic> toJson() => {
         "orderRequestId": orderRequestId,
         "confirmationToken": confirmationToken,
-        "totalPrice": totalPrice,
+        "totalPrice": totalPrice == null ? null : totalPrice,
       };
 }

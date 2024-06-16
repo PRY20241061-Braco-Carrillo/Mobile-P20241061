@@ -3,7 +3,7 @@ import "package:flutter/material.dart";
 class RemainingTimeWidget extends StatelessWidget {
   final int remainingTime;
 
-  const RemainingTimeWidget({required this.remainingTime});
+  const RemainingTimeWidget({super.key, required this.remainingTime});
 
   String _getFormattedTime(int remainingTime) {
     final String minutes = (remainingTime ~/ 60).toString().padLeft(2, "0");

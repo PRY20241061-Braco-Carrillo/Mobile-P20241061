@@ -6,18 +6,21 @@ import "../../ar_core/ar.types.dart";
 import "../../ar_core/ar_module.dart";
 import "../../core/managers/secure_storage_manager.dart";
 import "../../core/shared_preferences/services/shared_preferences.service.dart";
+import "../../layout/tab_screen.dart";
 import "../../modules/auth/log_in/log_in_screen.dart";
 import "../../modules/auth/onboarding/access_options_screen.dart";
 import "../../modules/auth/onboarding/onboarding_screen.dart";
 import "../../modules/auth/sign_up/sign_up_screen.dart";
 import "../../modules/campus/campus_screen.dart";
 import "../../modules/cart/cart_screen.dart";
+import "../../modules/cart/order_navigation_data.dart";
 import "../../modules/categories/categories_screen.dart";
 import "../../modules/combos/combos_detail_navigations_data.types.dart";
 import "../../modules/combos/combos_detail_screen.dart";
 import "../../modules/combos/combos_screen.dart";
 import "../../modules/home/home_screen.dart";
 
+import "../../modules/order/order_progress/order_progress_screen.dart";
 import "../../modules/order/order_request/order_request_screen.dart";
 import "../../modules/product/menus/menu_detail_navigation_data.types.dart";
 import "../../modules/product/menus/menus_detail_screen.dart";
@@ -30,6 +33,7 @@ import "../../modules/promotions/promotion_combo_detail_screen.dart";
 import "../../modules/promotions/promotion_navigations_data.types.dart";
 import "../../modules/promotions/promotion_product_detail_screen.dart";
 import "../../modules/promotions/promotions_screen.dart";
+import "../../modules/reservation/reservation_screen.dart";
 import "../../shared/widgets/features/campus-card/campus_card.types.dart";
 import "observers/campus_observer.dart";
 import "routes.dart";
@@ -56,9 +60,13 @@ final Provider<GoRouter> goRouterProvider =
           } else if (!(await storageManager.isAuthenticated())) {
             return AppRoutes.accessOptions;
           } else {
-            return AppRoutes.home;
+            return AppRoutes.tabScreen;
           }
         },
+      ),
+      GoRoute(
+        path: AppRoutes.tabScreen,
+        builder: (BuildContext context, GoRouterState state) => TabScreen(),
       ),
       GoRoute(
         path: AppRoutes.logIn,
@@ -84,6 +92,11 @@ final Provider<GoRouter> goRouterProvider =
         path: AppRoutes.home,
         builder: (BuildContext context, GoRouterState state) =>
             const HomeScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.reservations,
+        builder: (BuildContext context, GoRouterState state) =>
+            const ReservationsScreen(),
       ),
       GoRoute(
         path: "${AppRoutes.campus}/:restaurantId",
@@ -191,8 +204,15 @@ final Provider<GoRouter> goRouterProvider =
       GoRoute(
         path: AppRoutes.orderRequest,
         builder: (BuildContext context, GoRouterState state) {
-          final String confirmationToken = state.extra as String;
-          return OrderRequestScreen(confirmationToken: confirmationToken);
+          final OrderRequestNavigationData orderRequestData =
+              state.extra as OrderRequestNavigationData;
+          return OrderRequestScreen(orderRequestData: orderRequestData);
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.orderInProgress,
+        builder: (BuildContext context, GoRouterState state) {
+          return const OrderInProgressScreen();
         },
       )
     ],

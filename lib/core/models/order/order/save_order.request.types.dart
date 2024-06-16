@@ -1,5 +1,5 @@
 class SaveOrderRequest {
-  String tableNumber;
+  String? tableNumber;
   bool forTable;
   String userId;
   String orderRequestId;

@@ -5,6 +5,7 @@ import "package:infinite_scroll_pagination/infinite_scroll_pagination.dart";
 import "package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart";
 
 import "../../config/routes/routes.dart";
+import "../../core/managers/secure_storage_manager.dart";
 import "../../core/models/base_response.dart";
 import "../../core/models/management/campus_category/campus_category.response.types.dart";
 import "../../core/notifiers/management/campus_category/campus_category.notifier.dart";
@@ -44,6 +45,13 @@ class CategoriesScreenState extends ConsumerState<CategoriesScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _fetchInitialData();
     });
+    _setCampusId();
+  }
+
+  Future<void> _setCampusId() async {
+    await ref
+        .read(secureStorageProvider)
+        .setCampusId(widget.campusData.campusId);
   }
 
   Future<void> _fetchInitialData() async {

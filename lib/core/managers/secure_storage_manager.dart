@@ -10,6 +10,7 @@ class SecureStorageManager {
   static const String keyOrderConfirmationToken = "orderConfirmationToken";
   static const String keyOrderRemainingTime = "orderRemainingTime";
   static const String keyOrderId = "orderId";
+  static const String keyCampusId = "campusId";
 
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
@@ -31,16 +32,28 @@ class SecureStorageManager {
     final String? userId = await _storage.read(key: keyUserId);
     final String? role = await _storage.read(key: keyRole);
     final String? guest = await _storage.read(key: keyGuest);
+    final String? campusId = await _storage.read(key: keyCampusId);
     return <String, dynamic>{
       keyToken: token,
       keyUserId: userId,
       keyRole: role,
       keyGuest: guest,
+      keyCampusId: campusId
     };
   }
 
   Future<void> clearStorage() async {
     await _storage.deleteAll();
+  }
+
+  Future<void> setCampusId(String campusId) async {
+    await _storage.write(key: keyCampusId, value: campusId);
+  }
+
+  Future<String?> getCampusId() async {
+    final campusId = await _storage.read(key: keyCampusId);
+    print('Retrieving campusId: $campusId');
+    return campusId;
   }
 
   Future<bool> isAuthenticated() async {

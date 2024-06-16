@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import "../../../../modules/order/order_request/providers/order_in_progress.notifier.dart";
+import "../../../../modules/order/providers/order_in_progress.notifier.dart";
 import '../../../models/base_response.dart';
 import '../../../repository/order_bc/order_request/order_request.repository.dart';
 import '../../base.notifier.dart';

@@ -148,7 +148,6 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
           ),
         ],
       ),
-      tabController: controller,
     );
   }
 

@@ -3,7 +3,8 @@ import "package:go_router/go_router.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 
 import "../../../../config/routes/routes.dart";
-import "../../../../modules/order/order_request/providers/order_in_progress.notifier.dart";
+import "../../../../modules/cart/order_navigation_data.dart";
+import "../../../../modules/order/providers/order_in_progress.notifier.dart";
 
 class OrderSummaryBar extends ConsumerWidget {
   const OrderSummaryBar({super.key});
@@ -29,7 +30,9 @@ class OrderSummaryBar extends ConsumerWidget {
               onPressed: () {
                 GoRouter.of(context).push(
                   AppRoutes.orderRequest,
-                  extra: orderInProgressState.token,
+                  extra: OrderRequestNavigationData(
+                      orderRequest:
+                          orderInProgressState.orderRequestNavigationData),
                 );
               },
               child: const Text("Ir a la Orden"),

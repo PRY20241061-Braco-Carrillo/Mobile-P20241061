@@ -1,5 +1,5 @@
 {
-  "version": "1.0",
+  "version": "1.2",
   "data": {
     "home": {
       "type": "HeaderIconData",
@@ -24,6 +24,12 @@
       "title": "Header.sign_up.title",
       "isAsset": false,
       "icon": null
+    },
+    "reservations":{
+      "type": "HeaderIconData",
+      "title": "Header.reservations.title",
+      "isAsset": false,
+      "icon": "https://www.svgrepo.com/show/399602/restaurant.svg"
     }
   }
 }

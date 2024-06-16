@@ -1,32 +1,25 @@
-import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
-import 'package:quickalert/quickalert.dart';
+import "package:easy_localization/easy_localization.dart";
+import "package:flutter/material.dart";
+import "package:go_router/go_router.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart";
+import "package:quickalert/models/quickalert_type.dart";
+import "package:quickalert/widgets/quickalert_dialog.dart";
 
-import '../../config/routes/routes.dart';
-import '../../core/models/base_response.dart';
-import '../../core/models/order/order_request/saver_order_request.response.types.dart';
-import '../../core/notifiers/order/order_request/save_order_request.notifier.dart';
-import '../../layout/base_layout.dart';
+import "../../config/routes/routes.dart";
+import "../../core/models/base_response.dart";
+import "../../core/models/order/order_request/saver_order_request.response.types.dart";
+import "../../core/notifiers/order/order_request/save_order_request.notifier.dart";
+import "../../layout/base_layout.dart";
 import "../../shared/widgets/features/cart/cart_item/cart_item.dart";
-import '../../shared/widgets/features/cart/order_cart/order_cart.notifier.dart';
-import '../../shared/widgets/features/cart/order_cart/order_cart.types.dart';
-import '../../shared/widgets/features/header/product-header/products_categories_header.dart';
-import '../order/order_request/providers/order_in_progress.notifier.dart';
-
-class CartLoadingNotifier extends StateNotifier<bool> {
-  CartLoadingNotifier() : super(false);
-
-  void startLoading() => state = true;
-  void stopLoading() => state = false;
-}
-
-final cartLoadingProvider =
-    StateNotifierProvider<CartLoadingNotifier, bool>((ref) {
-  return CartLoadingNotifier();
-});
+import "../../shared/widgets/features/cart/order/order_button.dart";
+import "../../shared/widgets/features/cart/order_cart/order_cart.notifier.dart";
+import "../../shared/widgets/features/cart/order_cart/order_cart.types.dart";
+import "../../shared/widgets/features/cart/reservation/reservation_button.dart";
+import "../../shared/widgets/features/header/product-header/products_categories_header.dart";
+import "../order/providers/order_in_progress.notifier.dart";
+import "notifiers/cart_loading_notifier.dart";
+import "order_navigation_data.dart";
 
 class CartScreen extends ConsumerWidget {
   const CartScreen({super.key});
@@ -46,23 +39,26 @@ class CartScreen extends ConsumerWidget {
     final PersistentTabController controller = PersistentTabController();
     final OrderInProgressState orderInProgressState =
         ref.watch(orderInProgressProvider);
-    final isLoading = ref.watch(cartLoadingProvider);
+    ref.watch(cartLoadingProvider);
 
     ref.listen<AsyncValue<BaseResponse<SaveOrderRequestResponse>>>(
-        orderRequestNotifierProvider, (previous, next) {
+        orderRequestNotifierProvider,
+        (AsyncValue<BaseResponse<SaveOrderRequestResponse>>? previous,
+            AsyncValue<BaseResponse<SaveOrderRequestResponse>> next) {
       next.when(
-        data: (response) async {
+        data: (BaseResponse<SaveOrderRequestResponse> response) async {
           ref.read(cartLoadingProvider.notifier).stopLoading();
           if (context.mounted) {
             Navigator.of(context, rootNavigator: true).pop();
             await ref.read(orderInProgressProvider.notifier).setOrderInProgress(
                 true,
                 token: response.data.confirmationToken,
-                orderId: response.data.orderRequestId);
-            await GoRouter.of(context).push(
-              AppRoutes.orderRequest,
-              extra: response.data.confirmationToken,
-            );
+                orderId: response.data.orderRequestId,
+                orderRequest: response.data);
+            await GoRouter.of(context).push(AppRoutes.orderRequest,
+                extra: OrderRequestNavigationData(
+                  orderRequest: response.data,
+                ));
           }
         },
         loading: () {
@@ -77,7 +73,7 @@ class CartScreen extends ConsumerWidget {
             },
           );
         },
-        error: (error, _) async {
+        error: (Object error, _) async {
           ref.read(cartLoadingProvider.notifier).stopLoading();
           if (context.mounted) {
             Navigator.of(context, rootNavigator: true).pop();
@@ -106,13 +102,6 @@ class CartScreen extends ConsumerWidget {
       }
 
       await ref.read(orderRequestNotifierProvider.notifier).createOrder();
-    }
-
-    void goToOrderRequest(BuildContext context, String token) {
-      GoRouter.of(context).push(
-        AppRoutes.orderRequest,
-        extra: token,
-      );
     }
 
     return BaseLayout(
@@ -185,21 +174,21 @@ class CartScreen extends ConsumerWidget {
                   ],
                 ),
                 child: SafeArea(
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      if (orderInProgressState.inProgress &&
-                          orderInProgressState.token.isNotEmpty) {
-                        goToOrderRequest(context, orderInProgressState.token);
-                      } else {
-                        await generateOrder(context, ref);
-                      }
-                    },
-                    child: Text(
-                      orderInProgressState.inProgress &&
-                              orderInProgressState.token.isNotEmpty
-                          ? "Ir a mi orden"
-                          : "Generar Orden",
-                    ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: OrderButton(
+                          orderInProgressState: orderInProgressState,
+                          generateOrder: generateOrder,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: ReservationButton(
+                          cartItems: cartItems,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

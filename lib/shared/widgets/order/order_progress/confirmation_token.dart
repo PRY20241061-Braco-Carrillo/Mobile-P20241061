@@ -3,7 +3,7 @@ import "package:flutter/material.dart";
 class ConfirmationTokenWidget extends StatelessWidget {
   final String confirmationToken;
 
-  const ConfirmationTokenWidget({required this.confirmationToken});
+  const ConfirmationTokenWidget({super.key, required this.confirmationToken});
 
   @override
   Widget build(BuildContext context) {

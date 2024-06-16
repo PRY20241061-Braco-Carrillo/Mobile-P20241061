@@ -205,6 +205,9 @@
         },
         "sign_up": {
             "title": "Sign Up"
+        },
+        "reservations":{
+            "title": "Reservations"
         }
     },    
     "Product":{

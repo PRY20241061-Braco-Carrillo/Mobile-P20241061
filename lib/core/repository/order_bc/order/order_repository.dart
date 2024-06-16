@@ -1,10 +1,10 @@
-import 'package:dio/dio.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import "package:dio/dio.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
 
-import '../../../constants/order_bc/order/order.constants.dart';
-import '../../../models/base_response.dart';
+import "../../../constants/order_bc/order/order.constants.dart";
+import "../../../models/base_response.dart";
 import "../../../models/order/order/save_order.request.types.dart";
-import '../../../network/api_service.dart';
+import "../../../network/api_service.dart";
 
 final Provider<OrderRepository> orderRepositoryProvider =
     Provider<OrderRepository>((ProviderRef<OrderRepository> ref) {
@@ -35,7 +35,7 @@ class OrderRepository {
   Future<BaseResponse<String>> getTokenHasBeenValidated(
       String confirmationToken) async {
     final String endpoint =
-        '${OrderEndpoints.order}${OrderEndpoints.orderRequest}/$confirmationToken${OrderEndpoints.hasValidate}';
+        "${OrderEndpoints.order}${OrderEndpoints.orderRequest}/$confirmationToken${OrderEndpoints.hasValidate}";
     final Response response = await apiService.getRequest(endpoint);
     final Map<String, dynamic> responseData = response.data;
 

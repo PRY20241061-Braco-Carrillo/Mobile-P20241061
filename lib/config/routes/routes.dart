@@ -14,4 +14,7 @@ class AppRoutes {
   static const String cart = "/cart";
   static const String ar = "/ar";
   static const String orderRequest = "/orderRequest";
+  static const String orderInProgress = "/orderInProgress";
+  static const String reservations = "/reservations";
+  static const String tabScreen = "/tabs";
 }
