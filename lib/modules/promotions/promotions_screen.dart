@@ -7,7 +7,7 @@ import "package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart";
 import "../../config/routes/routes.dart";
 import "../../core/models/base_response.dart";
 import "../../core/models/management/promotion/promotion_by_campus.response.types.dart";
-import "../../core/notifiers/management/menu/menu_by_campus.notifier.dart";
+
 import "../../core/notifiers/management/promotion/promotion_by_campus.notifier.dart";
 import "../../layout/base_layout.dart";
 import "../../layout/scrollable_layout.dart";
@@ -75,8 +75,9 @@ class PromotionsDetailScreenState extends ConsumerState<PromotionsScreen>
 
     Future<void> handleRefresh(WidgetRef ref) async {
       await ref
-          .read(menuByCampusNotifierProvider(widget.campusCardData.campusId)
-              .notifier)
+          .read(
+              promotionsByCampusNotifierProvider(widget.campusCardData.campusId)
+                  .notifier)
           .reloadData();
     }
 
@@ -130,7 +131,7 @@ class PromotionsDetailScreenState extends ConsumerState<PromotionsScreen>
       hasVariant: response.hasVariant,
       promotionId: response.promotionId,
       urlImage: response.urlImage,
-      comboId: response.promotionId,
+      comboId: response.comboId,
     );
   }
 }

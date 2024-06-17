@@ -40,7 +40,7 @@ class CPromotionDetailCard extends StatelessWidget {
 
   Widget _buildCardContent(
       BuildContext context, PromotionByCampusCardData data) {
-    final double width = MediaQuery.of(context).size.width / 2 - 20;
+    final double width = MediaQuery.of(context).size.width - 20;
     return InkWell(
       onTap: () {
         // Acción al hacer clic en la tarjeta
@@ -56,7 +56,7 @@ class CPromotionDetailCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Container(
-              height: 150,
+              height: 300,
               width: width,
               margin: const EdgeInsets.only(bottom: 8),
               child: Stack(
@@ -64,26 +64,19 @@ class CPromotionDetailCard extends StatelessWidget {
                 children: <Widget>[
                   ClipRRect(
                     borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      topRight: Radius.circular(10),
-                    ),
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10)),
                     child: ImageDisplay(
-                      config: ImageConfig(
-                        imageUrl: data.urlImage,
-                        height: 150,
-                        width: width,
-                        onErrorHeight: 50,
-                        onErrorWidth: 50,
-                        onErrorFit: BoxFit.contain,
-                        onErrorPadding:
-                            const EdgeInsets.only(bottom: 70, top: 30),
-                      ),
-                    ),
+                        config: ImageConfig(
+                            imageUrl: data.urlImage,
+                            width: width,
+                            height: 300,
+                            fit: BoxFit.fill)),
                   ),
                   if (data.hasVariant == true)
                     const Padding(
                       padding: EdgeInsets.all(8.0),
-                      child: SizeLabel(fontSize: 12),
+                      child: SizeLabel(fontSize: 16),
                     ),
                 ],
               ),

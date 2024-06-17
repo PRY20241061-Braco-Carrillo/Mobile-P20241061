@@ -1,6 +1,7 @@
 import "../../main-cards/combos/combos_detail-card/variants/combo/combo_detail.variant.types.dart";
 import "../../main-cards/menus/menus_detail-card/variants/menu/menu_detail_variant.types.dart";
 import "../../main-cards/products/product_detail-card/variants/product/product_detail_variant.types.dart";
+import "../../main-cards/promotions/promotions_detail-card/variants/promotions/promotion_detail.variant.types.dart";
 
 class SelectedProductInfo {
   final String productId;
@@ -11,6 +12,7 @@ class SelectedProductInfo {
   final List<ProductDetailVariantCard> selectedProductVariants;
   final List<MenuDetailVariantCard> selectedMenuVariants;
   final List<ComboDetailVariantCard> selectedComboVariants;
+  final List<PromotionDetailVariantCard> selectedPromotionVariants;
 
   SelectedProductInfo({
     required this.productId,
@@ -21,6 +23,7 @@ class SelectedProductInfo {
     this.selectedProductVariants = const <ProductDetailVariantCard>[],
     this.selectedMenuVariants = const <MenuDetailVariantCard>[],
     this.selectedComboVariants = const <ComboDetailVariantCard>[],
+    this.selectedPromotionVariants = const <PromotionDetailVariantCard>[],
     //this.selectedComplements = const <Complement>[],
   });
 
@@ -33,6 +36,9 @@ class SelectedProductInfo {
       total += variant.amountPrice;
     }
     for (final variant in selectedComboVariants) {
+      total += variant.amountPrice;
+    }
+    for (final variant in selectedPromotionVariants) {
       total += variant.amountPrice;
     }
     return total;
@@ -51,6 +57,8 @@ class SelectedProductInfo {
           selectedMenuVariants.map((v) => v.toJson()).toList(),
       "selectedComboVariants":
           selectedComboVariants.map((v) => v.toJson()).toList(),
+      "selectedPromotionVariants":
+          selectedPromotionVariants.map((v) => v.toJson()).toList(),
     };
   }
 }

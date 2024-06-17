@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import '../modules/home/home_screen.dart';
 import '../modules/reservation/reservation_screen.dart';
+import "../modules/settings/settings_screen.dart";
 
 class TabScreen extends StatelessWidget {
   final PersistentTabController _controller =
@@ -23,6 +24,13 @@ class TabScreen extends StatelessWidget {
         item: ItemConfig(
           icon: const Icon(Icons.book),
           title: "Reservas",
+        ),
+      ),
+      PersistentTabConfig(
+        screen: const SettingScreen(),
+        item: ItemConfig(
+          icon: const Icon(Icons.settings),
+          title: "Configuración",
         ),
       ),
     ];

@@ -1,66 +1,59 @@
-class PromotionProductDetailResponse {
-  Promotion? promotion;
+class PromotionProductDetailCardData {
+  Promotion promotion;
   List<ProductVariant> productVariants;
-  NutritionalInformation? nutritionalInformation;
-  List<Complement>? complements;
+  NutritionalInformation nutritionalInformation;
+  List<Complement> complements;
 
-  PromotionProductDetailResponse({
-    this.promotion,
+  PromotionProductDetailCardData({
+    required this.promotion,
     required this.productVariants,
-    this.nutritionalInformation,
-    this.complements,
+    required this.nutritionalInformation,
+    required this.complements,
   });
 
-  factory PromotionProductDetailResponse.fromJson(Map<String, dynamic> json) =>
-      PromotionProductDetailResponse(
-        promotion: json["promotion"] == null
-            ? null
-            : Promotion.fromJson(json["promotion"]),
-        productVariants: json["productVariants"] == null
-            ? []
-            : List<ProductVariant>.from(json["productVariants"]!
-                .map((x) => ProductVariant.fromJson(x))),
-        nutritionalInformation: json["nutritionalInformation"] == null
-            ? null
-            : NutritionalInformation.fromJson(json["nutritionalInformation"]),
-        complements: json["complements"] == null
-            ? []
-            : List<Complement>.from(
-                json["complements"]!.map((x) => Complement.fromJson(x))),
+  factory PromotionProductDetailCardData.fromJson(Map<String, dynamic> json) =>
+      PromotionProductDetailCardData(
+        promotion: Promotion.fromJson(json["promotion"]),
+        productVariants: List<ProductVariant>.from(
+            json["productVariants"].map((x) => ProductVariant.fromJson(x))),
+        nutritionalInformation:
+            NutritionalInformation.fromJson(json["nutritionalInformation"]),
+        complements: List<Complement>.from(
+            json["complements"].map((x) => Complement.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
-        "promotion": promotion?.toJson(),
-        "productVariants": productVariants == null
-            ? []
-            : List<dynamic>.from(productVariants!.map((x) => x.toJson())),
-        "nutritionalInformation": nutritionalInformation?.toJson(),
-        "complements": complements == null
-            ? []
-            : List<dynamic>.from(complements!.map((x) => x.toJson())),
+        "promotion": promotion.toJson(),
+        "productVariants":
+            List<dynamic>.from(productVariants.map((x) => x.toJson())),
+        "nutritionalInformation": nutritionalInformation.toJson(),
+        "complements": List<dynamic>.from(complements.map((x) => x.toJson())),
       };
 }
 
 class Complement {
-  String? complementId;
-  String? name;
-  double? amountPrice;
-  String? currencyPrice;
-  bool? isSauce;
-  String? urlImage;
+  String complementId;
+  String name;
+  int freeAmount;
+  double amountPrice;
+  String currencyPrice;
+  bool isSauce;
+  String urlImage;
 
   Complement({
-    this.complementId,
-    this.name,
-    this.amountPrice,
-    this.currencyPrice,
-    this.isSauce,
-    this.urlImage,
+    required this.complementId,
+    required this.name,
+    required this.freeAmount,
+    required this.amountPrice,
+    required this.currencyPrice,
+    required this.isSauce,
+    required this.urlImage,
   });
 
   factory Complement.fromJson(Map<String, dynamic> json) => Complement(
         complementId: json["complementId"],
         name: json["name"],
+        freeAmount: json["freeAmount"],
         amountPrice: json["amountPrice"]?.toDouble(),
         currencyPrice: json["currencyPrice"],
         isSauce: json["isSauce"],
@@ -70,6 +63,7 @@ class Complement {
   Map<String, dynamic> toJson() => {
         "complementId": complementId,
         "name": name,
+        "freeAmount": freeAmount,
         "amountPrice": amountPrice,
         "currencyPrice": currencyPrice,
         "isSauce": isSauce,
@@ -78,38 +72,38 @@ class Complement {
 }
 
 class NutritionalInformation {
-  String? nutritionalInformationId;
-  double? calories;
-  double? proteins;
-  double? totalFat;
-  double? carbohydrates;
-  bool? isVegan;
-  bool? isVegetarian;
-  bool? isLowCalories;
-  bool? isHighProtein;
-  bool? isWithoutGluten;
-  bool? isWithoutNut;
-  bool? isWithoutLactose;
-  bool? isWithoutEggs;
-  bool? isWithoutSeafood;
-  bool? isWithoutPig;
+  String nutritionalInformationId;
+  int calories;
+  int proteins;
+  int totalFat;
+  int carbohydrates;
+  bool isVegan;
+  bool isVegetarian;
+  bool isLowCalories;
+  bool isHighProtein;
+  bool isWithoutGluten;
+  bool isWithoutNut;
+  bool isWithoutLactose;
+  bool isWithoutEggs;
+  bool isWithoutSeafood;
+  bool isWithoutPig;
 
   NutritionalInformation({
-    this.nutritionalInformationId,
-    this.calories,
-    this.proteins,
-    this.totalFat,
-    this.carbohydrates,
-    this.isVegan,
-    this.isVegetarian,
-    this.isLowCalories,
-    this.isHighProtein,
-    this.isWithoutGluten,
-    this.isWithoutNut,
-    this.isWithoutLactose,
-    this.isWithoutEggs,
-    this.isWithoutSeafood,
-    this.isWithoutPig,
+    required this.nutritionalInformationId,
+    required this.calories,
+    required this.proteins,
+    required this.totalFat,
+    required this.carbohydrates,
+    required this.isVegan,
+    required this.isVegetarian,
+    required this.isLowCalories,
+    required this.isHighProtein,
+    required this.isWithoutGluten,
+    required this.isWithoutNut,
+    required this.isWithoutLactose,
+    required this.isWithoutEggs,
+    required this.isWithoutSeafood,
+    required this.isWithoutPig,
   });
 
   factory NutritionalInformation.fromJson(Map<String, dynamic> json) =>
@@ -151,30 +145,30 @@ class NutritionalInformation {
 }
 
 class ProductVariant {
-  String? productVariantId;
-  String? detail;
+  String productVariantId;
+  String detail;
   double amountPrice;
-  String? currencyPrice;
-  String? name;
-  int? minCookingTime;
-  int? maxCookingTime;
-  String? unitOfTimeCookingTime;
-  String? description;
-  String? nutritionalInformationId;
-  String? productId;
+  String currencyPrice;
+  String name;
+  int minCookingTime;
+  int maxCookingTime;
+  String unitOfTimeCookingTime;
+  String description;
+  String nutritionalInformationId;
+  String productId;
 
   ProductVariant({
-    this.productVariantId,
-    this.detail,
+    required this.productVariantId,
+    required this.detail,
     required this.amountPrice,
-    this.currencyPrice,
-    this.name,
-    this.minCookingTime,
-    this.maxCookingTime,
-    this.unitOfTimeCookingTime,
-    this.description,
-    this.nutritionalInformationId,
-    this.productId,
+    required this.currencyPrice,
+    required this.name,
+    required this.minCookingTime,
+    required this.maxCookingTime,
+    required this.unitOfTimeCookingTime,
+    required this.description,
+    required this.nutritionalInformationId,
+    required this.productId,
   });
 
   factory ProductVariant.fromJson(Map<String, dynamic> json) => ProductVariant(
@@ -207,30 +201,28 @@ class ProductVariant {
 }
 
 class Promotion {
-  String? promotionId;
-  String? name;
-  double? discount;
-  String? discountType;
-  String? detail;
-  String? urlImage;
-  int? freeSauce;
-  bool? isAvailable;
-  bool? hasVariant;
-  int? freeComplements;
-  dynamic comboId;
+  String promotionId;
+  String name;
+  int discount;
+  String discountType;
+  String detail;
+  String urlImage;
+  int freeSauce;
+  bool isAvailable;
+  bool hasVariant;
+  int freeComplements;
 
   Promotion({
-    this.promotionId,
-    this.name,
-    this.discount,
-    this.discountType,
-    this.detail,
-    this.urlImage,
-    this.freeSauce,
-    this.isAvailable,
-    this.hasVariant,
-    this.freeComplements,
-    this.comboId,
+    required this.promotionId,
+    required this.name,
+    required this.discount,
+    required this.discountType,
+    required this.detail,
+    required this.urlImage,
+    required this.freeSauce,
+    required this.isAvailable,
+    required this.hasVariant,
+    required this.freeComplements,
   });
 
   factory Promotion.fromJson(Map<String, dynamic> json) => Promotion(
@@ -244,7 +236,6 @@ class Promotion {
         isAvailable: json["isAvailable"],
         hasVariant: json["hasVariant"],
         freeComplements: json["freeComplements"],
-        comboId: json["comboId"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -258,6 +249,5 @@ class Promotion {
         "isAvailable": isAvailable,
         "hasVariant": hasVariant,
         "freeComplements": freeComplements,
-        "comboId": comboId,
       };
 }

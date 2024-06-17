@@ -16,6 +16,8 @@ abstract class ApiService {
   Future<Response<T>> deleteRequest<T>(
       String endpoint, Map<String, dynamic> data);
   Future<Response<T>> deleteRequestById<T>(String endpoint, String id);
+  Future<Response<T>> patchRequest<T>(
+      String endpoint, Map<String, dynamic> data);
 }
 
 class DioApiService extends ApiService {
@@ -49,6 +51,12 @@ class DioApiService extends ApiService {
   Future<Response<T>> deleteRequestById<T>(String endpoint, String id) async {
     final String deleteEndpoint = "$endpoint/$id";
     return await dioClient.delete(deleteEndpoint);
+  }
+
+  @override
+  Future<Response<T>> patchRequest<T>(
+      String endpoint, Map<String, dynamic> data) async {
+    return await dioClient.patch(endpoint, data: data);
   }
 }
 

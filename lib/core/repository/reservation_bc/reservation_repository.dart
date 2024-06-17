@@ -5,6 +5,7 @@ import "../../constants/reservation_bc/reservation.constants.dart";
 import "../../models/base_response.dart";
 import "../../models/reservation/reservation_by_user.response.types.dart";
 import "../../models/reservation/save_reservation.request.types.dart";
+import "../../models/reservation/update_reservation_status.request.types.dart";
 import "../../network/api_service.dart";
 
 final Provider<ReservationRepository> reservationRepositoryProvider =
@@ -48,6 +49,22 @@ class ReservationRepository {
           .map((dynamic e) =>
               ReservationsResponseByUserId.fromJson(e as Map<String, dynamic>))
           .toList();
+    });
+  }
+
+  Future<BaseResponse<String>> updateReservationStatus(
+      UpdateReservation updateReservation) async {
+    const String endpoint =
+        "${ReservationEndpoints.reservation}${ReservationEndpoints.changeStatus}";
+
+    final Response response = await apiService.patchRequest(
+      endpoint,
+      updateReservation.toJson(),
+    );
+    final Map<String, dynamic> responseData = response.data;
+
+    return BaseResponse<String>.fromJson(responseData, (Object? json) {
+      return json as String;
     });
   }
 }

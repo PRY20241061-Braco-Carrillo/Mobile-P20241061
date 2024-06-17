@@ -41,6 +41,7 @@ dependencies:
   skeletonizer: ^1.1.1
   smooth_page_indicator: ^1.1.0
 
+  url_launcher: ^6.3.0
   vector_math: any
   
 dev_dependencies:

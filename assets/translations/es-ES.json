@@ -192,6 +192,9 @@
         },
         "reservations":{
             "title": "Reservas"
+        },
+        "settings": {
+            "title": "Configuración"
         }
     },
     "Product":{

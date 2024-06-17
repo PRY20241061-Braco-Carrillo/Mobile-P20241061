@@ -25,7 +25,7 @@ class PromotionByCampusResponse {
         discountType: json["discountType"],
         urlImage: json["urlImage"],
         hasVariant: json["hasVariant"],
-        comboId: json["comboId"],
+        comboId: json["comboId"] == null ? null : json["comboId"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -35,6 +35,6 @@ class PromotionByCampusResponse {
         "discountType": discountType,
         "urlImage": urlImage,
         "hasVariant": hasVariant,
-        "comboId": comboId,
+        "comboId": comboId == null ? null : comboId,
       };
 }

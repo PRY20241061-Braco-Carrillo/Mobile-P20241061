@@ -57,6 +57,9 @@ class CPromotionBaseCard extends StatelessWidget {
     final double width = MediaQuery.of(context).size.width / 2 - 20;
     return InkWell(
       onTap: () {
+        print("PromotionByCampusCardData: ${data.promotionId} ${data.comboId}");
+        //Imprimir el tipo de dato de data.comboId
+        print("Tipo de dato de data.comboId: ${data.comboId.runtimeType}");
         if (data.comboId != null) {
           GoRouter.of(context).push(
               "${AppRoutes.categories}${AppRoutes.promotions}${AppRoutes.combos}/${data.comboId}",

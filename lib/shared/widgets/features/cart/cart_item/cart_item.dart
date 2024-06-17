@@ -1,4 +1,6 @@
+import "package:cached_network_image/cached_network_image.dart";
 import 'package:flutter/material.dart';
+import "package:flutter_svg/svg.dart";
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import "../order_cart/order_cart.notifier.dart";
@@ -13,8 +15,9 @@ class CartItemWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Card(
       child: ListTile(
-        leading: CircleAvatar(
-          backgroundImage: NetworkImage(item.productInfo.imageUrl),
+        leading: ClipOval(
+          child: _getImageWidget(item.productInfo.imageUrl, 40,
+              40), // Ajusta el tamaño como necesario
         ),
         title: Text(item.productInfo.productName),
         subtitle: Text(
@@ -28,5 +31,34 @@ class CartItemWidget extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  Widget _getImageWidget(String? url, double width, double height) {
+    if (url == null) {
+      return SvgPicture.asset(
+        "assets/images/not_found/picture_not_found.svg",
+        width: width,
+        height: height,
+      );
+    } else if (url.endsWith(".svg")) {
+      return SvgPicture.network(
+        url,
+        width: width,
+        height: height,
+        placeholderBuilder: (BuildContext context) =>
+            const CircularProgressIndicator(),
+      );
+    } else {
+      return CachedNetworkImage(
+        imageUrl: url,
+        width: width,
+        height: height,
+        fit: BoxFit.cover,
+        placeholder: (BuildContext context, String url) =>
+            const CircularProgressIndicator(),
+        errorWidget: (BuildContext context, String url, Object error) =>
+            const Icon(Icons.error),
+      );
+    }
   }
 }

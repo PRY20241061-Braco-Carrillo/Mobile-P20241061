@@ -208,6 +208,9 @@
         },
         "reservations":{
             "title": "Reservations"
+        },
+        "settings": {
+            "title": "Settings"
         }
     },    
     "Product":{

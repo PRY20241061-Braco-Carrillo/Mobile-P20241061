@@ -47,6 +47,11 @@ class DioClient {
       {Map<String, dynamic>? data}) async {
     return await _dio.delete<T>(endpoint, data: data);
   }
+
+  Future<Response<T>> patch<T>(String endpoint,
+      {Map<String, dynamic>? data}) async {
+    return await _dio.patch<T>(endpoint, data: data);
+  }
 }
 
 final Provider<DioClient> dioClientProvider =

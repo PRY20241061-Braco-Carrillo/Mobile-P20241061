@@ -169,7 +169,7 @@ class LogInScreen extends ConsumerWidget {
                         type: QuickAlertType.success,
                         text: labelLogInDialogSuccess.tr(),
                         onConfirmBtnTap: () {
-                          GoRouter.of(context).push(AppRoutes.home);
+                          GoRouter.of(context).push(AppRoutes.tabScreen);
                         });
                   }, (String errorMessage) {
                     ref.read(isLoadingProvider.notifier).state = false;

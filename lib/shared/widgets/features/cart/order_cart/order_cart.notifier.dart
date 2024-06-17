@@ -59,6 +59,8 @@ class CartNotifier extends StateNotifier<List<CartItem>> {
         const ListEquality<dynamic>()
             .equals(info1.selectedMenuVariants, info2.selectedMenuVariants) &&
         const ListEquality<dynamic>()
-            .equals(info1.selectedComboVariants, info2.selectedComboVariants);
+            .equals(info1.selectedComboVariants, info2.selectedComboVariants) &&
+        const ListEquality<dynamic>().equals(
+            info1.selectedPromotionVariants, info2.selectedPromotionVariants);
   }
 }

@@ -7,9 +7,7 @@ import "../../../../../config/routes/routes.dart";
 import "../../../../../core/managers/secure_storage_manager.dart";
 import "../../../../../core/models/base_response.dart";
 import "../../../../../core/models/reservation/save_reservation.request.types.dart";
-
 import "../../../../../core/notifiers/reservation/save_reservation_request.notifier.dart";
-
 import "../../../../../modules/cart/notifiers/cart_loading_notifier.dart";
 import "../order_cart/order_cart.types.dart";
 
@@ -34,14 +32,65 @@ class ReservationButton extends ConsumerWidget {
           userId: userId,
           campusId: campusId,
           order: Order(
-            products: cartItems.map((item) {
-              return OrderProduct(
-                productVariantId: item
-                    .productInfo.selectedProductVariants.first.productVariantId,
-                productAmount: item.quantity,
-                unitPrice:
-                    item.productInfo.selectedProductVariants.first.amountPrice,
-              );
+            products: cartItems.expand((item) {
+              return item.productInfo.selectedProductVariants.map((variant) {
+                return OrderProduct(
+                  productVariantId: variant.productVariantId,
+                  productAmount: item.quantity,
+                  unitPrice: variant.amountPrice,
+                );
+              });
+            }).toList(),
+            complements: cartItems.expand((item) {
+              return item.productInfo.selectedMenuVariants.map((variant) {
+                return OrderComplement(
+                  complementId: variant.productVariantId,
+                  complementAmount: item.quantity,
+                  unitPrice: variant.amountPrice.toInt(),
+                );
+              });
+            }).toList(),
+            combos: cartItems.expand((item) {
+              return item.productInfo.selectedComboVariants.map((variant) {
+                return ComboCombo(
+                  comboId: variant.productVariantId,
+                  comboAmount: item.quantity,
+                  unitPrice: variant.amountPrice,
+                  products: [], // Si hay productos dentro de combos, añadir lógica para mapearlos
+                  complements: [], // Si hay complementos dentro de combos, añadir lógica para mapearlos
+                );
+              });
+            }).toList(),
+            comboPromotions: cartItems.expand((item) {
+              return item.productInfo.selectedPromotionVariants.map((variant) {
+                return ComboPromotion(
+                  promotionId: variant.productVariantId,
+                  promotionAmount: item.quantity,
+                  unitPrice: variant.amountPrice.toInt(),
+                  combos: [], // Si hay combos dentro de promociones, añadir lógica para mapearlos
+                );
+              });
+            }).toList(),
+            productPromotions: cartItems.expand((item) {
+              return item.productInfo.selectedPromotionVariants.map((variant) {
+                return ProductPromotion(
+                  promotionId: variant.productVariantId,
+                  promotionAmount: item.quantity,
+                  unitPrice: variant.amountPrice.toInt(),
+                  complements: [], // Si hay complementos dentro de promociones, añadir lógica para mapearlos
+                  products: [], // Si hay productos dentro de promociones, añadir lógica para mapearlos
+                );
+              });
+            }).toList(),
+            menus: cartItems.expand((item) {
+              return item.productInfo.selectedMenuVariants.map((variant) {
+                return Menu(
+                  menuId: variant.productVariantId,
+                  menuAmount: item.quantity,
+                  unitPrice: variant.amountPrice.toInt(),
+                  products: [], // Si hay productos dentro de menús, añadir lógica para mapearlos
+                );
+              });
             }).toList(),
           ),
         );
