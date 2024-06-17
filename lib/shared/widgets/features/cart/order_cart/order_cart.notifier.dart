@@ -3,8 +3,10 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import "order_cart.types.dart";
 import "selected_product_info.types.dart";
 
-final cartProvider = StateNotifierProvider<CartNotifier, List<CartItem>>(
-  (ref) => CartNotifier(),
+final StateNotifierProvider<CartNotifier, List<CartItem>> cartProvider =
+    StateNotifierProvider<CartNotifier, List<CartItem>>(
+  (StateNotifierProviderRef<CartNotifier, List<CartItem>> ref) =>
+      CartNotifier(),
 );
 
 class CartNotifier extends StateNotifier<List<CartItem>> {
@@ -49,7 +51,7 @@ class CartNotifier extends StateNotifier<List<CartItem>> {
 
   void resetCart() {
     state = <CartItem>[];
-    state = [...state];
+    state = <CartItem>[...state];
   }
 
   bool _areVariantsAndComplementsEqual(

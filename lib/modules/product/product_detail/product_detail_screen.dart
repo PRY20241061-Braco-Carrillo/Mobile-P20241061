@@ -14,6 +14,8 @@ import "../../../layout/scrollable_layout.dart";
 import "../../../shared/widgets/features/header/product-header/products_categories_header.dart";
 import "../../../shared/widgets/features/main-cards/buttons/ar/button_ar.dart";
 import "../../../shared/widgets/features/main-cards/buttons/product/button_add.dart";
+import "../../../shared/widgets/features/main-cards/products/product_detail-card/complements/detail_complements_card.dart";
+import "../../../shared/widgets/features/main-cards/products/product_detail-card/complements/product_components.types.dart";
 import "../../../shared/widgets/features/main-cards/products/product_detail-card/product_detail.dart";
 import "../../../shared/widgets/features/main-cards/products/product_detail-card/product_detail.types.dart";
 import "../../../shared/widgets/features/main-cards/products/product_detail-card/variants/product/product_variant.provider.dart";
@@ -115,6 +117,54 @@ class ProductDetailScreen extends ConsumerWidget {
       },
     );
 
+    final Widget complementsContent =
+        categoryCard.when(data: (ProductDetailCardData data) {
+      print("Product details loaded: $data");
+      return MasonryGridView.count(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        crossAxisCount: 1,
+        mainAxisSpacing: 10,
+        itemCount: 1,
+        itemBuilder: (BuildContext context, int index) {
+          return ComplementSelector(
+              complements: data.complements.map((complement) {
+            return ProductComplement(
+              complementId: complement.complementId,
+              name: complement.name,
+              freeAmount: complement.freeAmount,
+              amountPrice: complement.amountPrice,
+              currencyPrice: complement.currencyPrice,
+              isSauce: complement.isSauce,
+            );
+          }).toList());
+        },
+      );
+    }, loading: () {
+      return MasonryGridView.count(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        crossAxisCount: 1,
+        mainAxisSpacing: 10,
+        itemCount: 1,
+        itemBuilder: (BuildContext context, int index) {
+          return const CProductDetailCard.skeleton();
+        },
+      );
+    }, error: (Object error, _) {
+      print("Error loading ProductDetailCardData: $error");
+      return MasonryGridView.count(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        crossAxisCount: 1,
+        mainAxisSpacing: 10,
+        itemCount: 1,
+        itemBuilder: (BuildContext context, int index) {
+          return CProductDetailCard.error(error: error.toString());
+        },
+      );
+    });
+
     final Widget productContent = MasonryGridView.count(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -202,6 +252,7 @@ class ProductDetailScreen extends ConsumerWidget {
               productContent,
               buttonArProduct,
               detailsContent,
+              complementsContent,
               buttonAddProduct,
             ],
           ),

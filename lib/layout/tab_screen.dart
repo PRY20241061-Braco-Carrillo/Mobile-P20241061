@@ -8,10 +8,10 @@ class TabScreen extends StatelessWidget {
   final PersistentTabController _controller =
       PersistentTabController(initialIndex: 0);
 
-  TabScreen({Key? key}) : super(key: key);
+  TabScreen({super.key});
 
   List<PersistentTabConfig> _buildTabs() {
-    return [
+    return <PersistentTabConfig>[
       PersistentTabConfig(
         screen: const HomeScreen(),
         item: ItemConfig(
@@ -41,7 +41,7 @@ class TabScreen extends StatelessWidget {
     return PersistentTabView(
       controller: _controller,
       tabs: _buildTabs(),
-      navBarBuilder: (navBarConfig) => Style1BottomNavBar(
+      navBarBuilder: (NavBarConfig navBarConfig) => Style1BottomNavBar(
         navBarConfig: navBarConfig,
       ),
     );

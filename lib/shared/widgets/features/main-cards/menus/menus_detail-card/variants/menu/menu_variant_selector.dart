@@ -31,18 +31,22 @@ class MenuVariantSelectorState extends ConsumerState<MenuVariantSelector> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedVariantsState = ref.watch(widget.provider);
+    final SelectedVariantsState selectedVariantsState =
+        ref.watch(widget.provider);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         RadioVariantGroup(
-          title: 'Variants',
-          variants: widget.variants.map((variant) => variant.detail).toList(),
+          title: "Variants",
+          variants: widget.variants
+              .map((MenuDetailVariantCard variant) => variant.detail)
+              .toList(),
           selectedVariant: selectedVariantsState.selectedVariant?.detail,
           onChanged: (String? selected) {
-            final selectedVariant = widget.variants
-                .firstWhere((variant) => variant.detail == selected);
+            final MenuDetailVariantCard selectedVariant = widget.variants
+                .firstWhere((MenuDetailVariantCard variant) =>
+                    variant.detail == selected);
             ref
                 .read(widget.provider.notifier)
                 .updateSelectedVariant(selectedVariant);

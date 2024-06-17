@@ -215,7 +215,8 @@ class OrderRequestScreen extends ConsumerWidget {
 
     ref.listen<AsyncValue<BaseResponse<String>>>(
       validateTokenNotifierProvider(orderState.orderId),
-      (previous, next) {
+      (AsyncValue<BaseResponse<String>>? previous,
+          AsyncValue<BaseResponse<String>> next) {
         next.when(
           data: (BaseResponse<String> response) {
             if (response.data == "VALIDATED") {

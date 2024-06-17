@@ -175,7 +175,7 @@ class CartScreen extends ConsumerWidget {
                 ),
                 child: SafeArea(
                   child: Row(
-                    children: [
+                    children: <Widget>[
                       Expanded(
                         child: OrderButton(
                           orderInProgressState: orderInProgressState,
