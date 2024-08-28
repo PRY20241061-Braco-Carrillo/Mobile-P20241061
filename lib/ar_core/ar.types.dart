@@ -1,9 +1,9 @@
 class NutritionalInformationAR {
   final String nutritionalInformationId;
-  final int calories;
-  final int proteins;
-  final int totalFat;
-  final int carbohydrates;
+  final double calories;
+  final double proteins;
+  final double totalFat;
+  final double carbohydrates;
   final bool isVegan;
   final bool isVegetarian;
   final bool isLowCalories;

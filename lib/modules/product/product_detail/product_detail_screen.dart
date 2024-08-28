@@ -191,29 +191,36 @@ class ProductDetailScreen extends ConsumerWidget {
         productId: productDetailNavigationData.productData.productId,
         campusData: productDetailNavigationData.campusData);
 
-    final Widget buttonArProduct = ButtonAR(
-      productId: productDetailNavigationData.productData.productId,
-      urlGLB:
-          "https://drive.usercontent.google.com/uc?id=19Lht8jgi8xMn1AfV44Wv1-80CsAhF5uJ&export=download",
-      nutritionalInformation: NutritionalInformationAR(
-        calories: 100,
-        carbohydrates: 10,
-        isHighProtein: true,
-        proteins: 10,
-        totalFat: 10,
-        isLowCalories: true,
-        isVegan: true,
-        isVegetarian: true,
-        isWithoutEggs: false,
-        isWithoutGluten: false,
-        isWithoutLactose: false,
-        isWithoutNut: true,
-        isWithoutPig: true,
-        isWithoutSeafood: true,
-        nutritionalInformationId: "1",
-      ),
-    );
+    final Widget buttonArProduct = variantsResponse.when(
+      data: (BaseResponse<VariantsByProductResponse> response) {
+        final nutritionalInfo = response.data.product.nutritionalInformation;
+        final productInfo = response.data.product;
 
+        return ButtonAR(
+          productId: productDetailNavigationData.productData.productId,
+          urlGLB: productInfo.urlGlb,
+          nutritionalInformation: NutritionalInformationAR(
+            calories: nutritionalInfo.calories,
+            carbohydrates: nutritionalInfo.carbohydrates,
+            isHighProtein: nutritionalInfo.isHighProtein,
+            proteins: nutritionalInfo.proteins,
+            totalFat: nutritionalInfo.totalFat,
+            isLowCalories: nutritionalInfo.isLowCalories,
+            isVegan: nutritionalInfo.isVegan,
+            isVegetarian: nutritionalInfo.isVegetarian,
+            isWithoutEggs: nutritionalInfo.isWithoutEggs,
+            isWithoutGluten: nutritionalInfo.isWithoutGluten,
+            isWithoutLactose: nutritionalInfo.isWithoutLactose,
+            isWithoutNut: nutritionalInfo.isWithoutNut,
+            isWithoutPig: nutritionalInfo.isWithoutPig,
+            isWithoutSeafood: nutritionalInfo.isWithoutSeafood,
+            nutritionalInformationId: nutritionalInfo.nutritionalInformationId,
+          ),
+        );
+      },
+      loading: () => CircularProgressIndicator(),
+      error: (error, stack) => Text('Error loading AR data: $error'),
+    );
     return BackButtonListener(
       onBackButtonPressed: () async {
         if (GoRouter.of(context).canPop()) {
