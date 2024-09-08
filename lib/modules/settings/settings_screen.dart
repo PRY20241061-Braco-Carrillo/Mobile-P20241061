@@ -1,3 +1,4 @@
+import "package:easy_localization/easy_localization.dart";
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -7,9 +8,13 @@ import '../../core/managers/secure_storage_manager.dart';
 import '../../layout/main_layout.dart';
 import '../../shared/widgets/global/header/icon_header.dart';
 import '../../config/routes/routes.dart';
+import "../../shared/widgets/global/theme_switcher/theme_switcher.dart";
+import "language_switcher.dart";
 
 class SettingScreen extends ConsumerWidget {
   const SettingScreen({super.key});
+  static const String form = "Settings.buttons.FORM.label";
+  static const String logout = "Settings.buttons.LOGOUT.label";
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -28,9 +33,9 @@ class SettingScreen extends ConsumerWidget {
                 const SizedBox(height: 5.0),
                 Expanded(
                   child: Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primaryContainer,
+                      borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(30.0),
                         topRight: Radius.circular(30.0),
                       ),
@@ -38,6 +43,21 @@ class SettingScreen extends ConsumerWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        const SizedBox(
+                          width: double.infinity,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 16.0, vertical: 20.0),
+                            child: ThemeSwitcherWidget(),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: double.infinity,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16.0),
+                            child: LanguageSwitcherWidget(),
+                          ),
+                        ),
                         SizedBox(
                           width: double.infinity,
                           child: Padding(
@@ -52,7 +72,7 @@ class SettingScreen extends ConsumerWidget {
                                     .go(AppRoutes.accessOptions);
                               },
                               icon: const Icon(Icons.logout),
-                              label: const Text('Cerrar sesión'),
+                              label: Text(logout.tr()),
                             ),
                           ),
                         ),
@@ -77,7 +97,7 @@ class SettingScreen extends ConsumerWidget {
                                 }
                               },
                               icon: const Icon(Icons.link),
-                              label: const Text('Encuesta de satisfacción'),
+                              label: Text(form.tr()),
                             ),
                           ),
                         ),

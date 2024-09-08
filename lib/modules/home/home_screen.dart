@@ -1,3 +1,4 @@
+import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:infinite_scroll_pagination/infinite_scroll_pagination.dart";
@@ -23,6 +24,10 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class HomeScreenState extends ConsumerState<HomeScreen> {
   static const int _pageSize = 3;
+  static const String no_items = "no_items.label";
+  static const String no_more_items = "no_more_items.label";
+  static const String failed_to_load = "failed_to_load.label";
+
   final PagingController<int, RestaurantCardData> _pagingController =
       PagingController<int, RestaurantCardData>(firstPageKey: 0);
 
@@ -106,9 +111,9 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                 const SizedBox(height: 5.0),
                 Expanded(
                   child: Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primaryContainer,
+                      borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(30.0),
                         topRight: Radius.circular(30.0),
                       ),
@@ -131,13 +136,13 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                               (BuildContext context) => const Center(
                                   child: CircularProgressIndicator()),
                           noMoreItemsIndicatorBuilder: (BuildContext context) =>
-                              const Center(child: Text("No more items")),
+                              Center(child: Text(no_more_items.tr())),
                           firstPageErrorIndicatorBuilder:
-                              (BuildContext context) => const Center(
-                                  child: Text("Failed to load items")),
+                              (BuildContext context) =>
+                                  Center(child: Text(failed_to_load.tr())),
                           newPageErrorIndicatorBuilder:
-                              (BuildContext context) => const Center(
-                                  child: Text("Failed to load more items")),
+                              (BuildContext context) =>
+                                  Center(child: Text(failed_to_load.tr())),
                         ),
                       ),
                     ),

@@ -173,7 +173,6 @@ class CombosDetailScreen extends ConsumerWidget {
           body: Column(
             children: <Widget>[
               const SizedBox(height: 10),
-              const ThemeSwitcherWidget(),
               const SizedBox(height: 10),
               comboContent,
               detailsContent,

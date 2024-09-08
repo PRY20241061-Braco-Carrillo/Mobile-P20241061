@@ -1,7 +1,7 @@
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import "package:hooks_riverpod/hooks_riverpod.dart";
 
-import '../../../models/base_response.dart';
-import '../../../models/management/campus_category/campus_category.response.types.dart';
+import "../../../models/base_response.dart";
+import "../../../models/management/campus_category/campus_category.response.types.dart";
 import "../../../repository/management_bc/campus_category/campus_category.repository.dart";
 
 final StateNotifierProviderFamily<CampusCategoryNotifier,
@@ -9,8 +9,12 @@ final StateNotifierProviderFamily<CampusCategoryNotifier,
     campusCategoryNotifierProvider = StateNotifierProvider.family<
         CampusCategoryNotifier,
         AsyncValue<BaseResponse<List<CampusCategoryResponse>>>,
-        String>((ref, campusId) {
-  final campusCategoryRepository = ref.read(campusCategoryRepositoryProvider);
+        String>((StateNotifierProviderRef<CampusCategoryNotifier,
+                AsyncValue<BaseResponse<List<CampusCategoryResponse>>>>
+            ref,
+        String campusId) {
+  final CampusCategoryRepository campusCategoryRepository =
+      ref.read(campusCategoryRepositoryProvider);
   return CampusCategoryNotifier(campusId, campusCategoryRepository);
 });
 
@@ -18,7 +22,8 @@ class CampusCategoryNotifier extends StateNotifier<
     AsyncValue<BaseResponse<List<CampusCategoryResponse>>>> {
   final String campusId;
   final CampusCategoryRepository campusCategoryRepository;
-  final Map<int, List<CampusCategoryResponse>> cachedPages = {};
+  final Map<int, List<CampusCategoryResponse>> cachedPages =
+      <int, List<CampusCategoryResponse>>{};
   int lastPage = 0;
   static const int _pageSize = 5;
 

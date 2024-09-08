@@ -12,6 +12,9 @@ CampusCategoryResponse _$CampusCategoryResponseFromJson(
       campusCategoryId: json['campusCategoryId'] as String,
       name: json['name'] as String,
       urlImage: json['urlImage'] as String,
+      isPromotion: json['isPromotion'] as bool?,
+      isCombo: json['isCombo'] as bool?,
+      isMenu: json['isMenu'] as bool?,
     );
 
 Map<String, dynamic> _$CampusCategoryResponseToJson(
@@ -20,6 +23,9 @@ Map<String, dynamic> _$CampusCategoryResponseToJson(
       'campusCategoryId': instance.campusCategoryId,
       'name': instance.name,
       'urlImage': instance.urlImage,
+      'isPromotion': instance.isPromotion,
+      'isCombo': instance.isCombo,
+      'isMenu': instance.isMenu,
     };
 
 CampusCategoryListResponse _$CampusCategoryListResponseFromJson(

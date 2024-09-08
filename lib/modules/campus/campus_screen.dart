@@ -1,3 +1,4 @@
+import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
@@ -26,6 +27,9 @@ class CampusScreenState extends ConsumerState<CampusScreen> {
   static const int _pageSize = 6;
   final PagingController<int, CampusCardData> _pagingController =
       PagingController<int, CampusCardData>(firstPageKey: 0);
+  static const String no_items = "no_items.label";
+  static const String no_more_items = "no_more_items.label";
+  static const String failed_to_load = "failed_to_load.label";
 
   @override
   void initState() {
@@ -87,15 +91,15 @@ class CampusScreenState extends ConsumerState<CampusScreen> {
                   headerKey: "campus",
                   height: 220,
                   onButtonPressed: (BuildContext context) {
-                    GoRouter.of(context).push(AppRoutes.home);
+                    GoRouter.of(context).push(AppRoutes.tabScreen);
                   },
                 ),
                 const SizedBox(height: 5.0),
                 Expanded(
                   child: Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primaryContainer,
+                      borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(30.0),
                         topRight: Radius.circular(30.0),
                       ),
@@ -122,13 +126,13 @@ class CampusScreenState extends ConsumerState<CampusScreen> {
                               (BuildContext context) => const Center(
                                   child: CircularProgressIndicator()),
                           noMoreItemsIndicatorBuilder: (BuildContext context) =>
-                              const Center(child: Text("No more items")),
+                              Center(child: Text(no_more_items.tr())),
                           firstPageErrorIndicatorBuilder:
-                              (BuildContext context) => const Center(
-                                  child: Text("Failed to load items")),
+                              (BuildContext context) =>
+                                  Center(child: Text(no_items.tr())),
                           newPageErrorIndicatorBuilder:
-                              (BuildContext context) => const Center(
-                                  child: Text("Failed to load more items")),
+                              (BuildContext context) =>
+                                  Center(child: Text(failed_to_load.tr())),
                         ),
                       ),
                     ),

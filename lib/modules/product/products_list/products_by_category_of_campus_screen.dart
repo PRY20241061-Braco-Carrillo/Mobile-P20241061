@@ -14,7 +14,6 @@ import "../../../shared/widgets/features/header/product-header/products_categori
 import "../../../shared/widgets/features/main-cards/products/product_base-card/product_base.dart";
 import "../../../shared/widgets/features/main-cards/products/product_base-card/product_base.types.dart";
 import "../../../shared/widgets/features/main-cards/products/product_compact-card/product_compact.dart";
-import "../../../shared/widgets/global/theme_switcher/theme_switcher.dart";
 import "category_navigation_data.types.dart";
 
 final StateProvider<bool> gridModeProvider =
@@ -115,9 +114,7 @@ class ProductsByCategoryScreenState
           body: Column(
             children: <Widget>[
               const SizedBox(height: 10),
-              const ThemeSwitcherWidget(),
               gridModeSwitch,
-              const SizedBox(height: 10),
               gridContent,
             ],
           ),
@@ -154,6 +151,7 @@ Widget gridContentFullMode(
         physics: const NeverScrollableScrollPhysics(),
         crossAxisCount: 2,
         mainAxisSpacing: 10,
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         itemCount: dataList.length,
         itemBuilder: (BuildContext context, int index) {
           return CProductBaseCard(
@@ -200,6 +198,7 @@ Widget gridContentCompactMode(
         physics: const NeverScrollableScrollPhysics(),
         crossAxisCount: 1,
         mainAxisSpacing: 10,
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         itemCount: dataList.length,
         itemBuilder: (BuildContext context, int index) {
           return CProductCompactCard(

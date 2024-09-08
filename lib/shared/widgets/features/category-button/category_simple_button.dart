@@ -7,7 +7,7 @@ import "../campus-card/campus_card.types.dart";
 
 class CategorySimpleButton extends StatelessWidget {
   final String title;
-  final String imageUrl;
+  final String? imageUrl;
 
   final String path;
   final CampusCardData? campusData;
@@ -15,7 +15,7 @@ class CategorySimpleButton extends StatelessWidget {
   const CategorySimpleButton({
     super.key,
     required this.title,
-    required this.imageUrl,
+    this.imageUrl,
     required this.path,
     this.campusData,
   });

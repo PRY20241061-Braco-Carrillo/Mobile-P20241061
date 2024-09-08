@@ -29,18 +29,18 @@ class SelectedProductInfo {
 
   double getTotalPrice() {
     double total = price;
-    for (final variant in selectedProductVariants) {
-      total += variant.amountPrice;
-    }
-    for (final variant in selectedMenuVariants) {
-      total += variant.amountPrice;
-    }
-    for (final variant in selectedComboVariants) {
-      total += variant.amountPrice;
-    }
-    for (final variant in selectedPromotionVariants) {
-      total += variant.amountPrice;
-    }
+    // for (final variant in selectedProductVariants) {
+    //   total += variant.amountPrice;
+    // }
+    // for (final variant in selectedMenuVariants) {
+    //   total += variant.amountPrice;
+    // }
+    // for (final variant in selectedComboVariants) {
+    //   total += variant.amountPrice;
+    // }
+    // for (final variant in selectedPromotionVariants) {
+    //   total += variant.amountPrice;
+    // }
     return total;
   }
 

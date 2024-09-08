@@ -1,7 +1,9 @@
-import "package:flutter/material.dart";
-import "package:hooks_riverpod/hooks_riverpod.dart";
-import "package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart";
+import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
+import 'package:go_router/go_router.dart';
 
+import "../config/routes/routes.dart";
 import "../modules/order/providers/order_in_progress.notifier.dart";
 import "../shared/widgets/features/cart/order_cart/order_cart.notifier.dart";
 import "../shared/widgets/features/cart/order_cart/order_cart.types.dart";
@@ -22,6 +24,11 @@ class BaseLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Obtén el estado de la ruta actual
+    final GoRouterState? state = GoRouterState.of(context);
+
+    final String currentRoute = ModalRoute.of(context)?.settings.name ?? '/';
+
     return Scaffold(
       body: Column(
         children: <Widget>[
@@ -31,6 +38,11 @@ class BaseLayout extends StatelessWidget {
               final List<CartItem> cartItems = ref.watch(cartProvider);
               final OrderInProgressState orderInProgressState =
                   ref.watch(orderInProgressProvider);
+
+              // No renderizar CartSummaryBar si estamos en la ruta de carrito
+              if (currentRoute == AppRoutes.cart) {
+                return const SizedBox.shrink();
+              }
 
               if (orderInProgressState.inProgress) {
                 return const OrderSummaryBar();

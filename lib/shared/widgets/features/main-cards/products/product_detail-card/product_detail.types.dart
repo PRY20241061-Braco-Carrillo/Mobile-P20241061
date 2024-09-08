@@ -57,6 +57,8 @@ class Product {
   int freeSauce;
   bool isAvailable;
   bool hasVariant;
+  double amountPrice;
+  String currencyPrice;
   NutritionalInformation nutritionalInformation;
 
   Product({
@@ -75,6 +77,8 @@ class Product {
     required this.isAvailable,
     required this.hasVariant,
     required this.nutritionalInformation,
+    required this.amountPrice,
+    required this.currencyPrice,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
@@ -90,6 +94,8 @@ class Product {
       urlImage: json["urlImage"] ?? "",
       urlGlb: json["urlGlb"] ?? "",
       freeSauce: json["freeSauce"] ?? 0,
+      amountPrice: json["amountPrice"]?.toDouble() ?? 0.0,
+      currencyPrice: json["currencyPrice"] ?? "",
       isAvailable: json["isAvailable"] ?? false,
       hasVariant: json["hasVariant"] ?? false,
       nutritionalInformation:

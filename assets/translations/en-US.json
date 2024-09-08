@@ -24,6 +24,17 @@
             }
         }
     },
+    "RestaurantInfoDialog": {
+        "available": "Available",
+        "takeHome": "Take Home",
+        "delivery": "Delivery",
+        "openHours": "Open Hours",
+        "breakfast": "Breakfast",
+        "lunch": "Lunch",
+        "dinner": "Dinner",
+        "phone": "Phone",
+        "address": "Address"
+    },
     "Auth": {
         "buttons": {
             "LOGIN": {
@@ -169,11 +180,11 @@
         "labelSize": {
             "variant": "Different sizes available"
         },
-        "sincePrice":{
+        "sincePrice": {
             "label": "Since"
         }
     },
-    "MenuCategory":{
+    "MenuCategory": {
         "categories": {
             "DESSERTS": {
                 "label": "Desserts",
@@ -183,6 +194,14 @@
                 "label": "Drinks",
                 "select": "Select a drink"
             },
+            "MENU": {
+                "label": "Menu",
+                "ariaLabel": "Categoria de menú"
+            },
+            "COMBO": {
+                "label": "Combos",
+                "ariaLabel": "Categoria de combos"
+            },
             "INITIAL_DISHES": {
                 "label": "Initial Dishes",
                 "select": "Select an initial dish"
@@ -190,13 +209,17 @@
             "PRINCIPAL_DISHES": {
                 "label": "Principal Dishes",
                 "select": "Select a principal dish"
+            },
+            "OFFER": {
+                "label": "Offers",
+                "ariaLabel": ""
             }
         }
     },
-    "Header":{
+    "Header": {
         "home": {
             "title": "Restaurants"
-        }, 
+        },
         "campus": {
             "title": "Campus"
         },
@@ -206,15 +229,15 @@
         "sign_up": {
             "title": "Sign Up"
         },
-        "reservations":{
+        "reservations": {
             "title": "Reservations"
         },
         "settings": {
             "title": "Settings"
         }
-    },    
-    "Product":{
-        "variants":{
+    },
+    "Product": {
+        "variants": {
             "CC01": {
                 "label": "Choose your preferred cooking method"
             },
@@ -313,8 +336,22 @@
             }
         }
     },
-    "Order":{
-        "order_request":{
+    "Order": {
+        "labels": {
+            "go_order": {
+                "label": "Go to my order"
+            },
+            "generate_order": {
+                "label": "Generate order"
+            },
+            "go_to_cart": {
+                "label": "Go to cart"
+            },
+            "generate_reservation": {
+                "label": "Generate reservation"
+            }
+        },
+        "order_request": {
             "ORDER_REQUEST": {
                 "label": "Order"
             },
@@ -324,7 +361,7 @@
             "ORDER_REQUESTED_MESSAGE": {
                 "label": "Your order has been requested"
             },
-            "alerts":{
+            "alerts": {
                 "ORDER_REQUESTED": {
                     "title": "Order requested",
                     "message": "Your order has been requested"
@@ -337,11 +374,65 @@
                     "title": "Order canceled",
                     "message": "Your order has been canceled because you have another order in progress"
                 },
-                "ERROR":{
+                "ERROR": {
                     "title": "Error",
                     "message": "An error occurred, please try again"
                 }
             }
         }
-    }
+    },
+    "Settings": {
+        "buttons": {
+            "FORM": {
+                "label": "Satisfaction Survey"
+            },
+            "LOGOUT": {
+                "label": "Log Out"
+            },
+            "CHANGE_LANGUAGE": {
+                "label": "Change Language"
+            }
+        }
+    },
+    "no_items": {
+        "label": "No items"
+    },
+    "no_more_items": {
+        "label": "No more items"
+    },
+    "failed_to_load": {
+        "label": "Failed to load"
+    },
+    "TABS": {
+        "HOME": {
+            "label": "Home"
+        },
+        "CAMPUS": {
+            "label": "Campus"
+        },
+        "RESERVATIONS": {
+            "label": "Reservations"
+        },
+        "SETTINGS": {
+            "label": "Settings"
+        }
+    },
+    "reservations": {
+        "no_reservations": "No reservations found",
+        "id": "Reservation ID",
+        "status": "Status",
+        "date": "Date",
+        "message": "Message",
+        "qualification": "Qualification",
+        "order_id": "Order Request ID",
+        "confirm_deletion": "Confirm Deletion",
+        "confirm_deletion_text": "Are you sure you want to delete this reservation?",
+        "yes": "Yes",
+        "no": "No",
+        "deletion_success": "Success",
+        "deletion_success_text": "Reservation deleted successfully",
+        "deletion_error": "Error",
+        "deletion_error_text": "Failed to delete reservation",
+        "load_error": "Failed to load reservations"
+      }
 }

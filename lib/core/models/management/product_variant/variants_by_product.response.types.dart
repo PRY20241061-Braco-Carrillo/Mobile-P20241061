@@ -213,14 +213,14 @@ class ProductVariant {
   double amountPrice;
   String currencyPrice;
   int variantOrder;
-  String variantInfo;
+  String? variantInfo;
 
   ProductVariant({
     required this.productVariantId,
     required this.amountPrice,
     required this.currencyPrice,
     required this.variantOrder,
-    required this.variantInfo,
+    this.variantInfo,
   });
 
   factory ProductVariant.fromJson(Map<String, dynamic> json) => ProductVariant(
@@ -228,7 +228,7 @@ class ProductVariant {
         amountPrice: json["amountPrice"]?.toDouble(),
         currencyPrice: json["currencyPrice"],
         variantOrder: json["variantOrder"],
-        variantInfo: json["variantInfo"],
+        variantInfo: json["variantInfo"] == null ? null : json["variantInfo"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -236,6 +236,6 @@ class ProductVariant {
         "amountPrice": amountPrice,
         "currencyPrice": currencyPrice,
         "variantOrder": variantOrder,
-        "variantInfo": variantInfo,
+        "variantInfo": variantInfo == null ? null : variantInfo,
       };
 }

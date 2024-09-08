@@ -31,9 +31,17 @@ class LogInNotifier
           ref.read(authenticationRepositoryProvider);
       final BaseResponse<LoginResponse> response =
           await authRepo.login(requestData);
+
       handleResponse(response, (String successMessage) {
-        storeSecureData(response.data);
-        onSuccess(successMessage);
+        // Verificar si el usuario tiene el rol "ROLE_CLIENT"
+        if (response.data.roles.contains("ROLE_CLIENT")) {
+          // Almacenar los datos de inicio de sesión
+          storeSecureData(response.data);
+          onSuccess(successMessage);
+        } else {
+          // Si no tiene el rol adecuado, mostrar un error
+          onError("No tienes permisos para acceder a esta aplicación.");
+        }
       }, onError);
     } on Exception catch (e) {
       print("Login Exception: $e");

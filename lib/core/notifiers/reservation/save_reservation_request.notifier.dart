@@ -25,20 +25,48 @@ class ReservationNotifier extends BaseNotifier<String> {
 
   Future<void> saveReservation() async {
     state = const AsyncValue<BaseResponse<String>>.loading();
-    await performAction(() {}, (String msg) {}, (String err) {});
+    try {
+      await performAction(
+        () {
+          // Callback de onLoading
+          debugPrint("Cargando la reserva...");
+        },
+        (String msg) {
+          // Callback de onSuccess
+          debugPrint("Reserva creada exitosamente con datos: $msg");
+        },
+        (String err) {
+          // Callback de onError
+          debugPrint("Error al crear la reserva: $err");
+        },
+      );
+    } catch (e) {
+      state = AsyncValue<BaseResponse<String>>.error(e, StackTrace.current);
+    }
   }
 
   @override
   Future<void> performAction(VoidCallback onLoading, Function(String) onSuccess,
       Function(String) onError) async {
     onLoading();
+    debugPrint("Iniciando la acción de guardar reserva...");
+
     try {
       final BaseResponse<String> response = await ref
           .read(reservationRepositoryProvider)
           .saveReservation(reservationRequest);
-      handleResponse(response, onSuccess, onError);
-      state = AsyncValue<BaseResponse<String>>.data(response);
-    } on Exception catch (e) {
+
+      debugPrint(
+          "Respuesta recibida: Código - ${response.code}, Datos - ${response.data}");
+
+      if (response.code == 'CREATED') {
+        onSuccess(response.data);
+        state = AsyncValue<BaseResponse<String>>.data(response);
+      } else {
+        throw Exception("Error al crear la reserva.");
+      }
+    } catch (e) {
+      onError(e.toString());
       state = AsyncValue<BaseResponse<String>>.error(e, StackTrace.current);
     }
   }

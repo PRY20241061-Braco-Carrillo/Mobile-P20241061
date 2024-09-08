@@ -15,13 +15,12 @@ import "../../../shared/widgets/features/cart/order_cart/order_cart.types.dart";
 import "../../../shared/widgets/features/cart/order_cart/selected_product_info.types.dart";
 import '../../../shared/widgets/order/order_progress/confirmation_token.dart';
 import '../../../shared/widgets/order/order_progress/order_cancel_order_state.dart';
-import '../../../shared/widgets/order/order_progress/order_validation_status.dart';
 import '../../../shared/widgets/order/order_progress/remaining_time.dart';
 import "../../cart/order_navigation_data.dart";
 import "../providers/order_in_progress.notifier.dart";
 
 SaveOrderRequest createOrderRequestFromCart(List<CartItem> cartItems,
-    String userId, String campusId, String orderRequestId) {
+    String userId, String campusId, String orderRequestId, String tableNumber) {
   final List<OrderRequestProduct> products = <OrderRequestProduct>[];
   final List<OrderRequestComplement> complements = <OrderRequestComplement>[];
   final List<ComboCombo> combos = <ComboCombo>[];
@@ -42,7 +41,7 @@ SaveOrderRequest createOrderRequestFromCart(List<CartItem> cartItems,
   }
 
   return SaveOrderRequest(
-    tableNumber: "A14",
+    tableNumber: tableNumber,
     forTable: true,
     userId: userId,
     orderRequestId: orderRequestId,
@@ -71,18 +70,24 @@ final StateNotifierProvider<OrderLoadingNotifier, bool> orderLoadingProvider =
   return OrderLoadingNotifier();
 });
 
-class OrderRequestScreen extends ConsumerWidget {
+class OrderRequestScreen extends ConsumerStatefulWidget {
   final OrderRequestNavigationData orderRequestData;
-  final bool useNotifier;
 
   const OrderRequestScreen({
     super.key,
     required this.orderRequestData,
-    this.useNotifier = true, // Cambia esto a true para consumir el servicio
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  _OrderRequestScreenState createState() => _OrderRequestScreenState();
+}
+
+class _OrderRequestScreenState extends ConsumerState<OrderRequestScreen> {
+  final _tableNumberController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
     final OrderInProgressState orderState = ref.watch(orderInProgressProvider);
     final int remainingTime = orderState.remainingTime;
     final AsyncValue<BaseResponse<String>> cancelOrderState =
@@ -109,36 +114,47 @@ class OrderRequestScreen extends ConsumerWidget {
       final loginData = await ref.read(secureStorageProvider).getLoginData();
       final userId = loginData[SecureStorageManager.keyUserId] ?? "";
       final campusId = loginData[SecureStorageManager.keyCampusId] ?? "";
-      final orderRequestId = orderState.orderId;
-      final orderRequest = createOrderRequestFromCart(
-          cartItems, userId, campusId, orderRequestId);
+      final orderRequestId = ref.read(orderInProgressProvider).orderId;
 
-      if (useNotifier) {
-        // Usa el notifier para consumir el servicio
-        ref.read(orderNotifierProvider(orderRequest).notifier);
-      } else {
-        // Imprime el JSON en la consola y muestra una alerta
-        print(orderRequest.toJson());
-        QuickAlert.show(
-          context: context,
-          type: QuickAlertType.info,
-          text: 'JSON del pedido generado: ${orderRequest.toJson()}',
-          onConfirmBtnTap: () {
-            Navigator.pop(context);
-          },
+      if (_formKey.currentState?.validate() ?? false) {
+        final orderRequest = createOrderRequestFromCart(
+          ref.read(cartProvider),
+          userId,
+          campusId,
+          orderRequestId,
+          _tableNumberController.text, // Se envía el número de mesa ingresado
         );
-      }
-    }
 
-    Future<void> cancelOrder(BuildContext context, WidgetRef ref) async {
-      if (orderState.inProgress &&
-          orderState.remainingTime > 0 &&
-          orderState.token.isNotEmpty) {
+        // Iniciar carga
+        ref.read(orderLoadingProvider.notifier).startLoading();
+
+        // Llamar al notifier para crear la orden y manejar el futuro
         await ref
-            .read(cancelOrderRequestNotifierProvider.notifier)
-            .cancelOrder(orderState.orderId);
-      } else {
-        handleExpiredOrder();
+            .read(orderNotifierProvider(orderRequest).notifier)
+            .createOrder()
+            .then((response) {
+          // Si la orden fue creada exitosamente
+          QuickAlert.show(
+            context: context,
+            type: QuickAlertType.success,
+            text: "Order created successfully!",
+            onConfirmBtnTap: () {
+              // Detener temporizador después de la orden creada
+              ref.read(orderInProgressProvider.notifier).stopTimer();
+              GoRouter.of(context).go(AppRoutes.orderInProgress); // Navegar
+            },
+          );
+        }).catchError((error) {
+          // Manejar errores
+          QuickAlert.show(
+            context: context,
+            type: QuickAlertType.error,
+            text: "Failed to create the order. Please try again.",
+          );
+        }).whenComplete(() {
+          // Detener carga
+          ref.read(orderLoadingProvider.notifier).stopLoading();
+        });
       }
     }
 
@@ -149,71 +165,6 @@ class OrderRequestScreen extends ConsumerWidget {
     }
 
     ref.listen<AsyncValue<BaseResponse<String>>>(
-      cancelOrderRequestNotifierProvider,
-      (AsyncValue<BaseResponse<String>>? previous,
-          AsyncValue<BaseResponse<String>> next) {
-        next.when(
-          data: (BaseResponse<String> response) {
-            ref.read(orderLoadingProvider.notifier).stopLoading();
-            Navigator.of(context).pop(); // Cierra el diálogo de carga
-            QuickAlert.show(
-              context: context,
-              type: QuickAlertType.success,
-              text: "Order has been cancelled successfully!",
-              onConfirmBtnTap: () {
-                if (GoRouter.of(context).canPop()) {
-                  GoRouter.of(context).pop();
-                } else {
-                  GoRouter.of(context).go(AppRoutes.cart);
-                }
-              },
-            ).then((_) {
-              if (GoRouter.of(context).canPop()) {
-                GoRouter.of(context).pop();
-              } else {
-                GoRouter.of(context).go(AppRoutes.cart);
-              }
-            });
-          },
-          loading: () {
-            ref.read(orderLoadingProvider.notifier).startLoading();
-            showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (BuildContext context) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              },
-            );
-          },
-          error: (Object error, _) {
-            ref.read(orderLoadingProvider.notifier).stopLoading();
-            Navigator.of(context).pop();
-            QuickAlert.show(
-              context: context,
-              type: QuickAlertType.error,
-              text:
-                  "Error al cancelar la orden. Por favor, inténtelo nuevamente.",
-              onConfirmBtnTap: () {
-                Navigator.pop(context);
-              },
-            ).then((_) {
-              Navigator.pop(context);
-            });
-          },
-        );
-      },
-    );
-
-    ref.listen<OrderInProgressState>(orderInProgressProvider,
-        (_, OrderInProgressState state) {
-      if (state.remainingTime <= 0) {
-        handleExpiredOrder();
-      }
-    });
-
-    ref.listen<AsyncValue<BaseResponse<String>>>(
       validateTokenNotifierProvider(orderState.orderId),
       (AsyncValue<BaseResponse<String>>? previous,
           AsyncValue<BaseResponse<String>> next) {
@@ -221,7 +172,7 @@ class OrderRequestScreen extends ConsumerWidget {
           data: (BaseResponse<String> response) {
             if (response.data == "VALIDATED") {
               ref.read(orderLoadingProvider.notifier).stopLoading();
-              GoRouter.of(context).go(AppRoutes.orderInProgress);
+              createOrder(context, ref); // Crear la orden automáticamente
             }
           },
           loading: () {
@@ -262,18 +213,29 @@ class OrderRequestScreen extends ConsumerWidget {
             children: <Widget>[
               ConfirmationTokenWidget(
                   confirmationToken:
-                      orderRequestData.orderRequest.confirmationToken),
+                      widget.orderRequestData.orderRequest.confirmationToken),
               const SizedBox(height: 20),
               RemainingTimeWidget(remainingTime: remainingTime),
+              const SizedBox(height: 20),
+              Form(
+                key: _formKey,
+                child: TextFormField(
+                  controller: _tableNumberController,
+                  decoration: const InputDecoration(
+                    labelText: "Table Number",
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Please enter the table number";
+                    }
+                    return null;
+                  },
+                ),
+              ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () => cancelOrder(context, ref),
                 child: const Text("Cancel Order"),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () => createOrder(context, ref),
-                child: const Text("Create Order"),
               ),
               const SizedBox(height: 20),
               CancelOrderStateWidget(cancelOrderState: cancelOrderState),
@@ -283,5 +245,34 @@ class OrderRequestScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  void handleExpiredOrder() {
+    QuickAlert.show(
+      context: context,
+      type: QuickAlertType.warning,
+      text:
+          "El tiempo de expiración del token ya venció. Por favor, genere su orden nuevamente.",
+      onConfirmBtnTap: () {
+        if (GoRouter.of(context).canPop()) {
+          GoRouter.of(context).pop();
+        } else {
+          GoRouter.of(context).go(AppRoutes.cart);
+        }
+      },
+    );
+  }
+
+  Future<void> cancelOrder(BuildContext context, WidgetRef ref) async {
+    final OrderInProgressState orderState = ref.read(orderInProgressProvider);
+    if (orderState.inProgress &&
+        orderState.remainingTime > 0 &&
+        orderState.token.isNotEmpty) {
+      await ref
+          .read(cancelOrderRequestNotifierProvider.notifier)
+          .cancelOrder(orderState.orderId);
+    } else {
+      handleExpiredOrder();
+    }
   }
 }

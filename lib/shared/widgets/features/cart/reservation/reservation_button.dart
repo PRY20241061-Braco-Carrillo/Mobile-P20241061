@@ -1,3 +1,4 @@
+import "package:easy_localization/easy_localization.dart";
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -101,45 +102,40 @@ class ReservationButton extends ConsumerWidget {
             next.when(
               data: (response) async {
                 ref.read(cartLoadingProvider.notifier).stopLoading();
+                debugPrint("Reserva creada exitosamente: ${response.data}");
+
                 if (context.mounted) {
-                  Navigator.of(context, rootNavigator: true).pop();
-                  QuickAlert.show(
+                  // Muestra la alerta de éxito
+                  await QuickAlert.show(
                     context: context,
                     type: QuickAlertType.success,
                     text: "Reserva realizada exitosamente!",
                     onConfirmBtnTap: () {
-                      if (GoRouter.of(context).canPop()) {
-                        GoRouter.of(context).pop();
-                      } else {
-                        GoRouter.of(context).go(AppRoutes.home);
-                      }
+                      debugPrint("Navegando a la pantalla de reservas...");
+                      // Redirige a la pantalla de reservas
+                      GoRouter.of(context).push(AppRoutes.reservations);
                     },
                   );
                 }
               },
               loading: () {
                 ref.read(cartLoadingProvider.notifier).startLoading();
-                showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (BuildContext context) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  },
-                );
+                debugPrint("Cargando la reserva...");
               },
               error: (Object error, _) {
                 ref.read(cartLoadingProvider.notifier).stopLoading();
+                debugPrint("Error al crear la reserva: $error");
+
                 if (context.mounted) {
-                  Navigator.of(context, rootNavigator: true).pop();
+                  // Muestra la alerta de error
                   QuickAlert.show(
                     context: context,
                     type: QuickAlertType.error,
                     text:
                         "Error al realizar la reserva. Por favor, inténtelo nuevamente.",
                     onConfirmBtnTap: () {
-                      Navigator.pop(context);
+                      debugPrint("Cerrando el QuickAlert de error");
+                      Navigator.pop(context); // Cierra el QuickAlert de error
                     },
                   );
                 }
@@ -154,7 +150,7 @@ class ReservationButton extends ConsumerWidget {
                 .read(reservationNotifierProvider(reservationRequest).notifier);
             await reservationNotifier.saveReservation();
           },
-          child: const Text("Realizar reserva"),
+          child: Text("Order.labels.generate_reservation.label".tr()),
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),

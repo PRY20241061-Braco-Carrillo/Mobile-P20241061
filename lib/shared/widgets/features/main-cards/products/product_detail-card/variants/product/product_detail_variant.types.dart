@@ -2,7 +2,7 @@ class ProductDetailVariantCard {
   final String productVariantId;
   final double amountPrice;
   final String currencyPrice;
-  final String variantInfo;
+  final String? variantInfo;
   final double variantOrder;
   final Map<String, String> variants;
 
@@ -10,7 +10,7 @@ class ProductDetailVariantCard {
     required this.productVariantId,
     required this.amountPrice,
     required this.currencyPrice,
-    required this.variantInfo,
+    this.variantInfo,
     required this.variantOrder,
     required this.variants,
   });
@@ -24,7 +24,7 @@ class ProductDetailVariantCard {
       "productVariantId": productVariantId,
       "amountPrice": amountPrice,
       "currencyPrice": currencyPrice,
-      "variantInfo": variantInfo,
+      "variantInfo": variantInfo ?? "",
       "variantOrder": variantOrder,
       "variants": variants,
     };

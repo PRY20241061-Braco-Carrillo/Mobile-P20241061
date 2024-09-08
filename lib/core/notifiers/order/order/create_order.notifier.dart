@@ -21,9 +21,7 @@ final StateNotifierProviderFamily<
 class OrderNotifier extends BaseNotifier<String> {
   final SaveOrderRequest orderRequest;
 
-  OrderNotifier(this.orderRequest, super.ref) {
-    createOrder();
-  }
+  OrderNotifier(this.orderRequest, super.ref);
 
   Future<void> createOrder() async {
     state = const AsyncValue<BaseResponse<String>>.loading();

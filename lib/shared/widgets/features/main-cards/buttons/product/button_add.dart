@@ -29,37 +29,56 @@ class ButtonAddProductVariantToCart extends ConsumerWidget {
     final bool allVariantsSelected =
         ref.watch(allVariantsSelectedProvider(productId));
 
-    return ElevatedButton(
-      onPressed: productData != null && allVariantsSelected
-          ? () {
-              final Map<String, SelectedVariantsState> selectedVariantsState =
-                  ref.read(selectedProductVariantsProvider(productId));
-              final ProductDetailVariantCard? selectedVariant =
-                  selectedVariantsState[productId]?.selectedVariant;
+    return SizedBox(
+      width: double.infinity, // Ajusta para ocupar todo el ancho
+      child: ElevatedButton.icon(
+        onPressed: productData != null && allVariantsSelected
+            ? () {
+                final Map<String, SelectedVariantsState> selectedVariantsState =
+                    ref.read(selectedProductVariantsProvider(productId));
+                final ProductDetailVariantCard? selectedVariant =
+                    selectedVariantsState[productId]?.selectedVariant;
 
-              if (selectedVariant == null) return;
+                if (selectedVariant == null) return;
 
-              final SelectedVariantsState? productDetails =
-                  selectedVariantsState[productId];
-              if (productDetails == null) return;
+                final SelectedVariantsState? productDetails =
+                    selectedVariantsState[productId];
+                if (productDetails == null) return;
 
-              final SelectedProductInfo selectedProductInfo =
-                  SelectedProductInfo(
-                productId: productId,
-                productName: productDetails.productName!,
-                price: productDetails.price!,
-                currency: productDetails.currency!,
-                imageUrl: productDetails.imageUrl!,
-                selectedProductVariants: <ProductDetailVariantCard>[
-                  selectedVariant
-                ],
-                selectedMenuVariants: <MenuDetailVariantCard>[],
-              );
+                final SelectedProductInfo selectedProductInfo =
+                    SelectedProductInfo(
+                  productId: productId,
+                  productName: productDetails.productName!,
+                  price: productDetails.price!,
+                  currency: productDetails.currency!,
+                  imageUrl: productDetails.imageUrl!,
+                  selectedProductVariants: <ProductDetailVariantCard>[
+                    selectedVariant
+                  ],
+                  selectedMenuVariants: <MenuDetailVariantCard>[],
+                );
 
-              ref.read(cartProvider.notifier).addProduct(selectedProductInfo);
-            }
-          : null,
-      child: Text(labelButton.tr()),
+                ref.read(cartProvider.notifier).addProduct(selectedProductInfo);
+              }
+            : null,
+        icon: const Icon(Icons.add_shopping_cart, size: 24),
+        label: Text(
+          labelButton.tr(),
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          backgroundColor: Theme.of(context).colorScheme.inverseSurface,
+          foregroundColor: Theme.of(context).colorScheme.onSecondaryContainer,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          elevation: 5,
+        ),
+      ),
     );
   }
 }

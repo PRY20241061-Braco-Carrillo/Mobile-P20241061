@@ -22,14 +22,36 @@ class ButtonAR extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     const String labelButton = "MenuCard.buttons.AR.label";
 
-    return ElevatedButton(
-      onPressed: () {
-        context.push(AppRoutes.ar, extra: <String, Object>{
-          "urlGLB": urlGLB,
-          "nutritionalInformation": nutritionalInformation
-        });
-      },
-      child: Text(labelButton.tr()),
+    return SizedBox(
+      width: double.infinity, // Botón ocupa todo el ancho disponible
+      child: ElevatedButton.icon(
+        onPressed: () {
+          context.push(AppRoutes.ar, extra: <String, Object>{
+            "urlGLB": urlGLB,
+            "nutritionalInformation": nutritionalInformation,
+          });
+        },
+        icon: const Icon(
+          Icons.view_in_ar,
+          size: 24,
+        ),
+        label: Text(
+          labelButton.tr(),
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          backgroundColor: Theme.of(context).colorScheme.inverseSurface,
+          foregroundColor: Theme.of(context).colorScheme.onSecondaryContainer,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          elevation: 5,
+        ),
+      ),
     );
   }
 }

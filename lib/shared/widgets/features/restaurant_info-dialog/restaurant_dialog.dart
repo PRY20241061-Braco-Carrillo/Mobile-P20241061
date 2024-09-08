@@ -1,12 +1,13 @@
-import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:modal_bottom_sheet/modal_bottom_sheet.dart";
+import "package:easy_localization/easy_localization.dart";
 
+import "../../../../core/models/base_response.dart";
+import "../../../../core/notifiers/management/campus/restaurant_info.provider.dart";
 import "../../../providers/image_provider.dart";
-import "restaurant_dialog.types.dart";
 import "../../global/image_display/image_display.dart";
-import "restaurant_info.provider.dart";
+import "restaurant.types.dart";
 
 class RestaurantInfoDialog extends ConsumerWidget {
   final String idDialogProvider;
@@ -22,14 +23,18 @@ class RestaurantInfoDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AsyncValue<RestaurantInfoData> dialogData =
-        ref.watch(restaurantInfoProvider(idDialogProvider));
+    final AsyncValue<BaseResponse<CampusResponse>> dialogData =
+        ref.watch(restaurantDetailNotifierProvider(idDialogProvider));
 
     return Scaffold(
-      backgroundColor: Colors.transparent,
       body: Container(
-        height: MediaQuery.of(context).size.height,
-        color: Theme.of(context).colorScheme.secondary,
+        height: MediaQuery.of(context).size.height * 0.85,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.primaryContainer,
+          borderRadius: const BorderRadius.vertical(
+            top: Radius.circular(20),
+          ),
+        ),
         child: SingleChildScrollView(
           controller: ModalScrollController.of(context),
           child: Column(
@@ -38,17 +43,28 @@ class RestaurantInfoDialog extends ConsumerWidget {
               const SizedBox(height: 16),
               Text(
                 title,
-                style:
-                    const TextStyle(fontWeight: FontWeight.w400, fontSize: 18),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
+                ),
               ),
-              const SizedBox(height: 8),
-              ImageDisplay(config: ImageConfig(imageUrl: imageUrl)),
+              const SizedBox(height: 16),
+              // Imagen destacada del restaurante
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: ImageDisplay(config: ImageConfig(imageUrl: imageUrl)),
+              ),
+              const SizedBox(height: 16),
               dialogData.when(
-                data: (RestaurantInfoData data) =>
-                    RestaurantInfoContent(data: data),
-                loading: () => const CircularProgressIndicator(),
-                error: (Object error, StackTrace stack) =>
-                    Text("Error: $error"),
+                data: (BaseResponse<CampusResponse> response) =>
+                    RestaurantInfoContent(data: response.data),
+                loading: () => const Center(
+                  child: CircularProgressIndicator(),
+                ),
+                error: (Object error, StackTrace stack) => Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text("Error: $error"),
+                ),
               ),
               const SizedBox(height: 16),
             ],
@@ -60,104 +76,121 @@ class RestaurantInfoDialog extends ConsumerWidget {
 }
 
 class RestaurantInfoContent extends StatelessWidget {
-  final RestaurantInfoData data;
+  final CampusResponse data;
 
   const RestaurantInfoContent({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
-    const String labelNameKey = "Category.infoDialog.name";
-    const String labelAvailableKey = "Category.infoDialog.available";
-    const String labelClosedKey = "Category.infoDialog.closed";
-    const String labelAddressKey = "Category.infoDialog.address";
-    const String labelServiceTypeKey = "Category.infoDialog.serviceType";
-    const String labelFacebookKey = "Category.infoDialog.facebook";
-    const String labelInstagramKey = "Category.infoDialog.instagram";
-    const String labelTwitterKey = "Category.infoDialog.twitter";
-    const String labelYouTubeKey = "Category.infoDialog.youtube";
-    const String labelWhatsAppKey = "Category.infoDialog.whatapp";
-    const String labelPhoneKey = "Category.infoDialog.phone";
-    const String labelEmailKey = "Category.infoDialog.email";
-    const String labelYesKey = "Category.infoDialog.yes";
-    const String labelNoKey = "Category.infoDialog.no";
-    return Card(
-      margin: const EdgeInsets.all(16.0),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            ListTile(
-              title: Text(labelNameKey.tr(),
-                  style: Theme.of(context).textTheme.titleMedium),
-              subtitle: Text(data.name),
+    const String labelAvailableKey = "RestaurantInfoDialog.available";
+    const String labelTakeHomeKey = "RestaurantInfoDialog.takeHome";
+    const String labelDeliveryKey = "RestaurantInfoDialog.delivery";
+    const String labelOpenHoursKey = "RestaurantInfoDialog.openHours";
+    const String labelBreakfastKey = "RestaurantInfoDialog.breakfast";
+    const String labelLunchKey = "RestaurantInfoDialog.lunch";
+    const String labelDinnerKey = "RestaurantInfoDialog.dinner";
+    const String labelPhoneKey = "RestaurantInfoDialog.phone";
+    const String labelAddressKey = "RestaurantInfoDialog.address";
+
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          ListTile(
+            title: Text(
+              data.name,
+              style: Theme.of(context).textTheme.headline6?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
-            ListTile(
-              title: Text(labelAvailableKey.tr(),
-                  style: Theme.of(context).textTheme.titleMedium),
-              subtitle:
-                  Text(data.isAvailable ? labelYesKey.tr() : labelNoKey.tr()),
+            subtitle: Text(
+              data.isAvailable
+                  ? labelAvailableKey.tr()
+                  : "${labelAvailableKey.tr()} (Cerrado)",
+              style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                    color: data.isAvailable ? Colors.green : Colors.red,
+                  ),
             ),
-            ListTile(
-              title: Text(labelClosedKey.tr(),
-                  style: Theme.of(context).textTheme.titleMedium),
-              subtitle:
-                  Text(data.isClosed ? labelYesKey.tr() : labelNoKey.tr()),
+          ),
+          const Divider(),
+          // Dirección del restaurante
+          ListTile(
+            title: Text(labelAddressKey.tr(),
+                style: Theme.of(context).textTheme.subtitle1),
+            subtitle: Text(
+              data.address,
+              style: Theme.of(context).textTheme.bodyText2,
             ),
-            ListTile(
-              title: Text(labelAddressKey.tr(),
-                  style: Theme.of(context).textTheme.titleMedium),
-              subtitle: Text(
-                  "${data.address.street}, ${data.address.city}, ${data.address.zipCode}, ${data.address.country}"),
+          ),
+          const Divider(),
+          // Horarios de apertura
+          // ListTile(
+          //   title: Text(labelOpenHoursKey.tr(),
+          //       style: Theme.of(context).textTheme.subtitle1),
+          //   subtitle: Column(
+          //     crossAxisAlignment: CrossAxisAlignment.start,
+          //     children: <Widget>[
+          //       _buildMealTimeRow(context, labelBreakfastKey.tr(),
+          //           data.openHour["breakfast"] as MealTime?),
+          //       _buildMealTimeRow(context, labelLunchKey.tr(),
+          //           data.openHour["lunch"] as MealTime?),
+          //       if (data.openHour["dinner"] != null)
+          //         _buildMealTimeRow(context, labelDinnerKey.tr(),
+          //             data.openHour["dinner"] as MealTime?),
+          //     ],
+          //   ),
+          // ),
+          // const Divider(),
+          // Servicios de "para llevar" y "a domicilio"
+          ListTile(
+            title: Text(labelTakeHomeKey.tr(),
+                style: Theme.of(context).textTheme.subtitle1),
+            trailing: Icon(
+              data.toTakeHome ? Icons.check_circle : Icons.cancel,
+              color: data.toTakeHome ? Colors.green : Colors.red,
             ),
-            ListTile(
-              title: Text(labelServiceTypeKey.tr(),
-                  style: Theme.of(context).textTheme.titleMedium),
-              subtitle: Text(data.serviceType.services.join(", ")),
+          ),
+          ListTile(
+            title: Text(labelDeliveryKey.tr(),
+                style: Theme.of(context).textTheme.subtitle1),
+            trailing: Icon(
+              data.toDelivery ? Icons.check_circle : Icons.cancel,
+              color: data.toDelivery ? Colors.green : Colors.red,
             ),
-            if (data.socialMedia.facebook != null)
-              ListTile(
-                title: Text(labelFacebookKey.tr(),
-                    style: Theme.of(context).textTheme.titleMedium),
-                subtitle: Text(data.socialMedia.facebook!),
-              ),
-            if (data.socialMedia.instagram != null)
-              ListTile(
-                title: Text(labelInstagramKey.tr(),
-                    style: Theme.of(context).textTheme.titleMedium),
-                subtitle: Text(data.socialMedia.instagram!),
-              ),
-            if (data.socialMedia.twitter != null)
-              ListTile(
-                title: Text(labelTwitterKey.tr(),
-                    style: Theme.of(context).textTheme.titleMedium),
-                subtitle: Text(data.socialMedia.twitter!),
-              ),
-            if (data.socialMedia.youtube != null)
-              ListTile(
-                title: Text(labelYouTubeKey.tr(),
-                    style: Theme.of(context).textTheme.titleMedium),
-                subtitle: Text(data.socialMedia.youtube!),
-              ),
-            if (data.socialMedia.whatsapp != null)
-              ListTile(
-                title: Text(labelWhatsAppKey.tr(),
-                    style: Theme.of(context).textTheme.titleMedium),
-                subtitle: Text(data.socialMedia.whatsapp!),
-              ),
-            ListTile(
-              title: Text(labelPhoneKey.tr(),
-                  style: Theme.of(context).textTheme.titleMedium),
-              subtitle: Text(data.contact.phone),
+          ),
+          const Divider(),
+          // Información de contacto
+          ListTile(
+            title: Text(labelPhoneKey.tr(),
+                style: Theme.of(context).textTheme.subtitle1),
+            subtitle: Text(
+              data.phoneNumber,
+              style: Theme.of(context).textTheme.bodyText2,
             ),
-            if (data.contact.email != null)
-              ListTile(
-                title: Text(labelEmailKey.tr(),
-                    style: Theme.of(context).textTheme.titleMedium),
-                subtitle: Text(data.contact.email!),
-              ),
-          ],
-        ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMealTimeRow(
+      BuildContext context, String label, MealTime? mealTime) {
+    if (mealTime == null) return Container();
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text(
+            label,
+            style: Theme.of(context).textTheme.bodyText2,
+          ),
+          Text(
+            "${mealTime.opening} - ${mealTime.closing}",
+            style: Theme.of(context).textTheme.bodyText2,
+          ),
+        ],
       ),
     );
   }

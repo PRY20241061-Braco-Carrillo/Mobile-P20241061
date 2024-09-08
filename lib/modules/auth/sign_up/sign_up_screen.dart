@@ -6,7 +6,9 @@ import "package:quickalert/models/quickalert_type.dart";
 import "package:quickalert/widgets/quickalert_dialog.dart";
 
 import "../../../config/routes/routes.dart";
+import "../../../core/models/auth/login/login_request.types.dart";
 import "../../../core/models/auth/sign_up/sign_up.request.types.dart";
+import "../../../core/notifiers/auth/login_notifier.dart";
 import "../../../core/notifiers/auth/sign_up.notifier.dart";
 import "../../../layout/scrollable_layout.dart";
 import "../../../shared/widgets/global/button.dart";
@@ -285,39 +287,6 @@ class SignUpScreen extends ConsumerWidget {
                   validateField(value, isValidEmail, validatorEmailKey),
             ),
             const SizedBox(height: 10),
-            /*Row(
-              children: <Widget>[
-                Expanded(
-                  child: TextFormField(
-                    initialValue: ref.watch(countryCodeProvider),
-                    onChanged: (String value) =>
-                        ref.read(countryCodeProvider.notifier).state = value,
-                    decoration: CustomInputDecoration.getTextFieldDecoration(
-                      label: labelPhoneCodeKey,
-                      context: context,
-                    ),
-                    keyboardType: TextInputType.number,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  flex: 3,
-                  child: TextFormField(
-                    initialValue: ref.watch(phoneProvider),
-                    onChanged: (String value) =>
-                        ref.read(phoneProvider.notifier).state = value,
-                    decoration: CustomInputDecoration.getTextFieldDecoration(
-                      label: labelPhoneKey,
-                      context: context,
-                    ),
-                    keyboardType: TextInputType.phone,
-                    validator: (String? value) =>
-                        validateField(value, isValidPhone, validatorPhoneKey),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),*/
             TextFormField(
               initialValue: password,
               onChanged: (String value) {
@@ -440,16 +409,53 @@ class SignUpScreen extends ConsumerWidget {
                     ref.read(isLoadingProvider.notifier).state = true;
                   }, (String successMessage) {
                     ref.read(isLoadingProvider.notifier).state = false;
-                    QuickAlert.show(
+
+                    final LoginRequest loginRequest = LoginRequest(
+                      email: ref.read(emailProvider),
+                      password: ref.read(passwordProvider),
+                    );
+
+                    ref
+                        .read(logInNotifierProvider.notifier)
+                        .performAction(loginRequest, () {
+                      ref.read(isLoadingProvider.notifier).state = true;
+                    }, (String loginSuccessMessage) {
+                      ref.read(isLoadingProvider.notifier).state = false;
+                      QuickAlert.show(
                         context: context,
                         type: QuickAlertType.success,
-                        text: labelSignUpDialogSuccess.tr());
+                        text: labelSignUpDialogSuccess.tr(),
+                        barrierDismissible: false,
+                        onConfirmBtnTap: () {
+                          GoRouter.of(context).push(AppRoutes.tabScreen);
+                        },
+                      ).then((_) {
+                        GoRouter.of(context).push(AppRoutes.tabScreen);
+                      });
+                    }, (String loginErrorMessage) {
+                      ref.read(isLoadingProvider.notifier).state = false;
+                      QuickAlert.show(
+                        context: context,
+                        type: QuickAlertType.error,
+                        text: loginErrorMessage,
+                        barrierDismissible: false,
+                        onConfirmBtnTap: () {
+                          GoRouter.of(context).push(AppRoutes.tabScreen);
+                        },
+                      ).then((_) {
+                        GoRouter.of(context).push(AppRoutes.tabScreen);
+                      });
+                    });
                   }, (String errorMessage) {
                     ref.read(isLoadingProvider.notifier).state = false;
                     QuickAlert.show(
                       context: context,
                       type: QuickAlertType.error,
-                      text: labelSignUpDialogError.tr(),
+                      text: errorMessage,
+                      barrierDismissible: false,
+                      onConfirmBtnTap: () {
+                        Navigator.of(context).pop();
+                      },
                     );
                   });
                 } else {
@@ -457,6 +463,10 @@ class SignUpScreen extends ConsumerWidget {
                     context: context,
                     type: QuickAlertType.error,
                     text: labelSignUpDialogValidation.tr(),
+                    barrierDismissible: false,
+                    onConfirmBtnTap: () {
+                      Navigator.of(context).pop();
+                    },
                   );
                 }
               },
@@ -471,11 +481,16 @@ class SignUpScreen extends ConsumerWidget {
                   Text(labelAlreadyHaveAccountKey.tr(),
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, color: Colors.grey)),
-                  Text(labelLoginKey.tr(),
+                  TextButton(
+                    onPressed: () => context.push(AppRoutes.logIn),
+                    child: Text(
+                      labelLoginKey.tr(),
                       style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 17,
-                          color: Colors.black)),
+                          color: Colors.black),
+                    ),
+                  ),
                 ],
               ),
             ),

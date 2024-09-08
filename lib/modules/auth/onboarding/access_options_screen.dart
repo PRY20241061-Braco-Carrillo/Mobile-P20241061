@@ -15,7 +15,7 @@ class AccessOptionsScreen extends StatefulWidget {
 class AccessOptionsScreenState extends State<AccessOptionsScreen> {
   @override
   Widget build(BuildContext context) {
-    final String labelGuest = "OnBoarding.buttons.START_GUESS.label".tr();
+    // final String labelGuest = "OnBoarding.buttons.START_GUESS.label".tr();
     final String labelLogIn = "OnBoarding.buttons.LOG_IN.label".tr();
     final String labelSignUp = "OnBoarding.buttons.SIGN_UP.label".tr();
 
@@ -29,17 +29,13 @@ class AccessOptionsScreenState extends State<AccessOptionsScreen> {
                 height: 200),
           ),
           Expanded(
-            flex: 2,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                ElevatedButton(
-                  onPressed: () {
-                    GoRouter.of(context).push(AppRoutes.home);
-                  },
-                  child: Text(labelGuest),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+                Text("Smartaste",
+                    style: TextStyle(
+                        fontSize: 50,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.secondary)),
               ],
             ),
           ),
@@ -47,18 +43,18 @@ class AccessOptionsScreenState extends State<AccessOptionsScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                TextButton(
+                ElevatedButton(
                   onPressed: () => context.push(AppRoutes.logIn),
                   child: Text(labelLogIn,
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.onBackground)),
                 ),
                 Container(
-                  color: Colors.grey, // Línea divisoria
+                  color: Colors.grey,
                   width: 2,
                   height: 20,
                 ),
-                TextButton(
+                ElevatedButton(
                   onPressed: () => context.push(AppRoutes.signUp),
                   child: Text(labelSignUp,
                       style: TextStyle(

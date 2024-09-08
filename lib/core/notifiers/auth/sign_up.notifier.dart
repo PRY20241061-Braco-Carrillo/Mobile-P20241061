@@ -1,3 +1,4 @@
+import "package:dio/dio.dart";
 import "package:flutter/material.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 
@@ -28,8 +29,20 @@ class SignUpNotifier
           ref.read(authenticationRepositoryProvider);
       final BaseResponse<String> response =
           await authRepo.register(requestData);
-      handleResponse(response, onSuccess, onError);
-    } on Exception catch (e) {
+
+      if (response.code == "ALREADY_EXISTS") {
+        onError("El correo ya está registrado. Por favor usa otro.");
+      } else {
+        handleResponse(response, onSuccess, onError);
+      }
+    } on DioError catch (e) {
+      if (e.response != null && e.response?.data["code"] == "ALREADY_EXISTS") {
+        onError("El correo ya está registrado. Por favor usa otro.");
+      } else {
+        print("Sign Up Exception: ${e.message}");
+        onError("Registration Failed. Please try again later.");
+      }
+    } catch (e) {
       print("Sign Up Exception: $e");
       onError("Registration Failed. Please try again later.");
     }

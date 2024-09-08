@@ -2,12 +2,12 @@ import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
-import "package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart";
-import "package:quickalert/models/quickalert_type.dart";
 import "package:quickalert/widgets/quickalert_dialog.dart";
+import "package:quickalert/models/quickalert_type.dart";
 
 import "../../config/routes/routes.dart";
 import "../../core/models/base_response.dart";
+
 import "../../core/models/order/order_request/saver_order_request.response.types.dart";
 import "../../core/notifiers/order/order_request/save_order_request.notifier.dart";
 import "../../layout/base_layout.dart";
@@ -16,7 +16,6 @@ import "../../shared/widgets/features/cart/order/order_button.dart";
 import "../../shared/widgets/features/cart/order_cart/order_cart.notifier.dart";
 import "../../shared/widgets/features/cart/order_cart/order_cart.types.dart";
 import "../../shared/widgets/features/cart/reservation/reservation_button.dart";
-import "../../shared/widgets/features/header/product-header/products_categories_header.dart";
 import "../order/providers/order_in_progress.notifier.dart";
 import "notifiers/cart_loading_notifier.dart";
 import "order_navigation_data.dart";
@@ -35,60 +34,66 @@ class CartScreen extends ConsumerWidget {
         "Order.order_request.alerts.ERROR.title";
     const String alertOrderErrorMessageKey =
         "Order.order_request.alerts.ERROR.message";
+
     final List<CartItem> cartItems = ref.watch(cartProvider);
-    final PersistentTabController controller = PersistentTabController();
     final OrderInProgressState orderInProgressState =
         ref.watch(orderInProgressProvider);
     ref.watch(cartLoadingProvider);
+    final double total = cartItems.fold<double>(
+      0,
+      (double sum, CartItem current) =>
+          sum + current.productInfo.getTotalPrice() * current.quantity,
+    );
 
+    // Listener para el estado de las órdenes
     ref.listen<AsyncValue<BaseResponse<SaveOrderRequestResponse>>>(
-        orderRequestNotifierProvider,
-        (AsyncValue<BaseResponse<SaveOrderRequestResponse>>? previous,
-            AsyncValue<BaseResponse<SaveOrderRequestResponse>> next) {
-      next.when(
-        data: (BaseResponse<SaveOrderRequestResponse> response) async {
-          ref.read(cartLoadingProvider.notifier).stopLoading();
-          if (context.mounted) {
-            Navigator.of(context, rootNavigator: true).pop();
-            await ref.read(orderInProgressProvider.notifier).setOrderInProgress(
-                true,
-                token: response.data.confirmationToken,
-                orderId: response.data.orderRequestId,
-                orderRequest: response.data);
-            await GoRouter.of(context).push(AppRoutes.orderRequest,
-                extra: OrderRequestNavigationData(
-                  orderRequest: response.data,
-                ));
-          }
-        },
-        loading: () {
-          ref.read(cartLoadingProvider.notifier).startLoading();
-          showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (BuildContext context) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            },
-          );
-        },
-        error: (Object error, _) async {
-          ref.read(cartLoadingProvider.notifier).stopLoading();
-          if (context.mounted) {
-            Navigator.of(context, rootNavigator: true).pop();
-            await ref
-                .read(orderInProgressProvider.notifier)
-                .clearOrderInProgress();
-            await QuickAlert.show(
+      orderRequestNotifierProvider,
+      (previous, next) {
+        next.when(
+          data: (response) async {
+            ref.read(cartLoadingProvider.notifier).stopLoading();
+            if (context.mounted) {
+              Navigator.of(context, rootNavigator: true).pop();
+              await ref
+                  .read(orderInProgressProvider.notifier)
+                  .setOrderInProgress(true,
+                      token: response.data.confirmationToken,
+                      orderId: response.data.orderRequestId,
+                      orderRequest: response.data); // Guarda el objeto completo
+              await GoRouter.of(context).push(AppRoutes.orderRequest,
+                  extra: OrderRequestNavigationData(
+                    orderRequest: response.data, // Pasa el objeto completo
+                  ));
+            }
+          },
+          loading: () {
+            ref.read(cartLoadingProvider.notifier).startLoading();
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) {
+                return const Center(child: CircularProgressIndicator());
+              },
+            );
+          },
+          error: (error, _) async {
+            ref.read(cartLoadingProvider.notifier).stopLoading();
+            if (context.mounted) {
+              Navigator.of(context, rootNavigator: true).pop();
+              await ref
+                  .read(orderInProgressProvider.notifier)
+                  .clearOrderInProgress();
+              await QuickAlert.show(
                 context: context,
                 type: QuickAlertType.error,
                 title: alertOrderErrorTitleKey.tr(),
-                text: alertOrderErrorMessageKey.tr());
-          }
-        },
-      );
-    });
+                text: alertOrderErrorMessageKey.tr(),
+              );
+            }
+          },
+        );
+      },
+    );
 
     Future<void> generateOrder(BuildContext context, WidgetRef ref) async {
       if (orderInProgressState.inProgress) {
@@ -105,95 +110,104 @@ class CartScreen extends ConsumerWidget {
     }
 
     return BaseLayout(
-      tabController: controller,
-      body: Stack(
-        children: <Widget>[
-          Container(
-            color: Theme.of(context).colorScheme.background,
-            child: CustomScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              slivers: <Widget>[
-                SliverToBoxAdapter(
-                  child: CBaseProductCategoriesHeader(
-                    title: labelOrderKey.tr(),
-                    height: 220,
-                    onButtonPressed: (BuildContext context) {
-                      if (GoRouter.of(context).canPop()) {
-                        GoRouter.of(context).pop();
-                      }
-                    },
-                    fontSize: 32,
-                  ),
-                ),
-                SliverToBoxAdapter(
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(30.0),
-                        topRight: Radius.circular(30.0),
-                      ),
+      body: Scaffold(
+        appBar: AppBar(
+          title: Text(labelOrderKey.tr(),
+              style: Theme.of(context).textTheme.headline6),
+          centerTitle: true,
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          elevation: 0,
+        ),
+        body: cartItems.isNotEmpty
+            ? Column(
+                children: [
+                  Expanded(
+                    child: ListView.builder(
+                      padding: const EdgeInsets.all(16.0),
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: cartItems.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12.0),
+                          child: CartItemWidget(item: cartItems[index]),
+                        );
+                      },
                     ),
-                    child: CustomScrollView(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      slivers: <Widget>[
-                        SliverPadding(
-                          padding: const EdgeInsets.symmetric(vertical: 16.0),
-                          sliver: SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                              (BuildContext context, int index) {
-                                return CartItemWidget(item: cartItems[index]);
-                              },
-                              childCount: cartItems.length,
-                            ),
-                          ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(16.0),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primaryContainer,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(16),
+                        topRight: Radius.circular(16),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 8,
+                          offset: const Offset(0, -2),
                         ),
                       ],
                     ),
+                    child: SafeArea(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Cart.labels.TOTAL.label".tr(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline6
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                              ),
+                              Text(
+                                "${total.toStringAsFixed(2)}",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline6
+                                    ?.copyWith(
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                    ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          OrderButton(
+                            orderInProgressState: orderInProgressState,
+                            generateOrder: generateOrder,
+                          ),
+                          const SizedBox(height: 12),
+                          ReservationButton(cartItems: cartItems),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ),
-          if (cartItems.isNotEmpty && !orderInProgressState.inProgress)
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: <BoxShadow>[
-                    BoxShadow(
-                      color: Colors.black26,
-                      offset: Offset(0, -1),
-                      blurRadius: 4.0,
+                ],
+              )
+            : Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(
+                      Icons.shopping_cart_outlined,
+                      size: 100,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      "Cart.labels.EMPTY.label".tr(),
+                      style: Theme.of(context).textTheme.headline6,
                     ),
                   ],
                 ),
-                child: SafeArea(
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: OrderButton(
-                          orderInProgressState: orderInProgressState,
-                          generateOrder: generateOrder,
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: ReservationButton(
-                          cartItems: cartItems,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
               ),
-            ),
-        ],
       ),
     );
   }

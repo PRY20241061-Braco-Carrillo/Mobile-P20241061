@@ -65,6 +65,12 @@ class OrderInProgressNotifier extends StateNotifier<OrderInProgressState> {
     });
   }
 
+  void stopTimer() {
+    _timer?.cancel();
+    state = state.copyWith(
+        remainingTime: 0); // Opcional: resetear el tiempo restante
+  }
+
   Future<void> setOrderInProgress(bool inProgress,
       {String? token,
       String? orderId,

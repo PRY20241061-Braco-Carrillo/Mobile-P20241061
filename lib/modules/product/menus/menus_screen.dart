@@ -105,7 +105,6 @@ class MenuDetailScreenState extends ConsumerState<MenuScreen>
           body: Column(
             children: <Widget>[
               const SizedBox(height: 10),
-              const ThemeSwitcherWidget(),
               gridModeSwitch,
               const SizedBox(height: 10),
               gridContent,

@@ -1,3 +1,4 @@
+import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
@@ -15,13 +16,12 @@ import "../../shared/widgets/features/category-button/category_button.dart";
 import "../../shared/widgets/features/category-button/category_button.types.dart";
 import "../../shared/widgets/features/category-button/category_simple_button.dart";
 import "../../shared/widgets/features/header/category-header/restaurant_categories_header.dart";
-import "../../shared/widgets/global/theme_switcher/theme_switcher.dart";
 
 class CategoriesScreen extends ConsumerStatefulWidget {
   final CampusCardData campusData;
-  static const String? promotions = 'Promotions';
-  static const String? menu = 'Menu';
-  static const String? combo = 'Combo';
+  static const String promotions = "Promotions";
+  static const String menu = "Menu";
+  static const String combo = "Combo";
 
   const CategoriesScreen({super.key, required this.campusData});
 
@@ -31,6 +31,10 @@ class CategoriesScreen extends ConsumerStatefulWidget {
 
 class CategoriesScreenState extends ConsumerState<CategoriesScreen> {
   static const int _pageSize = 5;
+  static const String no_items = "no_items.label";
+  static const String no_more_items = "no_more_items.label";
+  static const String failed_to_load = "failed_to_load.label";
+
   final PagingController<int, CategoryButtonData> _pagingController =
       PagingController<int, CategoryButtonData>(firstPageKey: 0);
 
@@ -108,13 +112,12 @@ class CategoriesScreenState extends ConsumerState<CategoriesScreen> {
                   },
                 ),
                 const SizedBox(height: 5.0),
-                const ThemeSwitcherWidget(),
                 const SizedBox(height: 10),
                 Expanded(
                   child: Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primaryContainer,
+                      borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(30.0),
                         topRight: Radius.circular(30.0),
                       ),
@@ -128,60 +131,71 @@ class CategoriesScreenState extends ConsumerState<CategoriesScreen> {
                         builderDelegate:
                             PagedChildBuilderDelegate<CategoryButtonData>(
                           itemBuilder: (BuildContext context,
-                                  CategoryButtonData item, int index) =>
-                              index == 0 &&
-                                      (CategoriesScreen.promotions != null ||
-                                          CategoriesScreen.menu != null ||
-                                          CategoriesScreen.combo != null)
-                                  ? Column(
-                                      children: <Widget>[
-                                        if (CategoriesScreen.promotions != null)
-                                          CategorySimpleButton(
-                                              title:
-                                                  CategoriesScreen.promotions!,
-                                              imageUrl:
-                                                  "https://estrellasupermercados.com/wp-content/uploads/2021/06/POLLOS.jpg",
-                                              path:
-                                                  "${AppRoutes.categories}${AppRoutes.promotions}/${widget.campusData.campusId}",
-                                              campusData: widget.campusData),
-                                        if (CategoriesScreen.menu != null)
-                                          CategorySimpleButton(
-                                              title: CategoriesScreen.menu!,
-                                              imageUrl:
-                                                  "https://estrellasupermercados.com/wp-content/uploads/2021/06/POLLOS.jpg",
-                                              path:
-                                                  "${AppRoutes.categories}${AppRoutes.menu}/${widget.campusData.campusId}",
-                                              campusData: widget.campusData),
-                                        if (CategoriesScreen.combo != null)
-                                          CategorySimpleButton(
-                                              title: CategoriesScreen.combo!,
-                                              imageUrl:
-                                                  "https://estrellasupermercados.com/wp-content/uploads/2021/06/POLLOS.jpg",
-                                              path:
-                                                  "${AppRoutes.categories}${AppRoutes.combos}/${widget.campusData.campusId}",
-                                              campusData: widget.campusData),
-                                        CCategoryButton(
-                                            data: item,
-                                            campusData: widget.campusData),
-                                      ],
-                                    )
-                                  : CCategoryButton(
-                                      data: item,
-                                      campusData: widget.campusData),
+                              CategoryButtonData item, int index) {
+                            final bool showPromotion =
+                                item.is_promotion ?? false;
+                            final bool showMenu = item.is_menu ?? false;
+                            final bool showCombo = item.is_combo ?? false;
+
+                            if (index == 0 &&
+                                (showPromotion || showMenu || showCombo)) {
+                              return Column(
+                                children: <Widget>[
+                                  if (showPromotion)
+                                    CategorySimpleButton(
+                                      title: CategoriesScreen.promotions,
+                                      path:
+                                          "${AppRoutes.categories}${AppRoutes.promotions}/${widget.campusData.campusId}",
+                                      campusData: widget.campusData,
+                                    ),
+                                  if (showMenu)
+                                    CategorySimpleButton(
+                                      title: CategoriesScreen.menu,
+                                      path:
+                                          "${AppRoutes.categories}${AppRoutes.menu}/${widget.campusData.campusId}",
+                                      campusData: widget.campusData,
+                                    ),
+                                  if (showCombo)
+                                    CategorySimpleButton(
+                                      title: CategoriesScreen.combo,
+                                      path:
+                                          "${AppRoutes.categories}${AppRoutes.combos}/${widget.campusData.campusId}",
+                                      campusData: widget.campusData,
+                                    ),
+                                  // El botón de categoría normal
+                                  CCategoryButton(
+                                    data: item,
+                                    campusData: widget.campusData,
+                                  ),
+                                ],
+                              );
+                            } else {
+                              return CCategoryButton(
+                                data: item,
+                                campusData: widget.campusData,
+                              );
+                            }
+                          },
                           firstPageProgressIndicatorBuilder:
                               (BuildContext context) => const Center(
-                                  child: CircularProgressIndicator()),
+                            child: CircularProgressIndicator(),
+                          ),
                           newPageProgressIndicatorBuilder:
                               (BuildContext context) => const Center(
-                                  child: CircularProgressIndicator()),
+                            child: CircularProgressIndicator(),
+                          ),
                           noMoreItemsIndicatorBuilder: (BuildContext context) =>
-                              const Center(child: Text("No more items")),
+                              Center(
+                            child: Text(no_more_items.tr()),
+                          ),
                           firstPageErrorIndicatorBuilder:
-                              (BuildContext context) => const Center(
-                                  child: Text("Failed to load items")),
+                              (BuildContext context) => Center(
+                            child: Text(failed_to_load.tr()),
+                          ),
                           newPageErrorIndicatorBuilder:
-                              (BuildContext context) => const Center(
-                                  child: Text("Failed to load more items")),
+                              (BuildContext context) => Center(
+                            child: Text(failed_to_load.tr()),
+                          ),
                         ),
                       ),
                     ),
@@ -201,6 +215,9 @@ class CategoriesScreenState extends ConsumerState<CategoriesScreen> {
       name: response.name,
       campusCategoryId: response.campusCategoryId,
       urlImage: response.urlImage,
+      is_promotion: response.isPromotion,
+      is_combo: response.isCombo,
+      is_menu: response.isMenu,
     );
   }
 }

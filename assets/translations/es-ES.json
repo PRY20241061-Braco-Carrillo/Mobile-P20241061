@@ -61,7 +61,6 @@
                 "number": "Número",
                 "length": "Min. 6 carácteres",
                 "not_email": "No puede ser igual al correo electrónico"
-
             },
             "CONFIRM_PASSWORD": {
                 "label": "Confirmar Contraseña",
@@ -79,7 +78,7 @@
                 "label": "Teléfono",
                 "validator": "Por favor ingrese un número de teléfono válido"
             },
-            "PHONE_CODE":{
+            "PHONE_CODE": {
                 "label": "Código de país",
                 "validator": "Por favor ingrese un código de país válido"
             }
@@ -124,6 +123,14 @@
                 "label": "Ofertas",
                 "ariaLabel": "Categoria de ofertas"
             },
+            "MENU": {
+                "label": "Menú",
+                "ariaLabel": "Categoria de menú"
+            },
+            "COMBO": {
+                "label": "Combos",
+                "ariaLabel": "Categoria de combos"
+            },
             "TREND": {
                 "label": "Tendencia",
                 "ariaLabel": "Categoria de tendencia"
@@ -146,8 +153,8 @@
             "whatapp": "Whatapp",
             "phone": "Teléfono",
             "email": "Correo",
-            "yes" : "Si",
-            "no" : "No"
+            "yes": "Si",
+            "no": "No"
         }
     },
     "MenuCard": {
@@ -173,14 +180,14 @@
         "labelSize": {
             "variant": "Diferentes tamaños"
         },
-        "sincePrice":{
+        "sincePrice": {
             "label": "Desde"
         }
     },
-    "Header":{
+    "Header": {
         "home": {
             "title": "Restaurantes"
-        }, 
+        },
         "campus": {
             "title": "Sedes"
         },
@@ -190,15 +197,15 @@
         "sign_up": {
             "title": "Registrarse"
         },
-        "reservations":{
+        "reservations": {
             "title": "Reservas"
         },
         "settings": {
             "title": "Configuración"
         }
     },
-    "Product":{
-        "variants":{
+    "Product": {
+        "variants": {
             "CC01": {
                 "label": "Seleccione su método de cocinado preferido"
             },
@@ -242,7 +249,7 @@
             }
         }
     },
-    "MenuCategory":{
+    "MenuCategory": {
         "categories": {
             "DESSERTS": {
                 "label": "Postres",
@@ -356,11 +363,24 @@
             "TIP_TOTAL_AMOUNT": {
                 "label": "Monto total con propina"
             }
-
         }
     },
-    "Order":{
-        "order_request":{
+    "Order": {
+        "labels": {
+            "go_order": {
+                "label": "Ir a mi orden"
+            },
+            "generate_order": {
+                "label": "Generar orden"
+            },
+            "go_to_cart": {
+                "label": "Ir al carrito"
+            },
+            "generate_reservation": {
+                "label": "Generar reserva"
+            }
+        },
+        "order_request": {
             "ORDER_REQUEST": {
                 "label": "Solicitar Orden"
             },
@@ -370,7 +390,7 @@
             "ORDER_REQUESTED_MESSAGE": {
                 "label": "Su orden ha sido solicitada"
             },
-            "alerts":{
+            "alerts": {
                 "ORDER_REQUESTED": {
                     "title": "Orden Solicitada",
                     "message": "Su orden ha sido solicitada"
@@ -383,11 +403,77 @@
                     "title": "Orden cancelada",
                     "message": "Su orden ha sido cancelada debido a que ya tiene otra orden en progreso"
                 },
-                "ERROR":{
+                "ERROR": {
                     "title": "Error",
                     "message": "Ha ocurrido un error, intenta nuevamente"
                 }
             }
         }
+    },
+    "Settings": {
+        "buttons": {
+            "FORM": {
+                "label": "Encuesta de satisfacción"
+            },
+            "LOGOUT": {
+                "label": "Cerrar Sesión"
+            },
+            "CHANGE_LANGUAGE": {
+                "label": "Cambiar Idioma"
+            }
+        }
+    },
+    "RestaurantInfoDialog": {
+        "available": "Disponible",
+        "takeHome": "Para llevar",
+        "delivery": "A domicilio",
+        "openHours": "Horario de apertura",
+        "breakfast": "Desayuno",
+        "lunch": "Almuerzo",
+        "dinner": "Cena",
+        "phone": "Teléfono",
+        "address": "Dirección"
+    },
+    "no_items": {
+        "label": "No hay elementos"
+    },
+    "no_more_items": {
+        "label": "No hay más elementos"
+    },
+    "failed_to_load": {
+        "label": "Error al cargar"
+    },
+    "TABS": {
+        "HOME": {
+            "label": "Inicio"
+        },
+        "CAMPUS": {
+            "label": "Sedes"
+        },
+        "RESERVATIONS": {
+            "label": "Reservas"
+        },
+        "SETTINGS": {
+            "label": "Configuración"
+        }
+    },
+    "reservations": {
+        "no_reservations": "No se encontraron reservaciones",
+        "id": "ID de Reserva",
+        "status": "Estado",
+        "date": "Fecha",
+        "message": "Mensaje:}",
+        "qualification": "Calificación",
+        "order_id": "ID de Solicitud de Pedido",
+        "confirm_deletion": "Confirmar Eliminación",
+        "confirm_deletion_text": "¿Estás seguro de que deseas eliminar esta reservación?",
+        "yes": "Sí",
+        "no": "No",
+        "deletion_success": "Éxito",
+        "deletion_success_text": "Reservación eliminada con éxito",
+        "deletion_error": "Error",
+        "deletion_error_text": "Error al eliminar la reservación",
+        "load_error": "Error al cargar las reservaciones"
     }
+
 }

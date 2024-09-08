@@ -9,7 +9,6 @@ import "../../../../../providers/image_provider.dart";
 import "../../../../../utils/constants/currency_types.dart";
 import "../../../../global/image_display/image_display.dart";
 import "../../../campus-card/campus_card.types.dart";
-import "../../labels/size_labels.dart";
 import "product_base.types.dart";
 
 class CProductBaseCard extends StatelessWidget {
@@ -57,6 +56,7 @@ class CProductBaseCard extends StatelessWidget {
 
   Widget _buildCardContent(BuildContext context, ProductBaseCardData data) {
     final double width = MediaQuery.of(context).size.width / 2 - 20;
+
     return InkWell(
       onTap: () {
         if (type == ProductBaseTypes.product) {
@@ -70,16 +70,27 @@ class CProductBaseCard extends StatelessWidget {
           );
         }
       },
+      borderRadius: BorderRadius.circular(10), // Para una interacción suave
+      splashColor: Colors.blue.withOpacity(0.3), // Efecto de splash visual
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
         padding: const EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(
-          color: const Color.fromRGBO(204, 230, 255, 1),
+          color: Theme.of(context).colorScheme.primaryContainer,
           borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              spreadRadius: 2,
+              offset: const Offset(0, 5), // Sombra sutil para darle realce
+            ),
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            // Imagen del producto con borde redondeado
             Container(
               height: 150,
               width: width,
@@ -106,44 +117,63 @@ class CProductBaseCard extends StatelessWidget {
                     ),
                   ),
                   if (data.hasVariant == true)
-                    const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: SizeLabel(fontSize: 12),
+                    const Positioned(
+                      top: 8,
+                      left: 8,
+                      child: Chip(
+                        label: Text(
+                          'Variant Available',
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: Colors.white,
+                          ),
+                        ),
+                        backgroundColor: Colors.redAccent,
+                      ),
                     ),
                 ],
               ),
             ),
-            Container(
-              padding: const EdgeInsets.only(bottom: 2),
-              margin: const EdgeInsets.only(left: 10.0, right: 8.0),
-              alignment: Alignment.centerLeft,
+            // Precio del producto
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Text(
-                getCurrencySymbol(data.currencyPrice) +
-                    data.amountPrice.toString(),
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w400,
-                  fontSize: 18,
+                '${getCurrencySymbol(data.currencyPrice)}${data.amountPrice.toStringAsFixed(2)}',
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
                 ),
               ),
             ),
-            Container(
-              padding: const EdgeInsets.only(bottom: 2),
-              margin: const EdgeInsets.only(left: 10.0, right: 8.0),
-              alignment: Alignment.centerLeft,
+            const SizedBox(height: 4),
+            // Nombre del producto
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Text(
                 data.name,
-                maxLines: 4,
-                textAlign: TextAlign.start,
-                textDirection: TextDirection.ltr,
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w400,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  fontWeight: FontWeight.w500,
                   fontSize: 14,
-                  height: 1,
                 ),
               ),
             ),
+            const SizedBox(height: 6),
+            // Tiempo de cocción del producto
+            if (data.minCookingTime != null && data.maxCookingTime != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Text(
+                  '${data.minCookingTime}-${data.maxCookingTime} ${data.unitOfTimeCookingTime}',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
           ],
         ),
       ),

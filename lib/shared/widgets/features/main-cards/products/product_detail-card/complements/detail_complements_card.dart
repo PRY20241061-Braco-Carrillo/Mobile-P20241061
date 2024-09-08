@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import "package:flutter/material.dart";
+import "package:flutter_riverpod/flutter_riverpod.dart";
 
-import 'product_complement.notifier.dart';
-import 'product_components.types.dart';
+import "product_complement.notifier.dart";
+import "product_components.types.dart";
 
 class ComplementSelector extends ConsumerWidget {
   final List<ProductComplement> complements;
@@ -13,21 +13,23 @@ class ComplementSelector extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final Map<String, int> complementState = ref.watch(complementProvider);
     final List<ProductComplement> sauces =
-        complements.where((c) => c.isSauce == true).toList();
+        complements.where((ProductComplement c) => c.isSauce == true).toList();
     final List<ProductComplement> others =
-        complements.where((c) => c.isSauce == false).toList();
+        complements.where((ProductComplement c) => c.isSauce == false).toList();
 
     return Container(
       padding: const EdgeInsets.only(left: 12.0, right: 12.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text('Salsas',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          _buildComplementList(sauces, complementState, ref),
-          if (others.isNotEmpty) ...[
+        children: <Widget>[
+          if (sauces.isNotEmpty) ...<Widget>[
+            const Text("Salsas",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            _buildComplementList(sauces, complementState, ref),
+          ],
+          if (others.isNotEmpty) ...<Widget>[
             const SizedBox(height: 20),
-            const Text('Otros Complementos',
+            const Text("Otros Complementos",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             _buildComplementList(others, complementState, ref),
           ],
@@ -54,7 +56,7 @@ class ComplementSelector extends ConsumerWidget {
                 color: Colors.grey.withOpacity(0.5),
                 spreadRadius: 1,
                 blurRadius: 3,
-                offset: Offset(0, 1), // changes position of shadow
+                offset: const Offset(0, 1),
               ),
             ],
           ),
@@ -69,7 +71,7 @@ class ComplementSelector extends ConsumerWidget {
                             fontSize: 16, fontWeight: FontWeight.w500)),
                     const SizedBox(height: 4),
                     Text("Gratis: ${complement.freeAmount}",
-                        style: TextStyle(color: Colors.green)),
+                        style: const TextStyle(color: Colors.green)),
                     if (!isFree)
                       Text(
                           "Precio adicional por unidad: ${complement.amountPrice}",
@@ -78,7 +80,7 @@ class ComplementSelector extends ConsumerWidget {
                 ),
               ),
               Row(
-                children: [
+                children: <Widget>[
                   IconButton(
                     icon: const Icon(Icons.remove, color: Colors.red),
                     onPressed: () {
@@ -87,7 +89,7 @@ class ComplementSelector extends ConsumerWidget {
                           .removeComplement(complement.complementId!);
                     },
                   ),
-                  Text("$count", style: TextStyle(fontSize: 16)),
+                  Text("$count", style: const TextStyle(fontSize: 16)),
                   IconButton(
                     icon: const Icon(Icons.add, color: Colors.green),
                     onPressed: () {

@@ -165,18 +165,24 @@ class LogInScreen extends ConsumerWidget {
                   }, (String successMessage) {
                     ref.read(isLoadingProvider.notifier).state = false;
                     QuickAlert.show(
-                        context: context,
-                        type: QuickAlertType.success,
-                        text: labelLogInDialogSuccess.tr(),
-                        onConfirmBtnTap: () {
-                          GoRouter.of(context).push(AppRoutes.tabScreen);
-                        });
+                      context: context,
+                      type: QuickAlertType.success,
+                      text: labelLogInDialogSuccess.tr(),
+                      barrierDismissible: false,
+                      onConfirmBtnTap: () {
+                        GoRouter.of(context).push(AppRoutes.tabScreen);
+                      },
+                    );
                   }, (String errorMessage) {
                     ref.read(isLoadingProvider.notifier).state = false;
                     QuickAlert.show(
                       context: context,
                       type: QuickAlertType.error,
-                      text: labelLogInDialogError.tr(),
+                      text: errorMessage,
+                      barrierDismissible: false,
+                      onConfirmBtnTap: () {
+                        Navigator.of(context).pop();
+                      },
                     );
                   });
                 } else {
@@ -184,6 +190,10 @@ class LogInScreen extends ConsumerWidget {
                     context: context,
                     type: QuickAlertType.error,
                     text: labelLoginDialogValidation.tr(),
+                    barrierDismissible: false,
+                    onConfirmBtnTap: () {
+                      Navigator.of(context).pop();
+                    },
                   );
                 }
               },
@@ -198,11 +208,16 @@ class LogInScreen extends ConsumerWidget {
                   Text(labelDontHaveAccountKey.tr(),
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, color: Colors.grey)),
-                  Text(labelSignUpKey.tr(),
+                  TextButton(
+                    onPressed: () => context.push(AppRoutes.signUp),
+                    child: Text(
+                      labelSignUpKey.tr(),
                       style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 17,
-                          color: Colors.black)),
+                          color: Colors.black),
+                    ),
+                  ),
                 ],
               ),
             ),

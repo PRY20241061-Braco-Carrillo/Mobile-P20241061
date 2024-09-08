@@ -11,6 +11,9 @@ CategoryButtonData _$CategoryButtonDataFromJson(Map<String, dynamic> json) =>
       campusCategoryId: json['campusCategoryId'] as String,
       name: json['name'] as String,
       urlImage: json['urlImage'] as String,
+      is_promotion: json['is_promotion'] as bool?,
+      is_combo: json['is_combo'] as bool?,
+      is_menu: json['is_menu'] as bool?,
     );
 
 Map<String, dynamic> _$CategoryButtonDataToJson(CategoryButtonData instance) =>
@@ -18,4 +21,7 @@ Map<String, dynamic> _$CategoryButtonDataToJson(CategoryButtonData instance) =>
       'campusCategoryId': instance.campusCategoryId,
       'name': instance.name,
       'urlImage': instance.urlImage,
+      'is_promotion': instance.is_promotion,
+      'is_combo': instance.is_combo,
+      'is_menu': instance.is_menu,
     };

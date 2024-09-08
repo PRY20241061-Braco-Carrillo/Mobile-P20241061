@@ -20,7 +20,6 @@ import "../../../shared/widgets/features/main-cards/products/product_detail-card
 import "../../../shared/widgets/features/main-cards/products/product_detail-card/product_detail.types.dart";
 import "../../../shared/widgets/features/main-cards/products/product_detail-card/variants/product/product_variant.provider.dart";
 import "../../../shared/widgets/features/main-cards/products/product_detail-card/variants/product/product_variant_selector.dart";
-import "../../../shared/widgets/global/theme_switcher/theme_switcher.dart";
 import "../products_list/category_navigation_data.types.dart";
 import "product_detail_navigation_data.types.dart";
 
@@ -76,17 +75,25 @@ class ProductDetailScreen extends ConsumerWidget {
 
     final Widget detailsContent = categoryCard.when(
       data: (ProductDetailCardData data) {
-        print("Product details loaded: $data");
+        // Validar si hay variantes o detalles
+        if (data.toProductDetailVariantCards().isEmpty) {
+          print("No variants found for product: ${data}");
+          return const SizedBox
+              .shrink(); // Retorna un widget vacío si no hay detalles
+        }
+
+        print("Product details loaded: ${data.toProductDetailVariantCards()}");
         return MasonryGridView.count(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           crossAxisCount: 1,
-          mainAxisSpacing: 10,
+          mainAxisSpacing: 5,
           itemCount: 1,
           itemBuilder: (BuildContext context, int index) {
             return ProductVariantSelector(
-                productId: productDetailNavigationData.productData.productId,
-                variants: data.toProductDetailVariantCards());
+              productId: productDetailNavigationData.productData.productId,
+              variants: data.toProductDetailVariantCards(),
+            );
           },
         );
       },
@@ -117,53 +124,65 @@ class ProductDetailScreen extends ConsumerWidget {
       },
     );
 
-    final Widget complementsContent =
-        categoryCard.when(data: (ProductDetailCardData data) {
-      print("Product details loaded: $data");
-      return MasonryGridView.count(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        crossAxisCount: 1,
-        mainAxisSpacing: 10,
-        itemCount: 1,
-        itemBuilder: (BuildContext context, int index) {
-          return ComplementSelector(
+    final Widget complementsContent = categoryCard.when(
+      data: (ProductDetailCardData data) {
+        // Validar si hay complementos
+
+        if (data.complements == null || data.complements.isEmpty) {
+          print("No complements found for product: ${data}");
+          return const SizedBox
+              .shrink(); // Retorna un widget vacío si no hay complementos
+        }
+
+        print("Product complements loaded: ${data.complements}");
+        return MasonryGridView.count(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          crossAxisCount: 1,
+          mainAxisSpacing: 5,
+          itemCount: 1,
+          itemBuilder: (BuildContext context, int index) {
+            return ComplementSelector(
               complements: data.complements.map((complement) {
-            return ProductComplement(
-              complementId: complement.complementId,
-              name: complement.name,
-              freeAmount: complement.freeAmount,
-              amountPrice: complement.amountPrice,
-              currencyPrice: complement.currencyPrice,
-              isSauce: complement.isSauce,
+                return ProductComplement(
+                  complementId: complement.complementId,
+                  name: complement.name,
+                  freeAmount: complement.freeAmount,
+                  amountPrice: complement.amountPrice,
+                  currencyPrice: complement.currencyPrice,
+                  isSauce: complement.isSauce,
+                );
+              }).toList(),
             );
-          }).toList());
-        },
-      );
-    }, loading: () {
-      return MasonryGridView.count(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        crossAxisCount: 1,
-        mainAxisSpacing: 10,
-        itemCount: 1,
-        itemBuilder: (BuildContext context, int index) {
-          return const CProductDetailCard.skeleton();
-        },
-      );
-    }, error: (Object error, _) {
-      print("Error loading ProductDetailCardData: $error");
-      return MasonryGridView.count(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        crossAxisCount: 1,
-        mainAxisSpacing: 10,
-        itemCount: 1,
-        itemBuilder: (BuildContext context, int index) {
-          return CProductDetailCard.error(error: error.toString());
-        },
-      );
-    });
+          },
+        );
+      },
+      loading: () {
+        return MasonryGridView.count(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          crossAxisCount: 1,
+          mainAxisSpacing: 10,
+          itemCount: 1,
+          itemBuilder: (BuildContext context, int index) {
+            return const CProductDetailCard.skeleton();
+          },
+        );
+      },
+      error: (Object error, _) {
+        print("Error loading ProductDetailCardData: $error");
+        return MasonryGridView.count(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          crossAxisCount: 1,
+          mainAxisSpacing: 10,
+          itemCount: 1,
+          itemBuilder: (BuildContext context, int index) {
+            return CProductDetailCard.error(error: error.toString());
+          },
+        );
+      },
+    );
 
     final Widget productContent = MasonryGridView.count(
       shrinkWrap: true,
@@ -239,8 +258,8 @@ class ProductDetailScreen extends ConsumerWidget {
         body: ScrollableLayout(
           onRefresh: () => handleRefresh(ref),
           header: CBaseProductCategoriesHeader(
-            title: productDetailNavigationData.productData.name,
-            height: 220,
+            title: "",
+            height: 140,
             onButtonPressed: (BuildContext context) {
               GoRouter.of(context).push(
                   "${AppRoutes.products}/${productDetailNavigationData.categoryData.campusCategoryId}",
@@ -248,19 +267,23 @@ class ProductDetailScreen extends ConsumerWidget {
                       categoryData: productDetailNavigationData.categoryData,
                       campusData: productDetailNavigationData.campusData));
             },
-            fontSize: 32,
           ),
           backgroundColor: Theme.of(context).colorScheme.secondary,
           body: Column(
             children: <Widget>[
-              const SizedBox(height: 10),
-              const ThemeSwitcherWidget(),
-              const SizedBox(height: 10),
               productContent,
-              buttonArProduct,
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2),
+                child: buttonArProduct,
+              ),
               detailsContent,
               complementsContent,
-              buttonAddProduct,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2),
+                child: buttonAddProduct,
+              ),
+              const SizedBox(height: 20),
             ],
           ),
         ),

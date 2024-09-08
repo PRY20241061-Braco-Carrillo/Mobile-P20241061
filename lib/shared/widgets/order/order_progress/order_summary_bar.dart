@@ -17,9 +17,9 @@ class OrderSummaryBar extends ConsumerWidget {
       visible: orderInProgressState.inProgress,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          boxShadow: <BoxShadow>[
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.primaryContainer,
+          boxShadow: const <BoxShadow>[
             BoxShadow(blurRadius: 4, color: Colors.black26)
           ],
         ),

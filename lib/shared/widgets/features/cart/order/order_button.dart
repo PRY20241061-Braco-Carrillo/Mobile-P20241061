@@ -1,8 +1,10 @@
+import "package:easy_localization/easy_localization.dart";
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import "../../../../../config/routes/routes.dart";
+import "../../../../../modules/cart/order_navigation_data.dart";
 import "../../../../../modules/order/providers/order_in_progress.notifier.dart";
 
 class OrderButton extends ConsumerWidget {
@@ -24,7 +26,10 @@ class OrderButton extends ConsumerWidget {
             orderInProgressState.token.isNotEmpty) {
           GoRouter.of(context).push(
             AppRoutes.orderRequest,
-            extra: orderInProgressState.token,
+            extra: OrderRequestNavigationData(
+              orderRequest: orderInProgressState
+                  .orderRequestNavigationData, // Aquí asegúrate de pasar el objeto completo
+            ),
           );
         } else {
           await generateOrder(context, ref);
@@ -32,8 +37,8 @@ class OrderButton extends ConsumerWidget {
       },
       child: Text(
         orderInProgressState.inProgress && orderInProgressState.token.isNotEmpty
-            ? "Ir a mi orden"
-            : "Generar Orden",
+            ? "Order.labels.go_order.label".tr()
+            : "Order.labels.generate_order.label".tr(),
       ),
     );
   }

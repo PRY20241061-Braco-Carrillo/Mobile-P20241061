@@ -19,9 +19,11 @@ class ProductVariantSelector extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref
-        .read(selectedProductVariantsProvider(productId).notifier)
-        .initializeVariants(variants);
+    Future.microtask(() {
+      ref
+          .read(selectedProductVariantsProvider(productId).notifier)
+          .initializeVariants(variants);
+    });
 
     final SelectedVariantsState? selectedVariantsState =
         ref.watch(selectedProductVariantsProvider(productId))[productId];
@@ -115,14 +117,22 @@ class ProductVariantSelector extends ConsumerWidget {
   ) {
     final ProductDetailVariantCard? selectedVariant =
         productDetails.firstWhereOrNull((ProductDetailVariantCard variant) {
-      return selectedVariants.entries.every((MapEntry<String, String?> entry) =>
-          entry.value == null ||
-          variant.variantInfo.contains("${entry.key}: ${entry.value}"));
+      // Asegurarse de que variant.variantInfo no es null antes de invocar contains
+      return variant.variantInfo != null &&
+          selectedVariants.entries.every((MapEntry<String, String?> entry) =>
+              entry.value == null ||
+              variant.variantInfo!.contains("${entry.key}: ${entry.value}"));
     });
 
-    ref
-        .read(selectedProductVariantsProvider(productId).notifier)
-        .updateSelectedVariant(productId, selectedVariant);
+    if (selectedVariant != null) {
+      ref
+          .read(selectedProductVariantsProvider(productId).notifier)
+          .updateSelectedVariant(productId, selectedVariant);
+    } else {
+      // Manejar el caso en que no se encuentra ningún variante que coincida
+      // Por ejemplo, puedes resetear la selección actual o manejar de otra manera
+      print("No matching variant found.");
+    }
   }
 
   String variantLabel(BuildContext context, String key) {
