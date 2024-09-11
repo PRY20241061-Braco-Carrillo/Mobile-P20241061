@@ -265,12 +265,24 @@ class _OrderRequestScreenState extends ConsumerState<OrderRequestScreen> {
 
   Future<void> cancelOrder(BuildContext context, WidgetRef ref) async {
     final OrderInProgressState orderState = ref.read(orderInProgressProvider);
+
     if (orderState.inProgress &&
         orderState.remainingTime > 0 &&
         orderState.token.isNotEmpty) {
-      await ref
-          .read(cancelOrderRequestNotifierProvider.notifier)
-          .cancelOrder(orderState.orderId);
+      try {
+        await ref
+            .read(cancelOrderRequestNotifierProvider.notifier)
+            .cancelOrder(orderState.orderId);
+
+        GoRouter.of(context).go(AppRoutes.cart);
+      } catch (e) {
+        // Maneja errores si ocurre un problema al cancelar la orden
+        QuickAlert.show(
+          context: context,
+          type: QuickAlertType.error,
+          text: "Error al cancelar la orden. Por favor, intente nuevamente.",
+        );
+      }
     } else {
       handleExpiredOrder();
     }

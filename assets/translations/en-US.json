@@ -434,5 +434,13 @@
         "deletion_error": "Error",
         "deletion_error_text": "Failed to delete reservation",
         "load_error": "Failed to load reservations"
-      }
+    },
+    "onboarding_title_1": "Smartaste",
+    "onboarding_desc_1": "Transform your dining experience by visualizing menus in augmented reality. Explore dishes like never before!",
+    "onboarding_title_2": "Place Orders with Ease",
+    "onboarding_desc_2": "Quickly browse, customize, and place your order directly from your phone using cutting-edge AR technology.",
+    "onboarding_title_3": "Reserve Ahead",
+    "onboarding_desc_3": "Plan your meals by reserving dishes in advance, ensuring your favorite meals are always ready for you.",
+    "onboarding_title_4": "Immersive AR Experience",
+    "onboarding_desc_4": "See your dishes come to life before you order. View ingredients and nutritional details for a fully informed choice."
 }

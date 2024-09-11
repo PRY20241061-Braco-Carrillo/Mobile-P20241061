@@ -1,21 +1,24 @@
-import "onboarding.types.dart";
+import "package:easy_localization/easy_localization.dart";
+
+import 'onboarding.types.dart';
 
 class OnboardingItems {
   List<OnboardingInfo> items = <OnboardingInfo>[
     OnboardingInfo(
-        title: "Laboratory",
-        descriptions:
-            "A scientist in his laboratory is not a mere technician: he is also a child confronting natural phenomena that impress him as though they were fairy tales.",
+        title: tr("onboarding_title_1"),
+        descriptions: tr("onboarding_desc_1"),
         image: "assets/images/onboarding/onboarding_1.svg"),
     OnboardingInfo(
-        title: "Diagnosis",
-        descriptions:
-            "There is little you can do to stop a tornado, a hurricane, or a cancer diagnosis from changing your life in an instant.",
+        title: tr("onboarding_title_2"),
+        descriptions: tr("onboarding_desc_2"),
         image: "assets/images/onboarding/onboarding_2.svg"),
     OnboardingInfo(
-        title: "Chronic Diseases",
-        descriptions:
-            "Cancer taught my family that my mom is much stronger than we ever thought.",
+        title: tr("onboarding_title_3"),
+        descriptions: tr("onboarding_desc_3"),
         image: "assets/images/onboarding/onboarding_3.svg"),
+    OnboardingInfo(
+        title: tr("onboarding_title_4"),
+        descriptions: tr("onboarding_desc_4"),
+        image: "assets/images/onboarding/onboarding_4.svg"),
   ];
 }

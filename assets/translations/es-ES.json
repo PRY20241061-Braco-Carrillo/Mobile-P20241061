@@ -474,6 +474,13 @@
         "deletion_error": "Error",
         "deletion_error_text": "Error al eliminar la reservación",
         "load_error": "Error al cargar las reservaciones"
-    }
-
+    },
+    "onboarding_title_1": "Smartaste",
+    "onboarding_desc_1": "Transforma tu experiencia gastronómica visualizando los menús en realidad aumentada. ¡Explora los platos como nunca antes!",
+    "onboarding_title_2": "Haz Pedidos con Facilidad",
+    "onboarding_desc_2": "Navega rápidamente, personaliza y realiza tu pedido directamente desde tu móvil utilizando tecnología AR de última generación.",
+    "onboarding_title_3": "Reserva con Anticipación",
+    "onboarding_desc_3": "Planifica tus comidas reservando platos por adelantado, asegurando que tus favoritos siempre estén listos para ti.",
+    "onboarding_title_4": "Experiencia AR Inmersiva",
+    "onboarding_desc_4": "Observa tus platos cobrar vida antes de ordenar. Revisa los ingredientes y detalles nutricionales para una elección completamente informada."
 }
