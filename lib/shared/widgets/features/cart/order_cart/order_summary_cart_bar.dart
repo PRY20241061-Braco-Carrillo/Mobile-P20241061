@@ -50,7 +50,7 @@ class CartSummaryBar extends ConsumerWidget {
                 // Texto de resumen de total
                 Text(
                   "Total: ${getCurrencySymbol(cartItems.first.productInfo.currency)} ${total.toStringAsFixed(2)}",
-                  style: Theme.of(context).textTheme.headline6?.copyWith(
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Theme.of(context).colorScheme.onPrimaryContainer,
                       ),
                 ),

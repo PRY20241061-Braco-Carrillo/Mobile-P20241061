@@ -100,7 +100,7 @@ class RestaurantInfoContent extends StatelessWidget {
           ListTile(
             title: Text(
               data.name,
-              style: Theme.of(context).textTheme.headline6?.copyWith(
+              style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
             ),
@@ -108,7 +108,7 @@ class RestaurantInfoContent extends StatelessWidget {
               data.isAvailable
                   ? labelAvailableKey.tr()
                   : "${labelAvailableKey.tr()} (Cerrado)",
-              style: Theme.of(context).textTheme.bodyText1?.copyWith(
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: data.isAvailable ? Colors.green : Colors.red,
                   ),
             ),
@@ -117,10 +117,10 @@ class RestaurantInfoContent extends StatelessWidget {
           // Dirección del restaurante
           ListTile(
             title: Text(labelAddressKey.tr(),
-                style: Theme.of(context).textTheme.subtitle1),
+                style: Theme.of(context).textTheme.displaySmall),
             subtitle: Text(
               data.address,
-              style: Theme.of(context).textTheme.bodyText2,
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
           ),
           const Divider(),
@@ -145,7 +145,7 @@ class RestaurantInfoContent extends StatelessWidget {
           // Servicios de "para llevar" y "a domicilio"
           ListTile(
             title: Text(labelTakeHomeKey.tr(),
-                style: Theme.of(context).textTheme.subtitle1),
+                style: Theme.of(context).textTheme.labelMedium),
             trailing: Icon(
               data.toTakeHome ? Icons.check_circle : Icons.cancel,
               color: data.toTakeHome ? Colors.green : Colors.red,
@@ -153,7 +153,7 @@ class RestaurantInfoContent extends StatelessWidget {
           ),
           ListTile(
             title: Text(labelDeliveryKey.tr(),
-                style: Theme.of(context).textTheme.subtitle1),
+                style: Theme.of(context).textTheme.labelMedium),
             trailing: Icon(
               data.toDelivery ? Icons.check_circle : Icons.cancel,
               color: data.toDelivery ? Colors.green : Colors.red,
@@ -163,10 +163,9 @@ class RestaurantInfoContent extends StatelessWidget {
           // Información de contacto
           ListTile(
             title: Text(labelPhoneKey.tr(),
-                style: Theme.of(context).textTheme.subtitle1),
+                style: Theme.of(context).textTheme.labelMedium),
             subtitle: Text(
               data.phoneNumber,
-              style: Theme.of(context).textTheme.bodyText2,
             ),
           ),
         ],
@@ -184,11 +183,11 @@ class RestaurantInfoContent extends StatelessWidget {
         children: <Widget>[
           Text(
             label,
-            style: Theme.of(context).textTheme.bodyText2,
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
           Text(
             "${mealTime.opening} - ${mealTime.closing}",
-            style: Theme.of(context).textTheme.bodyText2,
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
         ],
       ),

@@ -113,7 +113,7 @@ class CartScreen extends ConsumerWidget {
       body: Scaffold(
         appBar: AppBar(
           title: Text(labelOrderKey.tr(),
-              style: Theme.of(context).textTheme.headline6),
+              style: Theme.of(context).textTheme.bodyLarge),
           centerTitle: true,
           backgroundColor: Theme.of(context).colorScheme.primary,
           elevation: 0,
@@ -161,7 +161,7 @@ class CartScreen extends ConsumerWidget {
                                 "Cart.labels.TOTAL.label".tr(),
                                 style: Theme.of(context)
                                     .textTheme
-                                    .headline6
+                                    .bodyLarge
                                     ?.copyWith(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -170,7 +170,7 @@ class CartScreen extends ConsumerWidget {
                                 "${total.toStringAsFixed(2)}",
                                 style: Theme.of(context)
                                     .textTheme
-                                    .headline6
+                                    .bodyLarge
                                     ?.copyWith(
                                       color:
                                           Theme.of(context).colorScheme.primary,
@@ -203,7 +203,7 @@ class CartScreen extends ConsumerWidget {
                     const SizedBox(height: 16),
                     Text(
                       "Cart.labels.EMPTY.label".tr(),
-                      style: Theme.of(context).textTheme.headline6,
+                      style: Theme.of(context).textTheme.bodyLarge,
                     ),
                   ],
                 ),

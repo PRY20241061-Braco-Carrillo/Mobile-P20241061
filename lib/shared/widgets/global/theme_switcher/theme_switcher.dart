@@ -20,7 +20,6 @@ class ThemeSwitcherWidget extends ConsumerWidget {
         children: [
           Text(
             'Theme', // Texto que puedes reemplazar con una clave de localización si usas traducción
-            style: Theme.of(context).textTheme.bodyText1,
           ),
           // Switch con animación entre Light y Dark
           GestureDetector(

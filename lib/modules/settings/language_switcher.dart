@@ -14,7 +14,7 @@ class LanguageSwitcherWidget extends ConsumerWidget {
         children: <Widget>[
           Text(
             'Settings.buttons.CHANGE_LANGUAGE.label'.tr(), // Localization key
-            style: Theme.of(context).textTheme.bodyText1,
+            style: Theme.of(context).textTheme.bodyLarge,
           ),
           DropdownButton<Locale>(
             value: context.locale,

@@ -133,7 +133,7 @@ class ReservationList extends ConsumerWidget {
                               child: Text(
                                 'reservations.id'.tr() +
                                     ": ${_getShortenedId(reservation.reservationId)}",
-                                style: Theme.of(context).textTheme.subtitle1,
+                                style: Theme.of(context).textTheme.labelMedium,
                               ),
                             ),
                             Icon(statusIcon, color: reservationStatusColor),

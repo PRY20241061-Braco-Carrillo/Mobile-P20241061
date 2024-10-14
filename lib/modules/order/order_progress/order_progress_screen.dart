@@ -18,7 +18,7 @@ class OrderInProgressScreen extends ConsumerWidget {
         child: Text(
           "Su orden está en progreso.",
           style: TextStyle(
-            fontSize: Theme.of(context).textTheme.headline4!.fontSize,
+            fontSize: Theme.of(context).textTheme.headlineLarge!.fontSize,
           ),
         ),
       ),
