@@ -118,31 +118,38 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                         topRight: Radius.circular(30.0),
                       ),
                     ),
-                    child: RefreshIndicator(
-                      onRefresh: () async {
-                        _pagingController.refresh();
-                      },
-                      child: PagedListView<int, RestaurantCardData>(
-                        pagingController: _pagingController,
-                        builderDelegate:
-                            PagedChildBuilderDelegate<RestaurantCardData>(
-                          itemBuilder: (BuildContext context,
-                                  RestaurantCardData item, int index) =>
-                              CRestaurantCard(data: item),
-                          firstPageProgressIndicatorBuilder:
-                              (BuildContext context) => const Center(
-                                  child: CircularProgressIndicator()),
-                          newPageProgressIndicatorBuilder:
-                              (BuildContext context) => const Center(
-                                  child: CircularProgressIndicator()),
-                          noMoreItemsIndicatorBuilder: (BuildContext context) =>
-                              Center(child: Text(no_more_items.tr())),
-                          firstPageErrorIndicatorBuilder:
-                              (BuildContext context) =>
-                                  Center(child: Text(failed_to_load.tr())),
-                          newPageErrorIndicatorBuilder:
-                              (BuildContext context) =>
-                                  Center(child: Text(failed_to_load.tr())),
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(30.0),
+                        topRight: Radius.circular(30.0),
+                      ),
+                      child: RefreshIndicator(
+                        onRefresh: () async {
+                          _pagingController.refresh();
+                        },
+                        child: PagedListView<int, RestaurantCardData>(
+                          pagingController: _pagingController,
+                          builderDelegate:
+                              PagedChildBuilderDelegate<RestaurantCardData>(
+                            itemBuilder: (BuildContext context,
+                                    RestaurantCardData item, int index) =>
+                                CRestaurantCard(data: item),
+                            firstPageProgressIndicatorBuilder:
+                                (BuildContext context) => const Center(
+                                    child: CircularProgressIndicator()),
+                            newPageProgressIndicatorBuilder:
+                                (BuildContext context) => const Center(
+                                    child: CircularProgressIndicator()),
+                            noMoreItemsIndicatorBuilder:
+                                (BuildContext context) =>
+                                    Center(child: Text(no_more_items.tr())),
+                            firstPageErrorIndicatorBuilder:
+                                (BuildContext context) =>
+                                    Center(child: Text(failed_to_load.tr())),
+                            newPageErrorIndicatorBuilder:
+                                (BuildContext context) =>
+                                    Center(child: Text(failed_to_load.tr())),
+                          ),
                         ),
                       ),
                     ),

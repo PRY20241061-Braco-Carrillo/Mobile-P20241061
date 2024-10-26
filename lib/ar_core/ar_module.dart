@@ -149,7 +149,7 @@ class _ARScreenState extends State<ARScreen> {
           showFeaturePoints: false,
           showPlanes: true,
           customPlaneTexturePath: "Images/triangle.png",
-          showWorldOrigin: true,
+          showWorldOrigin: false,
           handleTaps: false,
         );
     this.arObjectManager!.onInitialize();

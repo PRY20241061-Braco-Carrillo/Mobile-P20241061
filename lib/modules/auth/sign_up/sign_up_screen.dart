@@ -104,11 +104,15 @@ bool isPasswordConfirmed(WidgetRef ref) {
 }
 
 bool isValidName(String name) {
-  return name.trim().isNotEmpty;
+  const Pattern pattern = r"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$";
+  final RegExp regex = RegExp(pattern.toString());
+  return regex.hasMatch(name.trim());
 }
 
 bool isValidLastName(String lastName) {
-  return lastName.trim().isNotEmpty;
+  const Pattern pattern = r"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$";
+  final RegExp regex = RegExp(pattern.toString());
+  return regex.hasMatch(lastName.trim());
 }
 
 bool isValidPhone(String phone) {
@@ -190,10 +194,13 @@ class SignUpScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context); // Obtiene el tema actual
+
     final bool isLoading = ref.watch(isLoadingProvider);
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: theme.colorScheme.background,
       body: ScrollableLayout(
+        backgroundColor: theme.colorScheme.surface,
         header: CBaseIconHeader(
           height: 200,
           headerKey: "sign_up",
@@ -201,13 +208,14 @@ class SignUpScreen extends ConsumerWidget {
             GoRouter.of(context).push(AppRoutes.accessOptions);
           },
         ),
-        body: _buildSignUpForm(context, ref),
+        body: _buildSignUpForm(context, ref, theme),
         isLoading: isLoading,
       ),
     );
   }
 
-  Widget _buildSignUpForm(BuildContext context, WidgetRef ref) {
+  Widget _buildSignUpForm(
+      BuildContext context, WidgetRef ref, ThemeData theme) {
     final String email = ref.watch(emailProvider);
     final String password = ref.watch(passwordProvider);
     final List<bool> validations = ref.watch(passwordValidationProvider);
@@ -244,6 +252,7 @@ class SignUpScreen extends ConsumerWidget {
       key: formKey,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       child: Container(
+        color: theme.colorScheme.surface,
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
         alignment: Alignment.center,
         child: Column(
@@ -301,7 +310,7 @@ class SignUpScreen extends ConsumerWidget {
                     ref.watch(passwordVisibilityProvider)
                         ? Icons.visibility
                         : Icons.visibility_off,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: theme.colorScheme.primary,
                   ),
                   onPressed: () => ref
                       .read(passwordVisibilityProvider.notifier)
@@ -424,6 +433,7 @@ class SignUpScreen extends ConsumerWidget {
                       QuickAlert.show(
                         context: context,
                         type: QuickAlertType.success,
+                        title: "",
                         text: labelSignUpDialogSuccess.tr(),
                         barrierDismissible: false,
                         onConfirmBtnTap: () {

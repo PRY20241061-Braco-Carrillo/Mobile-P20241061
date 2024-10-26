@@ -1,17 +1,18 @@
+import "package:easy_localization/easy_localization.dart";
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+
 import '../../../../config/theme/theme_manager.dart';
 
 class ThemeSwitcherWidget extends ConsumerWidget {
   const ThemeSwitcherWidget({super.key});
+  static const String themeKey = "Settings.theme.label";
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final StateController<ThemeData> currentTheme =
-        ref.watch(themeProvider.notifier);
-
-    // Determinamos si el tema actual es claro u oscuro
-    bool isLightTheme = currentTheme.state.brightness == Brightness.light;
+    final themeNotifier = ref.watch(themeProvider.notifier);
+    final currentTheme = ref.watch(themeProvider);
+    bool isLightTheme = currentTheme.brightness == Brightness.light;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
@@ -19,13 +20,12 @@ class ThemeSwitcherWidget extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            'Theme', // Texto que puedes reemplazar con una clave de localización si usas traducción
+            themeKey.tr(),
+            style: Theme.of(context).textTheme.bodyLarge,
           ),
-          // Switch con animación entre Light y Dark
           GestureDetector(
             onTap: () {
-              // Alternamos el tema cuando el usuario toca el widget
-              currentTheme.state = isLightTheme ? darkTheme : lightTheme;
+              themeNotifier.toggleTheme(); // Cambiar el tema y guardar
             },
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 300),

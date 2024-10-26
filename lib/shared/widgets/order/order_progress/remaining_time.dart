@@ -17,7 +17,7 @@ class RemainingTimeWidget extends StatelessWidget {
       "Time remaining: ${_getFormattedTime(remainingTime)}",
       textAlign: TextAlign.center,
       style: TextStyle(
-        color: Theme.of(context).colorScheme.primaryContainer,
+        color: Theme.of(context).colorScheme.primary,
         fontSize: Theme.of(context).textTheme.titleLarge!.fontSize,
       ),
     );

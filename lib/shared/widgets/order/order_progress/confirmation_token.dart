@@ -11,7 +11,7 @@ class ConfirmationTokenWidget extends StatelessWidget {
       "Confirmation Token: $confirmationToken",
       textAlign: TextAlign.center,
       style: TextStyle(
-        color: Theme.of(context).colorScheme.primaryContainer,
+        color: Theme.of(context).colorScheme.primary,
         fontSize: Theme.of(context).textTheme.titleLarge!.fontSize,
       ),
     );

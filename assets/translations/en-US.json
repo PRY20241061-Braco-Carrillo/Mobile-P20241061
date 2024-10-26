@@ -392,6 +392,9 @@
             "CHANGE_LANGUAGE": {
                 "label": "Change Language"
             }
+        },
+        "theme" : {
+            "label": "Theme"
         }
     },
     "no_items": {

@@ -1,4 +1,5 @@
 import "dart:async";
+import "dart:ui";
 
 import "package:hooks_riverpod/hooks_riverpod.dart";
 
@@ -17,6 +18,7 @@ final StateNotifierProvider<OrderInProgressNotifier, OrderInProgressState>
 class OrderInProgressNotifier extends StateNotifier<OrderInProgressState> {
   final SecureStorageManager _storageService;
   Timer? _timer;
+  VoidCallback? _onTimerExpired;
 
   OrderInProgressNotifier(this._storageService)
       : super(OrderInProgressState(
@@ -58,6 +60,9 @@ class OrderInProgressNotifier extends StateNotifier<OrderInProgressState> {
       if (state.remainingTime <= 0) {
         timer.cancel();
         clearOrderInProgress();
+        if (_onTimerExpired != null) {
+          _onTimerExpired!(); // Llamar al callback cuando el temporizador expire
+        }
       } else {
         state = state.copyWith(remainingTime: state.remainingTime - 1);
         _storageService.setOrderRemainingTime(state.remainingTime);
@@ -74,7 +79,9 @@ class OrderInProgressNotifier extends StateNotifier<OrderInProgressState> {
   Future<void> setOrderInProgress(bool inProgress,
       {String? token,
       String? orderId,
-      SaveOrderRequestResponse? orderRequest}) async {
+      SaveOrderRequestResponse? orderRequest,
+      VoidCallback? onTimerExpired}) async {
+    _onTimerExpired = onTimerExpired; // Asignar el callback
     state = state.copyWith(
         inProgress: inProgress,
         token: token ?? state.token,

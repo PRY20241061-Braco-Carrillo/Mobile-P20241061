@@ -77,7 +77,6 @@ class _LoadingOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      color: Colors.black45,
       child: const CircularProgressIndicator(),
     );
   }

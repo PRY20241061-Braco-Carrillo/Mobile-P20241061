@@ -87,6 +87,66 @@ class _OrderRequestScreenState extends ConsumerState<OrderRequestScreen> {
   final _formKey = GlobalKey<FormState>();
 
   @override
+  void initState() {
+    super.initState();
+
+    // Configurar el temporizador con el callback onExpired
+    ref.read(orderInProgressProvider.notifier).setOrderInProgress(
+          true,
+          token: widget.orderRequestData.orderRequest.confirmationToken,
+          orderId: widget.orderRequestData.orderRequest.orderRequestId,
+          orderRequest: widget.orderRequestData.orderRequest,
+          onTimerExpired: _handleTimerExpired, // Pasar el callback aquí
+        );
+  }
+
+  void _handleTimerExpired() {
+    // Realizar acciones de cancelación aquí
+    _cancelOrderOnTimerExpired(context, ref);
+  }
+
+  Future<void> _cancelOrderOnTimerExpired(
+      BuildContext context, WidgetRef ref) async {
+    final OrderInProgressState orderState = ref.read(orderInProgressProvider);
+
+    try {
+      // Limpiar el estado de la orden en progreso
+      await ref.read(orderInProgressProvider.notifier).clearOrderInProgress();
+
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.warning,
+        text:
+            "El tiempo de expiración del token ya venció. Por favor, genere su orden nuevamente.",
+        barrierDismissible:
+            false, // El modal no se cierra si se toca fuera de él
+        onConfirmBtnTap: () async {
+          // Asegurarse de redirigir siempre al carrito y eliminar la vista actual del stack
+          await Future.delayed(Duration(
+              milliseconds:
+                  200)); // Pequeña demora para evitar errores de navegación
+          GoRouter.of(context).go(AppRoutes.cart);
+        },
+      );
+    } catch (e) {
+      // Manejar errores si ocurre un problema al cancelar la orden
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        text: "Error al cancelar la orden. Por favor, intente nuevamente.",
+        barrierDismissible: false, // No permitir cerrar el modal tocando fuera
+        onConfirmBtnTap: () async {
+          // Redirigir al carrito incluso en caso de error
+          await Future.delayed(Duration(
+              milliseconds:
+                  200)); // Pequeña demora para evitar errores de navegación
+          GoRouter.of(context).go(AppRoutes.cart);
+        },
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final OrderInProgressState orderState = ref.watch(orderInProgressProvider);
     final int remainingTime = orderState.remainingTime;
@@ -196,7 +256,13 @@ class _OrderRequestScreenState extends ConsumerState<OrderRequestScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Order Request"),
+        title: Text(
+          "Order Request",
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+        ),
+        backgroundColor: Theme.of(context).colorScheme.primary,
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -234,6 +300,11 @@ class _OrderRequestScreenState extends ConsumerState<OrderRequestScreen> {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                  backgroundColor:
+                      Theme.of(context).colorScheme.primary, // Color del texto
+                ),
                 onPressed: () => cancelOrder(context, ref),
                 child: const Text("Cancel Order"),
               ),

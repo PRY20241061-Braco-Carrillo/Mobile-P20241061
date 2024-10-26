@@ -36,6 +36,21 @@ class CartNotifier extends StateNotifier<List<CartItem>> {
         .toList();
   }
 
+  // Método para actualizar la cantidad de un producto en el carrito
+  void updateProductQuantity(String productId, int newQuantity) {
+    final CartItem? item = state.firstWhereOrNull(
+        (CartItem item) => item.productInfo.productId == productId);
+    if (item != null) {
+      if (newQuantity > 0) {
+        item.quantity = newQuantity;
+      } else {
+        // Si la cantidad es 0 o menor, elimina el producto
+        removeProduct(productId);
+      }
+      state = <CartItem>[...state]; // Notificar cambios en el estado
+    }
+  }
+
   void updateQuantity(String productId, int quantity) {
     final CartItem? item = state.firstWhereOrNull(
         (CartItem item) => item.productInfo.productId == productId);

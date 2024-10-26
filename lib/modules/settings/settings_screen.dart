@@ -43,18 +43,20 @@ class SettingScreen extends ConsumerWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const SizedBox(
+                        // Remueve 'const' para permitir la reconstrucción
+                        SizedBox(
                           width: double.infinity,
                           child: Padding(
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                                 horizontal: 16.0, vertical: 20.0),
                             child: ThemeSwitcherWidget(),
                           ),
                         ),
-                        const SizedBox(
+                        SizedBox(
                           width: double.infinity,
                           child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
                             child: LanguageSwitcherWidget(),
                           ),
                         ),
@@ -91,8 +93,9 @@ class SettingScreen extends ConsumerWidget {
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                        content: Text(
-                                            'No se pudo abrir el enlace $url')),
+                                      content: Text(
+                                          'No se pudo abrir el enlace $url'),
+                                    ),
                                   );
                                 }
                               },

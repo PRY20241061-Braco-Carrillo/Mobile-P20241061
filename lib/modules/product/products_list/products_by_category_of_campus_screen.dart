@@ -1,3 +1,4 @@
+import "package:easy_localization/easy_localization.dart";
 import "package:flutter/material.dart";
 import "package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart";
 import "package:go_router/go_router.dart";
@@ -144,8 +145,18 @@ Widget gridContentFullMode(
     WidgetRef ref,
     AsyncValue<List<ProductBaseCardData>> categoryCard,
     CategoryNavigationData data) {
+  const String no_items = "no_items.label";
+
   return categoryCard.when(
     data: (List<ProductBaseCardData> dataList) {
+      if (dataList.isEmpty) {
+        return Center(
+          child: Text(
+            no_items.tr(),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+        );
+      }
       return AlignedGridView.count(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -191,8 +202,18 @@ Widget gridContentCompactMode(
     WidgetRef ref,
     AsyncValue<List<ProductBaseCardData>> categoryCard,
     CategoryNavigationData data) {
+  const String no_items = "no_items.label";
+
   return categoryCard.when(
     data: (List<ProductBaseCardData> dataList) {
+      if (dataList.isEmpty) {
+        return Center(
+          child: Text(
+            no_items.tr(),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+        );
+      }
       return AlignedGridView.count(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),

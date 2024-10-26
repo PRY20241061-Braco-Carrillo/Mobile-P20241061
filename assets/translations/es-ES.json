@@ -68,11 +68,11 @@
             },
             "NAME": {
                 "label": "Nombre",
-                "validator": "Por favor ingrese su nombre"
+                "validator": "Por favor ingrese un nombre válido"
             },
             "LAST_NAME": {
                 "label": "Apellido",
-                "validator": "Por favor ingrese su apellido"
+                "validator": "Por favor ingrese un apellido válido"
             },
             "PHONE": {
                 "label": "Teléfono",
@@ -421,6 +421,9 @@
             "CHANGE_LANGUAGE": {
                 "label": "Cambiar Idioma"
             }
+        },
+        "theme" : {
+            "label": "Tema"
         }
     },
     "RestaurantInfoDialog": {

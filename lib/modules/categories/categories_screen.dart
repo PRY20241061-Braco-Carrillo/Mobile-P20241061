@@ -196,6 +196,10 @@ class CategoriesScreenState extends ConsumerState<CategoriesScreen> {
                               (BuildContext context) => Center(
                             child: Text(failed_to_load.tr()),
                           ),
+                          noItemsFoundIndicatorBuilder:
+                              (BuildContext context) => Center(
+                            child: Text(no_items.tr()),
+                          ),
                         ),
                       ),
                     ),

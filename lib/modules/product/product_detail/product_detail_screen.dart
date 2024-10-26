@@ -278,7 +278,7 @@ class ProductDetailScreen extends ConsumerWidget {
                 child: buttonArProduct,
               ),
               detailsContent,
-              complementsContent,
+              // complementsContent,
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 2),
                 child: buttonAddProduct,

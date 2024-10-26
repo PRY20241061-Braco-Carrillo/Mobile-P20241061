@@ -23,11 +23,28 @@ class CartItemWidget extends ConsumerWidget {
         subtitle: Text(
           "Cantidad: ${item.quantity}\nPrecio unitario: ${item.productInfo.currency} ${item.productInfo.price.toStringAsFixed(2)}\nTotal: ${item.productInfo.currency} ${(item.quantity * item.productInfo.getTotalPrice()).toStringAsFixed(2)}",
         ),
-        trailing: IconButton(
-          icon: const Icon(Icons.delete),
-          onPressed: () => ref
-              .read(cartProvider.notifier)
-              .removeProduct(item.productInfo.productId),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Mostrar el botón "-" solo si la cantidad es mayor que 1
+            if (item.quantity > 1)
+              IconButton(
+                icon: const Icon(Icons.remove),
+                onPressed: () {
+                  ref.read(cartProvider.notifier).updateProductQuantity(
+                        item.productInfo.productId,
+                        item.quantity - 1,
+                      );
+                },
+              ),
+            // Botón de borrar el producto
+            IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () => ref
+                  .read(cartProvider.notifier)
+                  .removeProduct(item.productInfo.productId),
+            ),
+          ],
         ),
       ),
     );

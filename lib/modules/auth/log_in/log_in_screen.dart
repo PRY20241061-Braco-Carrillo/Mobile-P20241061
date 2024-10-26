@@ -64,9 +64,14 @@ class LogInScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final bool isLoading = ref.watch(isLoadingProvider);
+    final theme = Theme.of(context); // Obtiene el tema actual
+
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: theme.colorScheme
+          .background, // Sincronizado con el color de fondo del tema
       body: ScrollableLayout(
+        backgroundColor: theme
+            .colorScheme.surface, // Sincronizado con el color de fondo del tema
         header: CBaseIconHeader(
           height: 200,
           headerKey: "login",
@@ -74,13 +79,13 @@ class LogInScreen extends ConsumerWidget {
             GoRouter.of(context).push(AppRoutes.accessOptions);
           },
         ),
-        body: _buildLoginForm(context, ref),
+        body: _buildLoginForm(context, ref, theme),
         isLoading: isLoading,
       ),
     );
   }
 
-  Widget _buildLoginForm(BuildContext context, WidgetRef ref) {
+  Widget _buildLoginForm(BuildContext context, WidgetRef ref, ThemeData theme) {
     final String email = ref.watch(emailProvider);
     final String password = ref.watch(passwordProvider);
     final bool passwordVisible = ref.watch(passwordVisibilityProvider);
@@ -105,6 +110,7 @@ class LogInScreen extends ConsumerWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
         alignment: Alignment.center,
+        color: theme.colorScheme.surface,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -119,7 +125,7 @@ class LogInScreen extends ConsumerWidget {
               ),
               keyboardType: TextInputType.emailAddress,
               validator: (String? value) =>
-                  validateField(value, isValidName, validatorNameKey),
+                  validateField(value, isValidEmail, validatorNameKey),
             ),
             const SizedBox(height: 10),
             TextFormField(
@@ -131,14 +137,13 @@ class LogInScreen extends ConsumerWidget {
                 context: context,
                 suffixIcon: IconButton(
                   icon: Icon(
-                    ref.watch(passwordVisibilityProvider)
-                        ? Icons.visibility
-                        : Icons.visibility_off,
-                    color: Theme.of(context).colorScheme.primary,
+                    passwordVisible ? Icons.visibility : Icons.visibility_off,
+                    color: theme.colorScheme
+                        .primary, // Sincronizado con el color primario del tema
                   ),
                   onPressed: () => ref
                       .read(passwordVisibilityProvider.notifier)
-                      .state = !ref.read(passwordVisibilityProvider),
+                      .state = !passwordVisible,
                 ),
               ),
               obscureText: !passwordVisible,
@@ -167,10 +172,11 @@ class LogInScreen extends ConsumerWidget {
                     QuickAlert.show(
                       context: context,
                       type: QuickAlertType.success,
+                      title: "",
                       text: labelLogInDialogSuccess.tr(),
                       barrierDismissible: false,
                       onConfirmBtnTap: () {
-                        GoRouter.of(context).push(AppRoutes.tabScreen);
+                        GoRouter.of(context).go(AppRoutes.tabScreen);
                       },
                     );
                   }, (String errorMessage) {
@@ -206,16 +212,19 @@ class LogInScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
                   Text(labelDontHaveAccountKey.tr(),
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.grey)),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: theme.colorScheme
+                              .onSurface)), // Sincronizado con el color de la superficie
                   TextButton(
                     onPressed: () => context.push(AppRoutes.signUp),
                     child: Text(
                       labelSignUpKey.tr(),
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 17,
-                          color: Colors.black),
+                          color: theme.colorScheme
+                              .primary), // Sincronizado con el color primario del tema
                     ),
                   ),
                 ],
